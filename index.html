@@ -1,1 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alex Liam Puzzles – Free Sudoku & Word Search Printables</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online (coming soon), and discover our puzzle books on Amazon.">
+    <style>
+        :root {
+            --bg: #0b1020;
+            --bg-alt: #111729;
+            --accent: #ffb347;
+            --accent-soft: rgba(255, 179, 71, 0.15);
+            --text: #f5f7ff;
+            --muted: #a9b3d1;
+            --card: #151c33;
+            --border: rgba(255, 255, 255, 0.08);
+            --max-width: 1040px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, #202a45, #050814 58%);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1.25rem 1.25rem 3rem;
+        }
+
+        /* Header / Nav */
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 0.5rem 0 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .logo-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            border: 2px solid var(--accent);
+            display: grid;
+            place-items: center;
+            font-size: 0.9rem;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            padding: 0.25rem 0.35rem;
+            color: var(--muted);
+        }
+
+        .nav-links a.highlight {
+            color: var(--accent);
+        }
+
+        /* Hero */
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr);
+            gap: 2.5rem;
+            align-items: center;
+            padding: 1.2rem 1.2rem 1.8rem;
+            border-radius: 18px;
+            background: radial-gradient(circle at top left, #252f55, #0a0f1f 56%);
+            border: 1px solid var(--border);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-title {
+            font-size: clamp(1.9rem, 3.1vw, 2.3rem);
+            line-height: 1.15;
+            margin-bottom: 0.7rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--muted);
+            max-width: 36rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .badge {
+            font-size: 0.78rem;
+            padding: 0.25rem 0.55rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: var(--muted);
+            background: rgba(3, 8, 24, 0.9);
+        }
+
+        .badge.accent {
+            border-color: rgba(255, 179, 71, 0.7);
+            background: var(--accent-soft);
 
