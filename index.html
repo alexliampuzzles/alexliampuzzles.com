@@ -1,11 +1,12 @@
+<!-- FULL UPDATED INDEX.HTML WITH ALL LINKS -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Alex Liam Puzzles – Free Sudoku & Word Search Printables</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description"
-          content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online (coming soon), and discover our puzzle books on Amazon.">
+    <meta name="description" content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online, and discover puzzle books.">
+
     <style>
         :root {
             --bg: #0b1020;
@@ -19,21 +20,24 @@
             --max-width: 1040px;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background: radial-gradient(circle at top left, #202a45, #050814 58%);
             color: var(--text);
         }
 
+        /* 🔥 LINK VISIBILITY IMPROVED */
         a {
-            color: inherit;
-            text-decoration: none;
+            color: var(--accent);
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
         }
+
+        a:hover { color: #ffd08a; }
 
         .page {
             max-width: var(--max-width);
@@ -41,13 +45,10 @@
             padding: 1.25rem 1.25rem 3rem;
         }
 
-        /* Header / Nav */
-
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1.5rem;
             padding: 0.5rem 0 1.5rem;
         }
 
@@ -72,524 +73,144 @@
 
         .nav-links {
             display: flex;
-            flex-wrap: wrap;
             gap: 1rem;
             font-size: 0.95rem;
         }
-
-        .nav-links a {
-            padding: 0.25rem 0.35rem;
-            color: var(--muted);
-        }
-
-        .nav-links a.highlight {
-            color: var(--accent);
-        }
-
-        /* Hero */
 
         .hero {
             display: grid;
             grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr);
             gap: 2.5rem;
-            align-items: center;
-            padding: 1.2rem 1.2rem 1.8rem;
+            padding: 1.2rem;
             border-radius: 18px;
             background: radial-gradient(circle at top left, #252f55, #0a0f1f 56%);
             border: 1px solid var(--border);
-            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
         }
 
-        .hero-title {
-            font-size: clamp(1.9rem, 3.1vw, 2.3rem);
-            line-height: 1.15;
-            margin-bottom: 0.7rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1rem;
-            color: var(--muted);
-            max-width: 36rem;
-            margin-bottom: 1.4rem;
-        }
-
-        .hero-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-            margin-bottom: 1.4rem;
-        }
-
-        .badge {
-            font-size: 0.78rem;
-            padding: 0.25rem 0.55rem;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: var(--muted);
-            background: rgba(3, 8, 24, 0.9);
-        }
-
-        .badge.accent {
-            border-color: rgba(255, 179, 71, 0.7);
-            background: var(--accent-soft);
-            color: #ffe2b3;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-            padding: 0.62rem 1.1rem;
-            border-radius: 999px;
-            border: 1px solid transparent;
-            font-size: 0.95rem;
-            cursor: pointer;
-            background: transparent;
-            color: var(--text);
-            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out,
-                        background 0.15s ease-out, border-color 0.15s ease-out;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #ffc46b, #ff9f3f);
-            color: #1b1304;
-            box-shadow: 0 12px 28px rgba(255, 168, 64, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 18px 38px rgba(255, 168, 64, 0.37);
-        }
-
-        .btn-outline {
-            border-color: rgba(255, 255, 255, 0.24);
-            background: rgba(7, 12, 30, 0.9);
-            color: var(--muted);
-        }
-
-        .btn-outline:hover {
-            border-color: rgba(255, 255, 255, 0.45);
-            background: rgba(9, 15, 36, 0.95);
-            transform: translateY(-1px);
-        }
-
-        .btn span.icon {
-            font-size: 1.1rem;
-        }
-
-        /* Hero right – sample grid */
-
-        .hero-grid-card {
-            border-radius: 16px;
-            background: rgba(12, 18, 40, 0.98);
-            border: 1px solid var(--border);
-            padding: 1rem 1rem 1.1rem;
-        }
-
-        .hero-grid-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.7rem;
-            font-size: 0.8rem;
-            color: var(--muted);
-        }
-
-        .hero-grid-header strong {
-            font-size: 0.85rem;
-            color: var(--text);
-        }
-
-        .grid-preview {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border-radius: 12px;
-            padding: 0.4rem;
-            background: radial-gradient(circle at top, #223058, #090f23);
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            grid-template-rows: repeat(9, 1fr);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .cell {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            color: #dbe4ff;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .cell.clue {
-            font-weight: 600;
-        }
-
-        .cell.hint {
-            color: #ffd18a;
-        }
-
-        .hero-meta {
-            margin-top: 0.65rem;
-            font-size: 0.8rem;
-            color: var(--muted);
-            display: flex;
-            justify-content: space-between;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        /* Sections */
-
-        section {
-            margin-top: 2.5rem;
-        }
-
-        h2.section-title {
-            font-size: 1.25rem;
-            margin: 0 0 0.2rem;
-        }
-
-        .section-subtitle {
-            font-size: 0.9rem;
-            color: var(--muted);
-            margin-bottom: 1.2rem;
-        }
+        .hero-title { font-size: 2.2rem; margin-bottom: .7rem; }
+        .hero-subtitle { color: var(--muted); margin-bottom: 1.4rem; }
 
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
             gap: 1rem;
         }
 
         .card {
             background: var(--card);
+            padding: 1rem;
             border-radius: 14px;
             border: 1px solid var(--border);
-            padding: 1rem;
         }
 
-        .card h3 {
-            margin: 0 0 0.35rem;
-            font-size: 1.02rem;
-        }
-
-        .card p {
-            margin: 0 0 0.8rem;
-            font-size: 0.9rem;
-            color: var(--muted);
-        }
-
-        .card-footer {
-            font-size: 0.85rem;
-            color: var(--muted);
-        }
-
-        .chip-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.45rem;
-            margin-bottom: 0.6rem;
-        }
+        .chip-row { display: flex; flex-wrap: wrap; gap: .45rem; }
 
         .chip {
-            font-size: 0.78rem;
-            padding: 0.18rem 0.5rem;
+            font-size: .78rem;
+            padding: .18rem .5rem;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: var(--muted);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
-        .chip.good {
-            border-color: rgba(134, 239, 172, 0.5);
-            color: #bbf7d0;
-            background: rgba(21, 128, 61, 0.16);
-        }
-
-        /* Footer */
 
         footer {
             margin-top: 3rem;
             padding-top: 1.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.82rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
             color: var(--muted);
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
             justify-content: space-between;
-        }
-
-        footer a {
-            color: var(--muted);
-        }
-
-        /* Responsive */
-
-        @media (max-width: 860px) {
-            .hero {
-                grid-template-columns: minmax(0, 1fr);
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 640px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .hero-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
+            flex-wrap: wrap;
         }
     </style>
 </head>
 <body>
 <div class="page">
 
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <div class="logo-mark">AL</div>
-            <div>
-                <div>Alex Liam Puzzles</div>
-                <div style="font-size:0.7rem; color:var(--muted); text-transform:none;">
-                    Relaxing logic puzzles for every day
-                </div>
-            </div>
-        </div>
-        <nav class="nav-links">
-            <a href="#printables" class="highlight">Free Printables</a>
-            <a href="#online">Play Online</a>
-            <a href="#books">My Books</a>
-            <a href="#about">About</a>
-        </nav>
-    </header>
-
-    <!-- Hero / Landing -->
-    <section class="hero">
+<header>
+    <div class="logo">
+        <div class="logo-mark">AL</div>
         <div>
-            <h1 class="hero-title">Free Sudoku & Word Search Puzzles – Anytime, Anywhere.</h1>
-            <p class="hero-subtitle">
-                Download printable PDFs or solve puzzles online (coming soon), all created by a professional
-                puzzle designer and author of multiple Sudoku books on Amazon.
-            </p>
-
-            <div class="hero-badges">
-                <div class="badge accent">Free to print & play</div>
-                <div class="badge">Easy · Medium · Hard · Expert</div>
-                <div class="badge">Large-print options for seniors</div>
-            </div>
-
-            <div class="hero-actions">
-                <!-- TODO: update href when you add your first PDF bundle -->
-                <a class="btn btn-primary" href="#printables">
-                    <span class="icon">⬇️</span>
-                    <span>Download free puzzles</span>
-                </a>
-                <!-- TODO: replace # with your Amazon author / book link -->
-                <a class="btn btn-outline" href="https://www.amazon.com" target="_blank" rel="noopener">
-                    <span class="icon">📚</span>
-                    <span>View Sudoku books on Amazon</span>
-                </a>
-            </div>
+            <div>Alex Liam Puzzles</div>
+            <div style="font-size:0.7rem; color:var(--muted);">Relaxing logic puzzles</div>
         </div>
+    </div>
+    <nav class="nav-links">
+        <a href="#printables">Free Printables</a>
+        <a href="#online">Play Online</a>
+        <a href="#books">My Books</a>
+        <a href="#about">About</a>
+    </nav>
+</header>
 
-        <!-- Right side – static sample grid just for visual feel -->
-        <div class="hero-grid-card">
-            <div class="hero-grid-header">
-                <div><strong>Sample Sudoku</strong> · Easy</div>
-                <div>Print or play online</div>
+<section class="hero">
+    <div>
+        <h1 class="hero-title">Free Sudoku & Word Search Puzzles</h1>
+        <p class="hero-subtitle">Download printable PDFs or solve online (coming soon). Created by a professional puzzle designer.</p>
+        <a class="btn-primary" href="#printables" style="display:inline-block; padding:10px 16px; border-radius:8px; background:#ffb347; color:black; text-decoration:none; font-weight:700;">⬇️ Download Free Puzzles</a>
+    </div>
+    <div></div>
+</section>
+
+<section id="printables">
+    <h2>Free printable puzzles</h2>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Sudoku printables</h3>
+            <p>Clear 9×9 Sudoku puzzles, large print options, and solutions included.</p>
+            <div class="chip-row">
+                <span class="chip">Easy · Medium · Hard</span>
+                <span class="chip">2, 4, 6 per page</span>
             </div>
-            <div class="grid-preview">
-                <!-- 9×9 static preview cells – adjust digits if you like -->
-                <!-- Row 1 -->
-                <div class="cell clue">5</div><div class="cell"></div><div class="cell clue">7</div>
-                <div class="cell"></div><div class="cell clue">3</div><div class="cell"></div>
-                <div class="cell"></div><div class="cell hint">9</div><div class="cell"></div>
-                <!-- Row 2 -->
-                <div class="cell"></div><div class="cell clue">1</div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell clue">6</div>
-                <div class="cell"></div><div class="cell"></div><div class="cell clue">4</div>
-                <!-- Row 3 -->
-                <div class="cell"></div><div class="cell"></div><div class="cell clue">3</div>
-                <div class="cell hint">8</div><div class="cell"></div><div class="cell"></div>
-                <div class="cell clue">2</div><div class="cell"></div><div class="cell"></div>
-                <!-- Row 4 -->
-                <div class="cell clue">3</div><div class="cell"></div><div class="cell"></div>
-                <div class="cell clue">6</div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell clue">7</div>
-                <!-- Row 5 -->
-                <div class="cell"></div><div class="cell hint">8</div><div class="cell"></div>
-                <div class="cell"></div><div class="cell clue">5</div><div class="cell"></div>
-                <div class="cell"></div><div class="cell clue">1</div><div class="cell"></div>
-                <!-- Row 6 -->
-                <div class="cell clue">9</div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell"></div><div class="cell clue">4</div>
-                <div class="cell"></div><div class="cell"></div><div class="cell clue">6</div>
-                <!-- Row 7 -->
-                <div class="cell"></div><div class="cell"></div><div class="cell clue">6</div>
-                <div class="cell"></div><div class="cell"></div><div class="cell hint">9</div>
-                <div class="cell clue">4</div><div class="cell"></div><div class="cell"></div>
-                <!-- Row 8 -->
-                <div class="cell clue">4</div><div class="cell"></div><div class="cell"></div>
-                <div class="cell clue">1</div><div class="cell"></div><div class="cell"></div>
-                <div class="cell"></div><div class="cell clue">7</div><div class="cell"></div>
-                <!-- Row 9 -->
-                <div class="cell"></div><div class="cell hint">2</div><div class="cell"></div>
-                <div class="cell"></div><div class="cell clue">7</div><div class="cell"></div>
-                <div class="cell clue">1</div><div class="cell"></div><div class="cell clue">5</div>
-            </div>
-            <div class="hero-meta">
-                <div>Printable PDFs · 2, 4, or 6 grids per page</div>
-                <div>Created by Alex Liam · Sudoku book author</div>
+            <div class="card-footer">
+                <!-- ⭐⭐ THESE ARE YOUR DOWNLOAD LINKS ⭐⭐ -->
+                <a href="https://www.alexliampuzzles.com/downloads/BonusPack_400.pdf">Download Easy pack (PDF)</a> ·
+                <a href="#">Medium</a> ·
+                <a href="#">Hard</a>
             </div>
         </div>
-    </section>
 
-    <!-- Free printables -->
-    <section id="printables">
-        <h2 class="section-title">Free printable puzzles</h2>
-        <p class="section-subtitle">
-            Download ready-to-print PDFs with clear layouts and easy-to-read grids.
-            Perfect for home, travel, or gifting.
-        </p>
-
-        <div class="cards">
-            <article class="card">
-                <h3>Sudoku printables</h3>
-                <p>
-                    Classic 9×9 Sudoku puzzles arranged in clean 8.5&quot;×11&quot; layouts
-                    – including large-print options for adults &amp; seniors.
-                </p>
-                <div class="chip-row">
-                    <span class="chip">Easy · Medium · Hard</span>
-                    <span class="chip">2, 4 or 6 per page</span>
-                    <span class="chip good">Solutions included</span>
-                </div>
-                <div class="card-footer">
-                    <!-- TODO: replace # with actual PDF links when ready -->
-                    <a href="https://www.alexliampuzzles.com/downloads/BonusPack_400.pdf">Download Easy pack (PDF)</a> ·
-                    <a href="#">Medium</a> ·
-                    <a href="#">Hard</a>
-                </div>
-            </article>
-
-            <article class="card">
-                <h3>Word Search printables</h3>
-                <p>
-                    Themed word search puzzles with clear grids and separate word lists.
-                    Ideal for relaxation, ESL learners, and puzzle-loving families.
-                </p>
-                <div class="chip-row">
-                    <span class="chip">Animals · Travel · Nature</span>
-                    <span class="chip">15×15 grids</span>
-                    <span class="chip good">Answers included</span>
-                </div>
-                <div class="card-footer">
-                    <a href="#">Download sample pack (PDF)</a>
-                </div>
-            </article>
+        <div class="card">
+            <h3>Word Search printables</h3>
+            <p>Themed puzzles with answers included.</p>
+            <div class="chip-row">
+                <span class="chip">Animals</span>
+                <span class="chip">Travel</span>
+            </div>
+            <div class="card-footer">
+                <a href="#">Download sample pack (PDF)</a>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Online play -->
-    <section id="online">
-        <h2 class="section-title">Play puzzles online</h2>
-        <p class="section-subtitle">
-            Prefer to solve on-screen? An online Sudoku board is coming soon – tap a cell,
-            choose a number, and enjoy clean, distraction-free solving.
-        </p>
+<section id="online">
+    <h2>Play puzzles online</h2>
+    <p>Online Sudoku coming soon.</p>
+    <code>Planned URL: /sudoku/play/</code>
+</section>
 
-        <div class="cards">
-            <article class="card">
-                <h3>Online Sudoku (coming soon)</h3>
-                <p>
-                    A simple, mobile-friendly Sudoku board powered by the same generator
-                    used for the books – with easy, medium, hard, and expert modes.
-                </p>
-                <div class="chip-row">
-                    <span class="chip">Notes / pencil marks</span>
-                    <span class="chip">Hints</span>
-                    <span class="chip">Timer (optional)</span>
-                </div>
-                <div class="card-footer">
-                    <!-- TODO: later point this to /sudoku/play/index.html -->
-                    <span>Planned URL: <code>/sudoku/play/</code></span>
-                </div>
-            </article>
-        </div>
-    </section>
+<section id="books">
+    <h2>Sudoku books on Amazon</h2>
+    <a href="https://www.amazon.com/author/alex_liam" target="_blank">Visit my Amazon author page</a>
+</section>
 
-    <!-- Books -->
-    <section id="books">
-        <h2 class="section-title">Sudoku books on Amazon</h2>
-        <p class="section-subtitle">
-            Love printed books? Explore carefully crafted Sudoku collections with
-            hundreds of puzzles, clear difficulty levels, and easy-to-read layouts.
-        </p>
+<section id="about">
+    <h2>About</h2>
+    <p>Ilias ("Alex Liam") – mathematician & game designer.</p>
+</section>
 
-        <div class="cards">
-            <article class="card">
-                <h3>Classic Sudoku series</h3>
-                <p>
-                    Progressive collections from easy warm-ups to expert challenges.
-                    Designed to be satisfying, not frustrating – with solutions at the back
-                    or via QR code.
-                </p>
-                <div class="chip-row">
-                    <span class="chip">1000+ puzzles</span>
-                    <span class="chip">Easy → Expert</span>
-                    <span class="chip">Large print options</span>
-                </div>
-                <div class="card-footer">
-                    <!-- TODO: replace with your real Amazon author / book page -->
-                    <a href="https://www.amazon.com/author/alex_liam" target="_blank" rel="noopener">
-                        Visit my Amazon author page
-                    </a>
-                </div>
-            </article>
-        </div>
-    </section>
+<footer>
+    <div>© <span id="year"></span> Alex Liam Puzzles</div>
+    <div>
+        <a href="#printables">Printables</a> ·
+        <a href="#books">Books</a>
+    </div>
+</footer>
 
-    <!-- About -->
-    <section id="about">
-        <h2 class="section-title">About Alex Liam Puzzles</h2>
-        <p class="section-subtitle">
-            I’m Ilias (“Alex Liam” for puzzles) – a mathematician and game designer
-            who creates logic puzzles for fun and focus. Every grid here is generated
-            and checked programmatically to ensure clear, logical solutions.
-        </p>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div>© <span id="year"></span> Alex Liam Puzzles. All rights reserved.</div>
-        <div>
-            <a href="#printables">Free printables</a> ·
-            <a href="#books">Books</a> ·
-            <a href="#about">About</a>
-        </div>
-    </footer>
 </div>
-
 <script>
-    // Simple script just to keep the year up to date.
     document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 </body>
