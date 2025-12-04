@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Play Sudoku Online – Alex Liam Puzzles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+        content="Play Sudoku online with a clean dark board. Easy, medium and hard puzzles by Alex Liam Puzzles.">
+
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --grid-line: rgba(248, 250, 252, 0.16);
+      --grid-box: rgba(248, 250, 252, 0.32);
+      --digit: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #ffb347;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #111827 0%, #020617 60%);
+      color: #e5e7eb;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.25rem 1.25rem 2.5rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      border: 2px solid var(--accent);
+      display: grid;
+      place-items: center;
+      font-size: 0.85rem;
+      background: radial-gradient(circle at top left, #ffe0aa, #ff8f2f);
+      color: #111827;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    a:hover { color: #ffd08a; }
+
+    .back-link { font-size: 0.9rem; color: var(--muted); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 1.8rem;
+      align-items: start;
+    }
+
+    .board-card, .side-card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 1.2rem 1.3rem;
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.7);
+    }
+
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.9rem;
+      font-size: 0.9rem;
+    }
+
+    .board-header span.level {
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    /* Static placeholder grid – later replaced by real JS board */
+    .grid {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      padding: 0.4rem;
+      background: radial-gradient(circle at top, #111827, #020617);
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      border: 2px solid var(--grid-box);
+    }
+
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--digit);
+      border: 1px solid var(--grid-line);
+    }
+
+    /* thicker borders for 3x3 boxes */
+    .cell.box-right { border-right: 2px solid var(--grid-box); }
+    .cell.box-bottom { border-bottom: 2px solid var(--grid-box); }
+
+    .cell.given { font-weight: 700; }
+    .cell.empty { color: rgba(148,163,184,0.5); }
+
+    .controls {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+    }
+
+    .btn {
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, #ffb347, #ff8f2f);
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .btn:hover { filter: brightness(1.1); }
+
+    .side-card h2 { margin-top: 0; font-size: 1.1rem; }
+
+    .side-card p { font-size: 0.9rem; color: var(--muted); }
+
+    .difficulty-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.8rem 0;
+    }
+
+    .pill {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="logo">
+      <div class="logo-mark">AL</div>
+      <div>
+        <div>Alex Liam Puzzles</div>
+        <div style="font-size:0.7rem; color:var(--muted); text-transform:none;">
+          Online Sudoku
+        </div>
+      </div>
+    </div>
+    <a href="/" class="back-link">← Back to printables</a>
+  </header>
+
+  <div class="layout">
+    <div class="board-card">
+      <div class="board-header">
+        <div>Sudoku board</div>
+        <span class="level">Easy</span>
+      </div>
+
+      <!-- static placeholder board; hook your JS here later -->
+      <div class="grid">
+        <!-- just a few example givens -->
+        <div class="cell given box-right">5</div>
+        <div class="cell empty"></div>
+        <div class="cell given box-bottom">3</div>
+        <div class="cell empty"></div>
+        <div class="cell given">7</div>
+        <div class="cell empty box-right"></div>
+        <div class="cell given">6</div>
+        <div class="cell empty"></div>
+        <div class="cell empty box-bottom"></div>
+
+        <!-- the rest can be empty cells just to fill the grid -->
+        <!-- You can replace all of this with your real board later -->
+        <!-- row 2-9: -->
+        <!-- 72 more divs -->
+        <!-- QUICK FILL: -->
+        <!-- row 2 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <!-- rows 3-9 -->
+        <!-- for brevity, all empties with box lines -->
+        <!-- row 3 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <!-- row 4 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <!-- row 5 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <!-- row 6 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <!-- row 7 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <!-- row 8 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <!-- row 9 -->
+        <div class="cell empty box-right"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-right"></div>
+        <div class="cell empty"></div><div class="cell empty"></div><div class="cell empty box-bottom"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn-primary">New puzzle</button>
+        <button class="btn">Check</button>
+        <button class="btn">Show solution</button>
+        <button class="btn">Notes mode</button>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <h2>How this will work</h2>
+      <p>
+        This is a preview of the upcoming online Sudoku player. The final version will load puzzles
+        from the same generator used for the books, with clear logic-based solutions.
+      </p>
+      <div class="difficulty-row">
+        <span class="pill">Easy</span>
+        <span class="pill">Medium</span>
+        <span class="pill">Hard</span>
+      </div>
+      <p style="font-size:0.85rem; color:var(--muted);">
+        For now, you can download printable PDFs on the main site and solve on paper.
+      </p>
+      <p style="font-size:0.85rem; margin-top:1rem;">
+        <a href="/">← Back to free printable Sudoku</a>
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> Alex Liam Puzzles · Online Sudoku preview
+  </footer>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
