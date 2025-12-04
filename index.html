@@ -4,19 +4,25 @@
     <meta charset="UTF-8">
     <title>Alex Liam Puzzles – Free Sudoku & Word Search Printables</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description"
-          content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online, and discover puzzle books.">
+    <meta name="description" content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online, and discover puzzle books.">
 
     <style>
         :root {
-            --bg: #080c18;
-            --bg-alt: #131a2b;
-            --accent: #ffb347;
-            --accent-soft: rgba(255, 179, 71, 0.15);
-            --text: #f5f7ff;
-            --muted: #a9b3d1;
-            --card: #1a2139;
-            --border: rgba(255, 255, 255, 0.08);
+            /* LIGHTER THEME */
+            --bg: #cfd7ea;
+            --bg-gradient-1: #e4e9f4;
+            --bg-gradient-2: #c9d3ea;
+            --bg-gradient-3: #b7c3dd;
+
+            --card: #ffffff;
+            --border: rgba(0,0,0,0.08);
+
+            --accent: #ff8f2f;
+            --accent-soft: rgba(255,143,47,0.15);
+
+            --text-dark: #1a1c22;
+            --muted: #67718a;
+
             --max-width: 1040px;
         }
 
@@ -25,12 +31,10 @@
         body {
             margin: 0;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            background:
-                radial-gradient(circle at top left, #2b3455 0, #151b30 40%, #050814 100%);
-            color: var(--text);
+            background: radial-gradient(circle at top left, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3));
+            color: var(--text-dark);
         }
 
-        /* Links */
         a {
             color: var(--accent);
             text-decoration: underline;
@@ -38,7 +42,7 @@
             cursor: pointer;
         }
 
-        a:hover { color: #ffd08a; }
+        a:hover { opacity: 0.8; }
 
         .page {
             max-width: var(--max-width);
@@ -46,8 +50,7 @@
             padding: 1.25rem 1.25rem 3rem;
         }
 
-        /* Header / nav */
-
+        /* HEADER */
         header {
             display: flex;
             align-items: center;
@@ -72,8 +75,8 @@
             display: grid;
             place-items: center;
             font-size: 0.9rem;
-            background: radial-gradient(circle at top left, #ffe0aa, #ffaf3a);
-            color: #1b1304;
+            background: linear-gradient(135deg, #ffd5a3, #ff8f2f);
+            color: #000;
         }
 
         .nav-links {
@@ -83,9 +86,7 @@
             align-items: center;
         }
 
-        .nav-item {
-            position: relative;
-        }
+        .nav-item { position: relative; }
 
         .nav-link {
             text-decoration: none;
@@ -93,92 +94,54 @@
             font-weight: 600;
         }
 
-        .nav-link:hover {
-            color: #ffd08a;
-        }
-
-        /* Dropdown */
-
+        /* DROPDOWN */
         .dropdown-menu {
             position: absolute;
             left: 0;
             top: calc(100% + 0.4rem);
-            background: #151b30;
+            background: #ffffff;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(0,0,0,0.12);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             padding: 0.4rem 0;
-            min-width: 210px;
+            min-width: 230px;
             z-index: 20;
-            display: none; /* hidden by default */
+            display: none;
         }
 
-        /* show when .open is added via JS */
         .nav-item.dropdown.open .dropdown-menu {
             display: block;
         }
 
         .dropdown-menu a {
             display: block;
-            padding: 0.35rem 0.9rem;
+            padding: 0.45rem 0.9rem;
             font-size: 0.92rem;
             text-decoration: none;
-        }
-
-        .dropdown-menu a span.label {
-            font-weight: 600;
-        }
-
-        .dropdown-menu a span.note {
-            font-weight: 400;
-            color: var(--muted);
-            font-size: 0.8rem;
-            margin-left: 0.35rem;
+            color: var(--text-dark);
         }
 
         .dropdown-menu a:hover {
-            background: rgba(255, 179, 71, 0.15);    
+            background: rgba(255,143,47,0.12);
         }
 
-        @media (max-width: 480px) {
-            .dropdown-menu {
-                left: 0;
-                right: auto;
-                transform: translateX(-10%);
-                max-width: 90vw;
-            }
-        }
-
-
-        /* Hero */
-
+        /* HERO */
         .hero {
             display: grid;
-            grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr);
-            gap: 2.5rem;
-            padding: 1.4rem 1.6rem 1.8rem;
+            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+            gap: 2rem;
+            padding: 1.6rem 1.6rem 1.8rem;
             border-radius: 22px;
-            background: radial-gradient(circle at top left, #303a62 0, #151d35 45%, #0a1023 100%);
+            background: linear-gradient(135deg, #ffffff, #edf2fb);
             border: 1px solid var(--border);
-            box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
 
-        .hero-title {
-            font-size: clamp(2.1rem, 3vw, 2.6rem);
-            margin-bottom: .7rem;
-        }
+        .hero-title { font-size: 2.4rem; margin-bottom: .7rem; }
 
-        .hero-subtitle {
-            color: var(--muted);
-            margin-bottom: 1.4rem;
-            max-width: 36rem;
-        }
+        .hero-subtitle { color: var(--muted); margin-bottom: 1.2rem; }
 
-        .hero-btn-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
+        .hero-btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
 
         .btn-primary {
             display: inline-flex;
@@ -186,52 +149,33 @@
             gap: 0.4rem;
             padding: 0.6rem 1.1rem;
             border-radius: 999px;
-            background: linear-gradient(135deg, #ffc46b, #ff9f3f);
-            color: #1b1304;
+            background: linear-gradient(135deg, #ffb06a, #ff8f2f);
+            color: #000;
             text-decoration: none;
             font-weight: 700;
-            box-shadow: 0 12px 30px rgba(255, 168, 64, 0.35);
+            box-shadow: 0 12px 28px rgba(255,143,47,0.25);
         }
 
-        .btn-primary:hover {
-            color: #1b1304;
-            transform: translateY(-1px);
-            box-shadow: 0 18px 40px rgba(255, 168, 64, 0.45);
-        }
+        .btn-primary:hover { opacity: 0.85; }
 
         .btn-ghost {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.55rem 1.0rem;
+            padding: 0.55rem 1rem;
             border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            background: rgba(9, 13, 28, 0.8);
+            border: 1px solid rgba(0,0,0,0.2);
+            background: #fff;
+            color: var(--muted);
             text-decoration: none;
             font-weight: 600;
-            color: var(--muted);
         }
 
-        .btn-ghost:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            color: var(--text);
-        }
+        /* CARDS */
+        section { margin-top: 2.6rem; }
 
-        /* Sections / cards */
-
-        section {
-            margin-top: 2.6rem;
-        }
-
-        h2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .section-sub {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-bottom: 1.2rem;
-        }
+        h2 { margin-bottom: 0.5rem; }
+        .section-sub { color: var(--muted); margin-bottom: 1.2rem; }
 
         .cards {
             display: grid;
@@ -240,55 +184,38 @@
         }
 
         .card {
-            background: var(--card);
+            background: #ffffff;
             padding: 1.1rem 1.2rem;
             border-radius: 18px;
             border: 1px solid var(--border);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
         }
 
-        .chip-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 0.6rem; }
+        .chip-row { display: flex; gap: .45rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
 
         .chip {
             font-size: .78rem;
             padding: .18rem .5rem;
             border-radius: 999px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.08);
             color: var(--muted);
-        }
-
-        .card-footer {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
         }
 
         footer {
             margin-top: 3rem;
             padding-top: 1.8rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(0,0,0,0.12);
             color: var(--muted);
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 0.8rem;
-            font-size: 0.85rem;
         }
 
         @media (max-width: 860px) {
-            .hero {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.6rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                flex-wrap: wrap;
-            }
+            .hero { grid-template-columns: 1fr; }
+            header { flex-direction: column; align-items: flex-start; }
+            .nav-links { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -300,101 +227,64 @@
             <div class="logo-mark">AL</div>
             <div>
                 <div>Alex Liam Puzzles</div>
-                <div style="font-size:0.7rem; color:var(--muted); text-transform:none;">
-                    Relaxing logic puzzles
-                </div>
+                <div style="font-size:0.7rem; color:var(--muted); text-transform:none;">Relaxing logic puzzles</div>
             </div>
         </div>
 
         <nav class="nav-links">
-            <!-- Dropdown for Free Printables -->
             <div class="nav-item dropdown">
-                <!-- IMPORTANT: this needs class="nav-link dropdown-toggle" -->
-                <a class="nav-link dropdown-toggle" href="#">
-                    Free Printables ▾
-                </a>
+                <a class="nav-link dropdown-toggle" href="#">Free Printables ▾</a>
                 <div class="dropdown-menu">
-                    <a href="/printables/easy-sudoku.html">
-                        <span class="label">Easy Sudoku</span>
-                        <span class="note">· gentle warm-ups</span>
-                    </a>
-                    <a href="/printables/medium-sudoku.html">
-                        <span class="label">Medium Sudoku</span>
-                        <span class="note">· everyday challenge</span>
-                    </a>
-                    <a href="/printables/hard-sudoku.html">
-                        <span class="label">Hard Sudoku</span>
-                        <span class="note">· for experienced solvers</span>
-                    </a>
-                    <a href="/printables/large-print-sudoku.html">
-                        <span class="label">Large Print Easy</span>
-                        <span class="note">· 1 per page, senior-friendly</span>
-                    </a>
+                    <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                    <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                    <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                    <a href="/printables/large-print-sudoku.html">Large Print Easy</a>
                 </div>
             </div>
 
-            <div class="nav-item">
-                <a class="nav-link" href="#online">Play Online</a>
-            </div>
-            <div class="nav-item">
-                <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">My Books</a>
-            </div>
-            <div class="nav-item">
-                <a class="nav-link" href="#about">About</a>
-            </div>
+            <div class="nav-item"><a class="nav-link" href="#online">Play Online</a></div>
+            <div class="nav-item"><a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">My Books</a></div>
+            <div class="nav-item"><a class="nav-link" href="#about">About</a></div>
         </nav>
     </header>
 
     <section class="hero">
         <div>
             <h1 class="hero-title">Free Sudoku & Word Search Puzzles</h1>
-            <p class="hero-subtitle">
-                Download printable PDFs or solve puzzles online (coming soon), all created by a professional
-                puzzle designer and author of multiple Sudoku books on Amazon.
-            </p>
+            <p class="hero-subtitle">Download printable PDFs or solve puzzles online (coming soon), created by a professional puzzle designer.</p>
+
             <div class="hero-btn-row">
-                <a class="btn-primary" href="#printables">
-                    <span>⬇️ Get free printables</span>
-                </a>
-                <a class="btn-ghost" href="https://www.amazon.com/author/alex_liam" target="_blank">
-                    <span>📚 View books on Amazon</span>
-                </a>
+                <a class="btn-primary" href="#printables">⬇️ Get free printables</a>
+                <a class="btn-ghost" href="https://www.amazon.com/author/alex_liam" target="_blank">📚 View books on Amazon</a>
             </div>
         </div>
-        <div></div>
     </section>
 
     <section id="printables">
         <h2>Free printable puzzles</h2>
-        <p class="section-sub">
-            Click below to open the dedicated pages for each difficulty and download the PDF packs.
-        </p>
+        <p class="section-sub">Open the dedicated difficulty pages and download your printable PDFs.</p>
 
         <div class="cards">
             <div class="card">
                 <h3>Sudoku printables</h3>
-                <p>Clear 9×9 Sudoku puzzles with solutions, including large-print options.</p>
+                <p>Easy, medium, hard and large-print Sudoku puzzles with solutions.</p>
                 <div class="chip-row">
                     <span class="chip">Easy · Medium · Hard</span>
                     <span class="chip">2, 4, 6 per page</span>
                 </div>
                 <div class="card-footer">
-                    <a href="/printables/easy-sudoku.html">Easy Sudoku (PDF)</a> ·
+                    <a href="/printables/easy-sudoku.html">Easy</a> ·
                     <a href="/printables/medium-sudoku.html">Medium</a> ·
                     <a href="/printables/hard-sudoku.html">Hard</a> ·
-                    <a href="/printables/large-print-sudoku.html">Large Print Easy</a>
+                    <a href="/printables/large-print-sudoku.html">Large Print</a>
                 </div>
             </div>
 
             <div class="card">
                 <h3>Word Search printables</h3>
-                <p>Themed puzzles with answers included – perfect for relaxation or ESL practice.</p>
-                <div class="chip-row">
-                    <span class="chip">Animals</span>
-                    <span class="chip">Travel</span>
-                </div>
+                <p>Themed puzzles (Animals, Travel) with answer keys.</p>
                 <div class="card-footer">
-                    <a href="#">Download sample pack (PDF)</a>
+                    <a href="#">Download sample pack</a>
                 </div>
             </div>
         </div>
@@ -402,28 +292,18 @@
 
     <section id="online">
         <h2>Play puzzles online</h2>
-        <p class="section-sub">
-            Online Sudoku is coming soon – a clean, mobile-friendly board powered by the same generator as the books.
-        </p>
+        <p class="section-sub">Online Sudoku is coming soon.</p>
         <code>Planned URL: /sudoku/play/</code>
     </section>
 
     <section id="books">
         <h2>Sudoku books on Amazon</h2>
-        <p class="section-sub">
-            Explore complete Sudoku collections with hundreds of puzzles and clear difficulty progressions.
-        </p>
-        <a href="https://www.amazon.com/author/alex_liam" target="_blank">
-            Visit my Amazon author page
-        </a>
+        <a href="https://www.amazon.com/author/alex_liam" target="_blank">Visit my Amazon author page</a>
     </section>
 
     <section id="about">
         <h2>About</h2>
-        <p>
-            I’m Ilias (“Alex Liam”) – a mathematician and game designer who creates logic puzzles for focus and
-            relaxation. Every grid is generated and checked programmatically to ensure clear, logical solutions.
-        </p>
+        <p>I’m Ilias (“Alex Liam”) – a mathematician and game designer who creates logic puzzles for clarity and relaxation.</p>
     </section>
 
     <footer>
@@ -433,13 +313,11 @@
             <a href="#books">Books</a>
         </div>
     </footer>
-
 </div>
 
 <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Click dropdown logic
     document.addEventListener("DOMContentLoaded", function () {
         const dropdown = document.querySelector(".nav-item.dropdown");
         const trigger = dropdown.querySelector(".dropdown-toggle");
@@ -450,11 +328,8 @@
             dropdown.classList.toggle("open");
         });
 
-        // Close dropdown when clicking anywhere else
         document.addEventListener("click", function (e) {
-            if (!dropdown.contains(e.target)) {
-                dropdown.classList.remove("open");
-            }
+            if (!dropdown.contains(e.target)) dropdown.classList.remove("open");
         });
     });
 </script>
