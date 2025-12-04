@@ -101,7 +101,7 @@
 
         .dropdown-menu {
             position: absolute;
-            right: 0;
+            left: 0;
             top: calc(100% + 0.4rem);
             background: #151b30;
             border-radius: 10px;
@@ -137,8 +137,18 @@
         }
 
         .dropdown-menu a:hover {
-            background: rgba(255, 179, 71, 0.15);
+            background: rgba(255, 179, 71, 0.15);    
         }
+
+        @media (max-width: 480px) {
+            .dropdown-menu {
+                left: 0;
+                right: auto;
+                transform: translateX(-10%);
+                max-width: 90vw;
+            }
+        }
+
 
         /* Hero */
 
