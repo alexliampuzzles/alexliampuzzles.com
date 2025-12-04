@@ -1,21 +1,21 @@
-<!-- FULL UPDATED INDEX.HTML WITH ALL LINKS -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Alex Liam Puzzles – Free Sudoku & Word Search Printables</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online, and discover puzzle books.">
+    <meta name="description"
+          content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online, and discover puzzle books.">
 
     <style>
         :root {
-            --bg: #0b1020;
-            --bg-alt: #111729;
+            --bg: #080c18;
+            --bg-alt: #131a2b;
             --accent: #ffb347;
             --accent-soft: rgba(255, 179, 71, 0.15);
             --text: #f5f7ff;
             --muted: #a9b3d1;
-            --card: #151c33;
+            --card: #1a2139;
             --border: rgba(255, 255, 255, 0.08);
             --max-width: 1040px;
         }
@@ -25,11 +25,13 @@
         body {
             margin: 0;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            background: radial-gradient(circle at top left, #202a45, #050814 58%);
+            /* lighter, wider glow from top-left */
+            background:
+                radial-gradient(circle at top left, #2b3455 0, #151b30 40%, #050814 100%);
             color: var(--text);
         }
 
-        /* 🔥 LINK VISIBILITY IMPROVED */
+        /* Links */
         a {
             color: var(--accent);
             text-decoration: underline;
@@ -45,11 +47,13 @@
             padding: 1.25rem 1.25rem 3rem;
         }
 
+        /* Header / nav */
+
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5rem 0 1.5rem;
+            padding: 0.75rem 0 1.75rem;
         }
 
         .logo {
@@ -69,48 +73,183 @@
             display: grid;
             place-items: center;
             font-size: 0.9rem;
+            background: radial-gradient(circle at top left, #ffe0aa, #ffaf3a);
+            color: #1b1304;
         }
 
         .nav-links {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             font-size: 0.95rem;
+            align-items: center;
         }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            color: #ffd08a;
+        }
+
+        /* Dropdown under “Free Printables” */
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 0.4rem);
+            background: #151b30;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+            padding: 0.4rem 0;
+            display: none;
+            min-width: 210px;
+            z-index: 20;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.92rem;
+            text-decoration: none;
+        }
+
+        .dropdown-menu a span.label {
+            font-weight: 600;
+        }
+
+        .dropdown-menu a span.note {
+            font-weight: 400;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-left: 0.35rem;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(255, 179, 71, 0.15);
+        }
+
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Hero */
 
         .hero {
             display: grid;
             grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr);
             gap: 2.5rem;
-            padding: 1.2rem;
-            border-radius: 18px;
-            background: radial-gradient(circle at top left, #252f55, #0a0f1f 56%);
+            padding: 1.4rem 1.6rem 1.8rem;
+            border-radius: 22px;
+            background: radial-gradient(circle at top left, #303a62 0, #151d35 45%, #0a1023 100%);
             border: 1px solid var(--border);
+            box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55);
         }
 
-        .hero-title { font-size: 2.2rem; margin-bottom: .7rem; }
-        .hero-subtitle { color: var(--muted); margin-bottom: 1.4rem; }
+        .hero-title {
+            font-size: clamp(2.1rem, 3vw, 2.6rem);
+            margin-bottom: .7rem;
+        }
+
+        .hero-subtitle {
+            color: var(--muted);
+            margin-bottom: 1.4rem;
+            max-width: 36rem;
+        }
+
+        .hero-btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.1rem;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ffc46b, #ff9f3f);
+            color: #1b1304;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 12px 30px rgba(255, 168, 64, 0.35);
+        }
+
+        .btn-primary:hover {
+            color: #1b1304;
+            transform: translateY(-1px);
+            box-shadow: 0 18px 40px rgba(255, 168, 64, 0.45);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1.0rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(9, 13, 28, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .btn-ghost:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            color: var(--text);
+        }
+
+        /* Cards / sections */
+
+        section {
+            margin-top: 2.6rem;
+        }
+
+        h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .section-sub {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+        }
 
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+            gap: 1.2rem;
         }
 
         .card {
             background: var(--card);
-            padding: 1rem;
-            border-radius: 14px;
+            padding: 1.1rem 1.2rem;
+            border-radius: 18px;
             border: 1px solid var(--border);
         }
 
-        .chip-row { display: flex; flex-wrap: wrap; gap: .45rem; }
+        .chip-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 0.6rem; }
 
         .chip {
             font-size: .78rem;
             padding: .18rem .5rem;
             border-radius: 999px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.1);
+            color: var(--muted);
+        }
+
+        .card-footer {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
         }
 
         footer {
@@ -121,93 +260,166 @@
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 860px) {
+            .hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
 <div class="page">
 
-<header>
-    <div class="logo">
-        <div class="logo-mark">AL</div>
+    <header>
+        <div class="logo">
+            <div class="logo-mark">AL</div>
+            <div>
+                <div>Alex Liam Puzzles</div>
+                <div style="font-size:0.7rem; color:var(--muted); text-transform:none;">
+                    Relaxing logic puzzles
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-links">
+            <!-- Dropdown for Free Printables -->
+            <div class="nav-item dropdown">
+                <a class="nav-link" href="#printables">Free Printables ▾</a>
+                <div class="dropdown-menu">
+                    <a href="/printables/easy-sudoku.html">
+                        <span class="label">Easy Sudoku</span>
+                        <span class="note">· gentle warm-ups</span>
+                    </a>
+                    <a href="/printables/medium-sudoku.html">
+                        <span class="label">Medium Sudoku</span>
+                        <span class="note">· everyday challenge</span>
+                    </a>
+                    <a href="/printables/hard-sudoku.html">
+                        <span class="label">Hard Sudoku</span>
+                        <span class="note">· for experienced solvers</span>
+                    </a>
+                    <a href="/printables/large-print-sudoku.html">
+                        <span class="label">Large Print Easy</span>
+                        <span class="note">· 1 per page, senior-friendly</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-item">
+                <a class="nav-link" href="#online">Play Online</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">My Books</a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="#about">About</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
         <div>
-            <div>Alex Liam Puzzles</div>
-            <div style="font-size:0.7rem; color:var(--muted);">Relaxing logic puzzles</div>
-        </div>
-    </div>
-    <nav class="nav-links">
-        <a href="#printables">Free Printables</a>
-        <a href="#online">Play Online</a>
-        <a href="https://www.amazon.com/author/alex_liam">My Books</a>
-        <a href="#about">About</a>
-    </nav>
-</header>
-
-<section class="hero">
-    <div>
-        <h1 class="hero-title">Free Sudoku & Word Search Puzzles</h1>
-        <p class="hero-subtitle">Download printable PDFs or solve puzzles online (coming soon), all created by a professional
-                puzzle designer and author of multiple Sudoku books on Amazon.</p>
-    </div>
-    <div></div>
-</section>
-
-<section id="printables">
-    <h2>Free printable puzzles</h2>
-
-    <div class="cards">
-        <div class="card">
-            <h3>Sudoku printables</h3>
-            <p>Clear 9×9 Sudoku puzzles, large print options, and solutions included.</p>
-            <div class="chip-row">
-                <span class="chip">Easy · Medium · Hard</span>
-                <span class="chip">2, 4, 6 per page</span>
-            </div>
-            <div class="card-footer">
-                <!-- ⭐⭐ THESE ARE YOUR DOWNLOAD LINKS ⭐⭐ -->
-                <a href="/printables/easy-sudoku.html">Easy Sudoku (PDF)</a>
-                <a href="#">Medium</a> ·
-                <a href="#">Hard</a>
+            <h1 class="hero-title">Free Sudoku & Word Search Puzzles</h1>
+            <p class="hero-subtitle">
+                Download printable PDFs or solve puzzles online (coming soon), all created by a professional
+                puzzle designer and author of multiple Sudoku books on Amazon.
+            </p>
+            <div class="hero-btn-row">
+                <a class="btn-primary" href="#printables">
+                    <span>⬇️ Get free printables</span>
+                </a>
+                <a class="btn-ghost" href="https://www.amazon.com/author/alex_liam" target="_blank">
+                    <span>📚 View books on Amazon</span>
+                </a>
             </div>
         </div>
+        <div></div>
+    </section>
 
-        <div class="card">
-            <h3>Word Search printables</h3>
-            <p>Themed puzzles with answers included.</p>
-            <div class="chip-row">
-                <span class="chip">Animals</span>
-                <span class="chip">Travel</span>
+    <section id="printables">
+        <h2>Free printable puzzles</h2>
+        <p class="section-sub">
+            Click below to open the dedicated pages for each difficulty and download the PDF packs.
+        </p>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Sudoku printables</h3>
+                <p>Clear 9×9 Sudoku puzzles with solutions, including large-print options.</p>
+                <div class="chip-row">
+                    <span class="chip">Easy · Medium · Hard</span>
+                    <span class="chip">2, 4, 6 per page</span>
+                </div>
+                <div class="card-footer">
+                    <a href="/printables/easy-sudoku.html">Easy Sudoku (PDF)</a> ·
+                    <a href="/printables/medium-sudoku.html">Medium</a> ·
+                    <a href="/printables/hard-sudoku.html">Hard</a> ·
+                    <a href="/printables/large-print-sudoku.html">Large Print Easy</a>
+                </div>
             </div>
-            <div class="card-footer">
-                <a href="#">Download sample pack (PDF)</a>
+
+            <div class="card">
+                <h3>Word Search printables</h3>
+                <p>Themed puzzles with answers included – perfect for relaxation or ESL practice.</p>
+                <div class="chip-row">
+                    <span class="chip">Animals</span>
+                    <span class="chip">Travel</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#">Download sample pack (PDF)</a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="online">
-    <h2>Play puzzles online</h2>
-    <p>Online Sudoku coming soon.</p>
-    <code>Planned URL: /sudoku/play/</code>
-</section>
+    <section id="online">
+        <h2>Play puzzles online</h2>
+        <p class="section-sub">
+            Online Sudoku is coming soon – a clean, mobile-friendly board powered by the same generator as the books.
+        </p>
+        <code>Planned URL: /sudoku/play/</code>
+    </section>
 
-<section id="books">
-    <h2>Sudoku books on Amazon</h2>
-    <a href="https://www.amazon.com/author/alex_liam" target="_blank">Visit my Amazon author page</a>
-</section>
+    <section id="books">
+        <h2>Sudoku books on Amazon</h2>
+        <p class="section-sub">
+            Explore complete Sudoku collections with hundreds of puzzles and clear difficulty progressions.
+        </p>
+        <a href="https://www.amazon.com/author/alex_liam" target="_blank">
+            Visit my Amazon author page
+        </a>
+    </section>
 
-<section id="about">
-    <h2>About</h2>
-    <p>Ilias ("Alex Liam") – mathematician & game designer.</p>
-</section>
+    <section id="about">
+        <h2>About</h2>
+        <p>
+            I’m Ilias (“Alex Liam”) – a mathematician and game designer who creates logic puzzles for focus and
+            relaxation. Every grid is generated and checked programmatically to ensure clear, logical solutions.
+        </p>
+    </section>
 
-<footer>
-    <div>© <span id="year"></span> Alex Liam Puzzles</div>
-    <div>
-        <a href="#printables">Printables</a> ·
-        <a href="#books">Books</a>
-    </div>
-</footer>
+    <footer>
+        <div>© <span id="year"></span> Alex Liam Puzzles</div>
+        <div>
+            <a href="#printables">Printables</a> ·
+            <a href="#books">Books</a>
+        </div>
+    </footer>
 
 </div>
 <script>
