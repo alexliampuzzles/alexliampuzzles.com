@@ -8,15 +8,21 @@
 
     <style>
         :root {
-            --bg: #080c18;
-            --bg-alt: #131a2b;
-            --accent: #ffb347;
-            --accent-soft: rgba(255, 179, 71, 0.15);
-            --text: #f5f7ff;
-            --text-dark: #050814; 
-            --muted: #a9b3d1;
-            --card: #1a2139;
-            --border: rgba(255, 255, 255, 0.08);
+            /* LIGHTER THEME */
+            --bg: #cfd7ea;
+            --bg-gradient-1: #e4e9f4;
+            --bg-gradient-2: #c9d3ea;
+            --bg-gradient-3: #b7c3dd;
+
+            --card: #ffffff;
+            --border: rgba(0,0,0,0.08);
+
+            --accent: #ff8f2f;
+            --accent-soft: rgba(255,143,47,0.15);
+
+            --text-dark: #1a1c22;
+            --muted: #67718a;
+
             --max-width: 1040px;
         }
 
@@ -25,9 +31,13 @@
         body {
             margin: 0;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            background:
-                radial-gradient(circle at top left, #2b3455 0%, #151b30 40%, #050814 100%);
-            color: var(--text);
+            background: linear-gradient(
+                180deg,
+                #f4f6fb 0%,
+                #eef1f8 40%,
+                #e7ebf5 100%
+            );
+            color: #1c1f26;
         }
 
         a {
@@ -37,7 +47,7 @@
             cursor: pointer;
         }
 
-         a:hover { color: #ffd08a; }
+        a:hover { opacity: 0.8; }
 
         .page {
             max-width: var(--max-width);
@@ -70,8 +80,8 @@
             display: grid;
             place-items: center;
             font-size: 0.9rem;
-            background: radial-gradient(circle at top left, #ffe0aa, #ffaf3a);
-            color: #1b1304;
+            background: linear-gradient(135deg, #ffd5a3, #ff8f2f);
+            color: #000;
         }
 
         .nav-links {
@@ -99,7 +109,7 @@
             border: 1px solid rgba(0,0,0,0.12);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             padding: 0.4rem 0;
-            min-width: 150px;
+            min-width: 230px;
             z-index: 20;
             display: none;
         }
@@ -122,32 +132,21 @@
 
         /* HERO */
         .hero {
-           display: grid;
-            grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr);
-            gap: 2.5rem;
-            padding: 1.4rem 1.6rem 1.8rem;
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+            gap: 2rem;
+            padding: 1.6rem 1.6rem 1.8rem;
             border-radius: 22px;
-            background: radial-gradient(circle at top left, #303a62 0, #151d35 45%, #0a1023 100%);
+            background: linear-gradient(135deg, #ffffff, #edf2fb);
             border: 1px solid var(--border);
-            box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
 
-        .hero-title {
-            font-size: clamp(2.1rem, 3vw, 2.6rem);
-            margin-bottom: .7rem;
-        }
+        .hero-title { font-size: 2.4rem; margin-bottom: .7rem; }
 
-        .hero-subtitle {
-            color: var(--muted);
-            margin-bottom: 1.4rem;
-            max-width: 36rem;
-        }
+        .hero-subtitle { color: var(--muted); margin-bottom: 1.2rem; }
 
-        .hero-btn-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
+        .hero-btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
 
         .btn-primary {
             display: inline-flex;
@@ -155,52 +154,33 @@
             gap: 0.4rem;
             padding: 0.6rem 1.1rem;
             border-radius: 999px;
-            background: linear-gradient(135deg, #ffc46b, #ff9f3f);
-            color: #1b1304;
+            background: linear-gradient(135deg, #ffb06a, #ff8f2f);
+            color: #000;
             text-decoration: none;
             font-weight: 700;
-            box-shadow: 0 8px 16px rgba(255, 168, 64, 0.20);
+            box-shadow: 0 12px 28px rgba(255,143,47,0.25);
         }
 
-        .btn-primary:hover {
-            color: #1b1304;
-            transform: translateY(-1px);
-            box-shadow: 0 18px 40px rgba(255, 168, 64, 0.45);
-        }
+        .btn-primary:hover { opacity: 0.85; }
 
         .btn-ghost {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.55rem 1.0rem;
+            padding: 0.55rem 1rem;
             border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            background: rgba(9, 13, 28, 0.8);
+            border: 1px solid rgba(0,0,0,0.2);
+            background: #fff;
+            color: var(--muted);
             text-decoration: none;
             font-weight: 600;
-            color: var(--muted);
         }
 
-        .btn-ghost:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            color: var(--text);
-        }
+        /* CARDS */
+        section { margin-top: 2.6rem; }
 
-        /* Cards / sections */
-
-        section {
-            margin-top: 2.6rem;
-        }
-
-        h2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .section-sub {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-bottom: 1.2rem;
-        }
+        h2 { margin-bottom: 0.5rem; }
+        .section-sub { color: var(--muted); margin-bottom: 1.2rem; }
 
         .cards {
             display: grid;
@@ -209,38 +189,32 @@
         }
 
         .card {
-            background: var(--card);
+            background: #ffffff;
             padding: 1.1rem 1.2rem;
             border-radius: 18px;
             border: 1px solid var(--border);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
         }
 
-        .chip-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 0.6rem; }
+        .chip-row { display: flex; gap: .45rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
 
         .chip {
             font-size: .78rem;
             padding: .18rem .5rem;
             border-radius: 999px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.08);
             color: var(--muted);
-        }
-
-        .card-footer {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
         }
 
         footer {
             margin-top: 3rem;
             padding-top: 1.8rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(0,0,0,0.12);
             color: var(--muted);
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 0.8rem;
-            font-size: 0.85rem;
         }
 
         @media (max-width: 860px) {
@@ -263,14 +237,14 @@
         </div>
 
         <nav class="nav-links">
-           <div class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#"> Free Printables ▾ </a>
-                    <div class="dropdown-menu">
-                        <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
-                        <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
-                        <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
-                        <a href="/printables/large-print-easy-sudoku.html">Large Print Easy</a>
-                    </div>
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#">Free Printables ▾</a>
+                <div class="dropdown-menu">
+                    <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                    <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                    <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                    <a href="/printables/large-print-sudoku.html">Large Print Easy</a>
+                </div>
             </div>
 
             <div class="nav-item"><a class="nav-link" href="#online">Play Online</a></div>
@@ -307,7 +281,7 @@
                     <a href="/printables/easy-sudoku.html">Easy</a> ·
                     <a href="/printables/medium-sudoku.html">Medium</a> ·
                     <a href="/printables/hard-sudoku.html">Hard</a> ·
-                    <a href="/printables/large-print-easy-sudoku.html">Large Print</a>
+                    <a href="/printables/large-print-sudoku.html">Large Print</a>
                 </div>
             </div>
 
@@ -351,10 +325,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const dropdown = document.querySelector(".nav-item.dropdown");
-        if (!dropdown) return;  // ✅ no dropdown, nothing to do
-
         const trigger = dropdown.querySelector(".dropdown-toggle");
-        if (!trigger) return;   // ✅ no trigger, avoid crash
 
         trigger.addEventListener("click", function (e) {
             e.preventDefault();
@@ -363,13 +334,10 @@
         });
 
         document.addEventListener("click", function (e) {
-            if (!dropdown.contains(e.target)) {
-                dropdown.classList.remove("open");
-            }
+            if (!dropdown.contains(e.target)) dropdown.classList.remove("open");
         });
     });
 </script>
-
 
 </body>
 </html>
