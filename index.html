@@ -13,6 +13,7 @@
             --accent: #ffb347;
             --accent-soft: rgba(255, 179, 71, 0.15);
             --text: #f5f7ff;
+            --text-dark: #050814; 
             --muted: #a9b3d1;
             --card: #1a2139;
             --border: rgba(255, 255, 255, 0.08);
@@ -262,14 +263,14 @@
         </div>
 
         <nav class="nav-links">
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#">Free Printables ▾</a>
-                <div class="dropdown-menu">
-                    <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
-                    <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
-                    <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
-                    <a href="/printables/large-print-sudoku.html">Large Print Easy</a>
-                </div>
+           <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#"> Free Printables ▾ </a>
+                    <div class="dropdown-menu">
+                        <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                        <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                        <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                        <a href="/printables/large-print-sudoku.html">Large Print Easy</a>
+                    </div>
             </div>
 
             <div class="nav-item"><a class="nav-link" href="#online">Play Online</a></div>
@@ -350,7 +351,10 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         const dropdown = document.querySelector(".nav-item.dropdown");
+        if (!dropdown) return;  // ✅ no dropdown, nothing to do
+
         const trigger = dropdown.querySelector(".dropdown-toggle");
+        if (!trigger) return;   // ✅ no trigger, avoid crash
 
         trigger.addEventListener("click", function (e) {
             e.preventDefault();
@@ -359,10 +363,13 @@
         });
 
         document.addEventListener("click", function (e) {
-            if (!dropdown.contains(e.target)) dropdown.classList.remove("open");
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove("open");
+            }
         });
     });
 </script>
+
 
 </body>
 </html>
