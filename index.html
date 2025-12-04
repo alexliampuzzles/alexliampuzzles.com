@@ -25,7 +25,6 @@
         body {
             margin: 0;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            /* lighter, wider glow from top-left */
             background:
                 radial-gradient(circle at top left, #2b3455 0, #151b30 40%, #050814 100%);
             color: var(--text);
@@ -98,7 +97,7 @@
             color: #ffd08a;
         }
 
-        /* Dropdown under “Free Printables” */
+        /* Dropdown */
 
         .dropdown-menu {
             position: absolute;
@@ -109,31 +108,15 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
             padding: 0.4rem 0;
-            display: none;
             min-width: 210px;
             z-index: 20;
+            display: none; /* hidden by default */
         }
 
-        /* Fix dropdown hover gap */
-        .nav-item.dropdown {
-            padding-bottom: 0.6rem; /* increase hover area below the link */
-        }
-        
-        .nav-item.dropdown .dropdown-menu {
-            margin-top: -0.2rem; /* pull the dropdown closer upward */
-        }
-
-       /* Dropdown is hidden by default */
-        .dropdown-menu {
-            display: none;
-        }
-        
-        /* Dropdown toggle when JS adds the class ".open" */
+        /* show when .open is added via JS */
         .nav-item.dropdown.open .dropdown-menu {
             display: block;
         }
-
-
 
         .dropdown-menu a {
             display: block;
@@ -224,7 +207,7 @@
             color: var(--text);
         }
 
-        /* Cards / sections */
+        /* Sections / cards */
 
         section {
             margin-top: 2.6rem;
@@ -316,7 +299,10 @@
         <nav class="nav-links">
             <!-- Dropdown for Free Printables -->
             <div class="nav-item dropdown">
-                <a class="nav-item" >Free Printables ▾</a>
+                <!-- IMPORTANT: this needs class="nav-link dropdown-toggle" -->
+                <a class="nav-link dropdown-toggle" href="#">
+                    Free Printables ▾
+                </a>
                 <div class="dropdown-menu">
                     <a href="/printables/easy-sudoku.html">
                         <span class="label">Easy Sudoku</span>
@@ -439,21 +425,22 @@
     </footer>
 
 </div>
-<script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-</script>
 
 <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Click dropdown logic
     document.addEventListener("DOMContentLoaded", function () {
         const dropdown = document.querySelector(".nav-item.dropdown");
-        const trigger = dropdown.querySelector(".nav-link");
-    
+        const trigger = dropdown.querySelector(".dropdown-toggle");
+
         trigger.addEventListener("click", function (e) {
-            e.preventDefault();  // prevent jumping
+            e.preventDefault();
+            e.stopPropagation();
             dropdown.classList.toggle("open");
         });
-    
-        // Close dropdown when clicking outside
+
+        // Close dropdown when clicking anywhere else
         document.addEventListener("click", function (e) {
             if (!dropdown.contains(e.target)) {
                 dropdown.classList.remove("open");
