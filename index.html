@@ -148,7 +148,7 @@
 
         .hero-subtitle { color: var(--muted); margin-bottom: 1.2rem; }
 
-        .hero-btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .hero-btn-row { display: flex; gap: 1.0rem; flex-wrap: wrap; }
 
         .btn-primary {
             display: inline-flex;
@@ -156,14 +156,21 @@
             gap: 0.4rem;
             padding: 0.6rem 1.1rem;
             border-radius: 999px;
-            background: linear-gradient(135deg, #ffb06a, #ff8f2f);
-            color: #000;
+        
+            border: 2px solid #ff8f2f;   /* orange outline */
+            background: #ffffff;         /* light theme background */
+            color: #ff8f2f;
+            font-weight: 600;
             text-decoration: none;
-            font-weight: 700;
-            box-shadow: 0 12px 28px rgba(255,143,47,0.25);
+        
+            transition: all 0.15s ease;
         }
-
-        .btn-primary:hover { opacity: 0.85; }
+        
+        .btn-primary:hover {
+            background: #ff8f2f;
+            color: #ffffff;
+            box-shadow: 0 8px 22px rgba(255, 143, 47, 0.22);
+        }
 
         .btn-ghost {
             display: inline-flex;
@@ -297,10 +304,6 @@
             <div class="card">
                 <h3>Sudoku printables</h3>
                 <p>Easy, medium, hard and large-print Sudoku puzzles with solutions.</p>
-                <div class="chip-row">
-                    <span class="chip">Easy · Medium · Hard</span>
-                    <span class="chip">2, 4, 6 per page</span>
-                </div>
                 <div class="card-footer">
                     <a href="/printables/easy-sudoku.html">Easy</a> ·
                     <a href="/printables/medium-sudoku.html">Medium</a> ·
@@ -321,8 +324,7 @@
 
     <section id="online">
         <h2>Play puzzles online</h2>
-        <p class="section-sub">Online Sudoku is coming soon.</p>
-        <code>Planned URL: /sudoku/play/</code>
+        <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
     </section>
 
     <section id="books">
