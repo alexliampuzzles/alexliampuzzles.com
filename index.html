@@ -123,6 +123,12 @@
             margin-top: -0.2rem; /* pull the dropdown closer upward */
         }
 
+        /* Keep dropdown open if the menu itself is hovered */
+        .nav-item.dropdown:hover .dropdown-menu,
+        .nav-item.dropdown .dropdown-menu:hover {
+            display: block;
+        }
+
 
         .dropdown-menu a {
             display: block;
