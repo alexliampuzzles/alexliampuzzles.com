@@ -33,22 +33,23 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(
                 180deg,
-                #f5f7fc 0%,
-                #eef1f8 45%,
+                #f4f6fb 0%,
+                #eef1f8 40%,
                 #e7ebf5 100%
             );
             color: #1c1f26;
         }
 
-
         a {
-            color: var(--accent);
+            color: #1a73e8; /* Blue links for clarity */
             text-decoration: underline;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
         }
 
-        a:hover { opacity: 0.8; }
+        a:hover {
+            color: #0c56c9; /* Darker blue on hover */
+        }
 
         .page {
             max-width: var(--max-width);
@@ -96,12 +97,8 @@
 
         .nav-link {
             text-decoration: none;
-            color: #ff8f2f;
+            color: var(--accent);
             font-weight: 600;
-        }
-        
-        .nav-link:hover {
-            color: #ff7a00;
         }
 
         /* DROPDOWN */
@@ -136,15 +133,15 @@
         }
 
         /* HERO */
-       .hero {
+        .hero {
             display: grid;
             grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
             gap: 2rem;
             padding: 1.6rem 1.6rem 1.8rem;
             border-radius: 22px;
-            background: #ffffff;
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            background: linear-gradient(135deg, #ffffff, #edf2fb);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
 
         .hero-title { font-size: 2.4rem; margin-bottom: .7rem; }
@@ -166,31 +163,43 @@
             box-shadow: 0 12px 28px rgba(255,143,47,0.25);
         }
 
-         .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.6rem 1.1rem;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #ffb06a, #ff8f2f);
-            color: #1b1304;
-            text-decoration: none;
-            font-weight: 700;
-            box-shadow: 0 10px 22px rgba(255, 143, 47, 0.22);
-        }
-        
+        .btn-primary:hover { opacity: 0.85; }
+
         .btn-ghost {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
             padding: 0.55rem 1rem;
             border-radius: 999px;
-            border: 1px solid rgba(15, 23, 42, 0.12);
-            background: #ffffff;
-            color: #6b7280;
+            border: 1px solid rgba(0,0,0,0.2);
+            background: #fff;
+            color: var(--muted);
             text-decoration: none;
             font-weight: 600;
         }
+
+        .btn-amazon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1rem;
+            border-radius: 999px;
+        
+            border: 2px solid #00A862;        /* Amazon green outline */
+            background: #ffffff;              /* white background keeps it clean */
+            color: #00A862;                   /* Amazon green text */
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+        
+        .btn-amazon:hover {
+            background: #00A862;              /* fill green on hover */
+            color: #ffffff;                   /* white text */
+            box-shadow: 0 8px 20px rgba(0,168,98,0.25);
+        }
+
+
         /* CARDS */
         section { margin-top: 2.6rem; }
 
@@ -203,12 +212,12 @@
             gap: 1.2rem;
         }
 
-       .card {
+        .card {
             background: #ffffff;
             padding: 1.1rem 1.2rem;
             border-radius: 18px;
-            border: 1px solid rgba(15, 23, 42, 0.05);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
         }
 
         .chip-row { display: flex; gap: .45rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
@@ -275,7 +284,7 @@
 
             <div class="hero-btn-row">
                 <a class="btn-primary" href="#printables">⬇️ Get free printables</a>
-                <a class="btn-ghost" href="https://www.amazon.com/author/alex_liam" target="_blank">📚 View books on Amazon</a>
+                <a class="btn-amazon" href="https://www.amazon.com/author/alex_liam" target="_blank"> <span>📚 View books on Amazon</span></a>
             </div>
         </div>
     </section>
@@ -288,6 +297,10 @@
             <div class="card">
                 <h3>Sudoku printables</h3>
                 <p>Easy, medium, hard and large-print Sudoku puzzles with solutions.</p>
+                <div class="chip-row">
+                    <span class="chip">Easy · Medium · Hard</span>
+                    <span class="chip">2, 4, 6 per page</span>
+                </div>
                 <div class="card-footer">
                     <a href="/printables/easy-sudoku.html">Easy</a> ·
                     <a href="/printables/medium-sudoku.html">Medium</a> ·
@@ -308,8 +321,8 @@
 
     <section id="online">
         <h2>Play puzzles online</h2>
-        <p class="section-sub">Online Sudoku is available here.</p>
-        <a href="/sudoku/play/index.html">Play Sudoku</a>
+        <p class="section-sub">Online Sudoku is coming soon.</p>
+        <code>Planned URL: /sudoku/play/</code>
     </section>
 
     <section id="books">
