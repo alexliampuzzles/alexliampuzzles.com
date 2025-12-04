@@ -1,28 +1,98 @@
-<!-- ================= MEDIUM SUDOKU PAGE ================= -->
+<!-- ================= MEDIUM SUDOKU PAGE (LIGHT THEME) ================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Medium Sudoku Printable PDF – Free Download</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Free medium Sudoku printable PDF with balanced difficulty. Includes solutions.">
+<meta name="description" content="Free medium Sudoku printable PDF with balanced difficulty and clear grids. Includes solutions.">
+
 <style>
-body { font-family: system-ui; background:#0b1020; color:white; margin:0; padding:20px; }
-.container { max-width:800px; margin:auto; }
-h1 { color:#ffb347; }
-a { color:#ffb347; font-weight:600; text-decoration:underline; }
-.box { background:#151c33; padding:20px; border-radius:10px; margin-top:20px; }
+    :root {
+        --bg1: #f5f7fc;
+        --bg2: #eef1f8;
+        --bg3: #e7ebf5;
+
+        --text-dark: #1c1f26;
+        --muted: #6b7280;
+
+        --card-bg: #ffffff;
+        --card-border: rgba(15,23,42,0.06);
+        --card-shadow: 0 12px 28px rgba(15,23,42,0.08);
+
+        --link: #1a73e8;
+        --link-hover: #0c56c9;
+    }
+
+    body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        padding: 24px;
+        background: linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg3));
+        color: var(--text-dark);
+    }
+
+    .container { max-width: 720px; margin: auto; padding: 12px 16px; }
+
+    h1 { font-size: 2rem; margin-bottom: 0.8rem; font-weight: 700; }
+
+    p { line-height: 1.6; font-size: 1.05rem; }
+
+    a { color: var(--link); text-decoration: underline; font-weight: 500; }
+    a:hover { color: var(--link-hover); }
+
+    .box {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        box-shadow: var(--card-shadow);
+        padding: 20px 24px;
+        border-radius: 14px;
+        margin-top: 24px;
+    }
+
+    .print-note {
+        margin-top: 14px;
+        padding: 10px 14px;
+        background: #f0f3fa;
+        border-left: 4px solid #1a73e8;
+        border-radius: 6px;
+        color: var(--muted);
+        font-size: 0.95rem;
+    }
+
+    .update-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+
+    .back { margin-top: 28px; display: inline-block; font-size: 0.98rem; }
 </style>
 </head>
+
 <body>
 <div class="container">
-<h1>Medium Sudoku Printable (PDF)</h1>
-<p>A balanced challenge for everyday solvers. Download free medium Sudoku puzzles with solutions.</p>
-<div class="box">
-<h3>Download PDF</h3>
-<p><a href="/downloads/medium-sudoku.pdf">⬇️ Download Medium Sudoku Pack (PDF)</a></p>
-</div>
-<p><a href="/index.html">← Back to Home</a></p>
+
+    <h1>Medium Sudoku Printable (PDF)</h1>
+
+    <p>This free Medium-level Sudoku pack offers a balanced challenge with clean grids and included solutions.</p>
+
+    <div class="box">
+        <h3 style="margin-top:0;">Download PDF</h3>
+        <p><a href="/downloads/medium-sudoku.pdf">Download Medium Sudoku Pack (PDF)</a></p>
+         <p class="update-note">Updated: January 2026</p>
+      
+        <div class="print-note">
+            <strong>Printing Info:</strong><br>
+            Formatted for <strong>8.5″ × 11″ (US Letter)</strong>.  
+            Prints perfectly on <strong>A4</strong> — select “Fit to Page” when printing.
+        </div>
+
+       
+    </div>
+
+    <p class="back"><a href="/index.html">← Back to Home</a></p>
+
 </div>
 </body>
 </html>
