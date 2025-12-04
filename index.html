@@ -114,6 +114,16 @@
             z-index: 20;
         }
 
+        /* Fix dropdown hover gap */
+        .nav-item.dropdown {
+            padding-bottom: 0.6rem; /* increase hover area below the link */
+        }
+        
+        .nav-item.dropdown .dropdown-menu {
+            margin-top: -0.2rem; /* pull the dropdown closer upward */
+        }
+
+
         .dropdown-menu a {
             display: block;
             padding: 0.35rem 0.9rem;
