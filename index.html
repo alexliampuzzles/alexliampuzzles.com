@@ -123,11 +123,16 @@
             margin-top: -0.2rem; /* pull the dropdown closer upward */
         }
 
-        /* Keep dropdown open if the menu itself is hovered */
-        .nav-item.dropdown:hover .dropdown-menu,
-        .nav-item.dropdown .dropdown-menu:hover {
+       /* Dropdown is hidden by default */
+        .dropdown-menu {
+            display: none;
+        }
+        
+        /* Dropdown toggle when JS adds the class ".open" */
+        .nav-item.dropdown.open .dropdown-menu {
             display: block;
         }
+
 
 
         .dropdown-menu a {
@@ -441,5 +446,25 @@
 <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const dropdown = document.querySelector(".nav-item.dropdown");
+        const trigger = dropdown.querySelector(".nav-link");
+    
+        trigger.addEventListener("click", function (e) {
+            e.preventDefault();  // prevent jumping
+            dropdown.classList.toggle("open");
+        });
+    
+        // Close dropdown when clicking outside
+        document.addEventListener("click", function (e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove("open");
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
