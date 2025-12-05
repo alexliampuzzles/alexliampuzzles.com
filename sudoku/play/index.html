@@ -582,30 +582,33 @@
       border-bottom: 2px solid rgba(229, 231, 235, 0.85);
     }
 
+  
     .cell.given {
-      background: #020617;
-      font-weight: 600;
+          font-weight: 700;
+          color: #f9fafb;      /* bright white for givens in dark theme */
+    }
+    
+    .cell.empty {
+          color: var(--text-muted);  /* grey / “waiting” */
     }
 
-    .cell.empty {
-      color: var(--text-muted);
-      background: rgba(15, 23, 42, 0.95);
-    }
 
     body.theme-light .cell {
       color: #111827;
       background: #ffffff;
     }
-
+    
     body.theme-light .cell.given {
-      background: #e5e7eb;
-      color: #111827;
+          font-weight: 700;
+          color: #111827;      /* strong black for clues */
+          /* same background as other cells */
+    }
+    
+    body.theme-light .cell.empty {
+          color: #9ca3af;      /* lighter grey for empty cells */
+          /* same background as other cells */
     }
 
-    body.theme-light .cell.empty {
-      background: #ffffff;
-      color: #9ca3af;
-    }
 
     /* ===== Improved Highlighting ===== */
 
@@ -641,14 +644,47 @@
       z-index: 5;
     }
 
+    /* ----- Light theme highlight tuning ----- */
+
+    body.theme-light .cell.row-highlight:not(.selected):not(.error) {
+        background: #dbeafe;  /* Tailwind sky-100 */
+    }
+    
+    body.theme-light .cell.col-highlight:not(.selected):not(.error) {
+        background: #e5edff;  /* very light blue */
+    }
+    
+    body.theme-light .cell.box-highlight:not(.selected):not(.error) {
+        background: #e0f2fe;  /* light sky-blue */
+    }
+    
+    /* Same-digit highlight in light mode: stronger contrast */
+    body.theme-light .cell.same-digit:not(.selected):not(.error) {
+        background: #fef3c7;  /* amber-100 */
+        color: #92400e;       /* amber-800 – very readable on white */
+    }
+    
+    /* Selected cell in light mode */
+    body.theme-light .cell.selected {
+        background: #fef3c7;
+        border-color: #ea580c;  /* strong orange */
+        box-shadow:
+          inset 0 0 0 2px #ea580c,
+          0 0 8px rgba(248, 113, 22, 0.55),
+          0 0 0 1px rgba(0, 0, 0, 0.1);
+        z-index: 5;
+    }
+
+
     .cell.error {
       background: rgba(220, 38, 38, 0.25);
       box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
     }
 
-    .cell.filled:not(.given):not(.error) {
-      color: #facc15;
+    .body.theme-light .cell.filled:not(.given):not(.error) {
+      color: #2563eb;  /* nice blue for user entries */
     }
+
 
     .side-card {
       min-height: 260px;
