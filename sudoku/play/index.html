@@ -321,7 +321,7 @@
       gap: 0;
       border-radius: 0.9rem;
       overflow: hidden;
-      border: 2px solid var(--grid-line);
+      border: 3px solid rgba(229, 231, 235, 0.95); /* strongest main border */
       aspect-ratio: 1 / 1;
       background: #020617;
     }
@@ -381,7 +381,7 @@
     .cell {
       width: 100%;
       height: 100%;
-      border: 0.25px solid rgba(229, 231, 235, 0.95); /* light silver */
+      border: 1px solid rgba(229, 231, 235, 0.35); /* light silver */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -394,11 +394,11 @@
 
 
     .cell.box-right {
-      border-right-width: 2px;
+      border-right: 2px solid rgba(229, 231, 235, 0.85);
     }
 
     .cell.box-bottom {
-      border-bottom-width: 2px;
+      border-bottom: 2px solid rgba(229, 231, 235, 0.85);
     }
 
     .cell.given {
@@ -413,28 +413,40 @@
 
         /* Row/column and same-digit highlights */
 
-    .cell.row-highlight:not(.selected):not(.error) {
-      background: rgba(59, 130, 246, 0.09); /* soft blue */
-    }
+    /* ===== Improved Highlighting ===== */
 
-    .cell.col-highlight:not(.selected):not(.error) {
-      background: rgba(59, 130, 246, 0.06); /* even softer */
-    }
-
-    .cell.same-digit:not(.selected):not(.error) {
-      background: rgba(250, 204, 21, 0.18); /* soft yellow */
+/* Row highlight */
+  .cell.row-highlight:not(.selected):not(.error) {
+      background: rgba(96, 165, 250, 0.22);  /* brighter blue */
+  }
+  
+  /* Column highlight */
+  .cell.col-highlight:not(.selected):not(.error) {
+      background: rgba(96, 165, 250, 0.15);
+  }
+  
+  /* Same-digit highlight */
+  .cell.same-digit:not(.selected):not(.error) {
+      background: rgba(250, 204, 21, 0.30);  /* stronger yellow */
       color: #facc15;
-    }
-
-
-    .cell.selected {
-      background: rgba(248, 250, 252, 0.10);
-      border-color: #facc15; /* bright yellow border */
+  }
+  
+  /* 3×3 box highlight */
+  .cell.box-highlight:not(.selected):not(.error) {
+      background: rgba(147, 197, 253, 0.20); /* soft sky-blue overlay */
+  }
+  
+  /* Selected cell */
+  .cell.selected {
+      background: rgba(248, 250, 252, 0.18);
+      border-color: #facc15;
       box-shadow:
-        inset 0 0 0 2px #facc15,
-        0 0 0 1px rgba(0, 0, 0, 0.7);
-      z-index: 2;
-    }
+          inset 0 0 0 2px #facc15,
+          0 0 8px rgba(250, 204, 21, 0.45),
+          0 0 0 1px rgba(0, 0, 0, 0.6);
+      z-index: 5;
+  }
+
 
 
     .cell.error {
@@ -883,47 +895,62 @@ boardEl.addEventListener(
   }
 
     function clearSelection() {
-    const cells = boardEl.querySelectorAll(".cell");
-    cells.forEach((cell) => {
-      cell.classList.remove("selected", "row-highlight", "col-highlight", "same-digit");
-    });
+      const cells = boardEl.querySelectorAll(".cell");
+      cells.forEach((cell) => {
+        cell.classList.remove("selected", "row-highlight", "col-highlight", "same-digit");
+      });
+    }
+  
+      function updateHighlights() {
+      const cells = boardEl.querySelectorAll(".cell");
+  
+      // Clear old highlights
+      cells.forEach(cell => {
+          cell.classList.remove("row-highlight", "col-highlight", "same-digit", "box-highlight");
+      });
+  
+      if (!selectedCell) return;
+  
+      const row = parseInt(selectedCell.dataset.row, 10);
+      const col = parseInt(selectedCell.dataset.col, 10);
+      const value = selectedCell.textContent;
+  
+      // Determine selected box (0..2)
+      const boxRow = Math.floor(row / 3);
+      const boxCol = Math.floor(col / 3);
+  
+      cells.forEach(cell => {
+          const r = parseInt(cell.dataset.row, 10);
+          const c = parseInt(cell.dataset.col, 10);
+  
+          // Row highlight
+          if (r === row) {
+              cell.classList.add("row-highlight");
+          }
+  
+          // Column highlight
+          if (c === col) {
+              cell.classList.add("col-highlight");
+          }
+  
+          // 3×3 box highlight
+          const br = Math.floor(r / 3);
+          const bc = Math.floor(c / 3);
+  
+          if (br === boxRow && bc === boxCol) {
+              cell.classList.add("box-highlight");
+          }
+  
+          // Same-digit highlight
+          if (value && cell.textContent === value) {
+              cell.classList.add("same-digit");
+          }
+      });
+  
+      // Selected cell stays strongest
+      selectedCell.classList.add("selected");
   }
 
-    function updateHighlights() {
-    const cells = boardEl.querySelectorAll(".cell");
-
-    // Remove previous row/col/same-digit highlights
-    cells.forEach((cell) => {
-      cell.classList.remove("row-highlight", "col-highlight", "same-digit");
-    });
-
-    if (!selectedCell) return;
-
-    const row = parseInt(selectedCell.dataset.row, 10);
-    const col = parseInt(selectedCell.dataset.col, 10);
-    const value = selectedCell.textContent;
-
-    cells.forEach((cell) => {
-      const r = parseInt(cell.dataset.row, 10);
-      const c = parseInt(cell.dataset.col, 10);
-
-      // Row + column highlight
-      if (r === row) {
-        cell.classList.add("row-highlight");
-      }
-      if (c === col) {
-        cell.classList.add("col-highlight");
-      }
-
-      // Same-digit highlight
-      if (value && cell.textContent === value) {
-        cell.classList.add("same-digit");
-      }
-    });
-
-    // Ensure the selected cell keeps its stronger visual treatment
-    selectedCell.classList.add("selected");
-  }
 
 
 
