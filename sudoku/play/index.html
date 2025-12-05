@@ -713,6 +713,7 @@
     }
 
 
+
     .side-card {
       min-height: 260px;
     }
@@ -1265,15 +1266,26 @@
 
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
-    cell.textContent = value || "";
-    cell.classList.toggle("empty", !value);
+  
+    const hasValue = !!value;
+  
+    cell.textContent = hasValue ? value : "";
+    cell.classList.toggle("empty", !hasValue);
     cell.classList.remove("error");
-
+  
+    // Mark user-entered digits
+    if (hasValue) {
+      cell.classList.add("filled");
+    } else {
+      cell.classList.remove("filled");
+    }
+  
     // If we're editing the selected cell, refresh same-digit and row/col highlights
     if (cell === selectedCell) {
       updateHighlights();
     }
   }
+
 
   function handleNumInput(value) {
     if (!selectedCell) return;
