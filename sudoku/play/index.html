@@ -671,20 +671,31 @@
       z-index: 5;
     }
 
-    /* User inputs have same weight as givens */
-    .cell.filled:not(.error) {
+    /* User inputs have same weight as givens, even when marked as error */
+    .cell.filled {
       font-weight: 600;
     }
 
+  
     /* DARK MODE – user input color (slightly brighter) */
     .cell.filled:not(.given):not(.error) {
       color: #7dd3fc; /* sky-300 – readable on dark background */
     }
 
+        /* Dark mode error */
     .cell.error {
-      background: rgba(220, 38, 38, 0.25);
+      background: rgba(239, 68, 68, 0.28);  /* soft red overlay */
       box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
+      color: #fecaca;  /* light red text, still very readable on dark */
     }
+
+    /* Light mode error override */
+    body.theme-light .cell.error {
+      background: #fee2e2;  /* light red background */
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.3);
+      color: #b91c1c;  /* dark red text */
+    }
+
 
     /* LIGHT MODE – user input color */
     body.theme-light .cell.filled:not(.given):not(.error) {
