@@ -12,7 +12,7 @@
       --bg: #050816;
       --bg-alt: #0b1020;
       --card: #111827;
-      --grid-line: #374151;
+      --grid-line: #d1d5db; /* light silver */
       --grid-box: #9ca3af;
       --text: #e5e7eb;
       --text-muted: #9ca3af;
@@ -381,7 +381,7 @@
     .cell {
       width: 100%;
       height: 100%;
-      border: 1px solid rgba(55, 65, 81, 0.8);
+      border: 1px solid rgba(229, 231, 235, 0.95); /* light silver */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -391,6 +391,7 @@
       transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
       color: #f9fafb;
     }
+
 
     .cell.box-right {
       border-right-width: 2px;
@@ -409,6 +410,22 @@
       color: var(--text-muted);
       background: rgba(15, 23, 42, 0.95);
     }
+
+        /* Row/column and same-digit highlights */
+
+    .cell.row-highlight:not(.selected):not(.error) {
+      background: rgba(59, 130, 246, 0.09); /* soft blue */
+    }
+
+    .cell.col-highlight:not(.selected):not(.error) {
+      background: rgba(59, 130, 246, 0.06); /* even softer */
+    }
+
+    .cell.same-digit:not(.selected):not(.error) {
+      background: rgba(250, 204, 21, 0.18); /* soft yellow */
+      color: #facc15;
+    }
+
 
     .cell.selected {
       background: rgba(248, 250, 252, 0.10);
@@ -865,23 +882,71 @@ boardEl.addEventListener(
     }
   }
 
-  function clearSelection() {
+    function clearSelection() {
     const cells = boardEl.querySelectorAll(".cell");
-    cells.forEach((cell) => cell.classList.remove("selected"));
+    cells.forEach((cell) => {
+      cell.classList.remove("selected", "row-highlight", "col-highlight", "same-digit");
+    });
   }
 
-  function selectCell(cell) {
-    clearSelection();
-    selectedCell = cell;
+    function updateHighlights() {
+    const cells = boardEl.querySelectorAll(".cell");
+
+    // Remove previous row/col/same-digit highlights
+    cells.forEach((cell) => {
+      cell.classList.remove("row-highlight", "col-highlight", "same-digit");
+    });
+
+    if (!selectedCell) return;
+
+    const row = parseInt(selectedCell.dataset.row, 10);
+    const col = parseInt(selectedCell.dataset.col, 10);
+    const value = selectedCell.textContent;
+
+    cells.forEach((cell) => {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+
+      // Row + column highlight
+      if (r === row) {
+        cell.classList.add("row-highlight");
+      }
+      if (c === col) {
+        cell.classList.add("col-highlight");
+      }
+
+      // Same-digit highlight
+      if (value && cell.textContent === value) {
+        cell.classList.add("same-digit");
+      }
+    });
+
+    // Ensure the selected cell keeps its stronger visual treatment
     selectedCell.classList.add("selected");
   }
 
-  function setCellValue(cell, value) {
+
+
+    function selectCell(cell) {
+    clearSelection();
+    selectedCell = cell;
+    selectedCell.classList.add("selected");
+    updateHighlights();
+  }
+
+
+    function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     cell.textContent = value || "";
     cell.classList.toggle("empty", !value);
     cell.classList.remove("error");
+
+    // If we're editing the selected cell, refresh same-digit and row/col highlights
+    if (cell === selectedCell) {
+      updateHighlights();
+    }
   }
+
 
     function handleNumInput(value) {
     if (!selectedCell) return;
