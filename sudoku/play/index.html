@@ -14,42 +14,58 @@
       --card: #111827;
       --grid-line: #374151;
       --grid-box: #9ca3af;
-      --digit: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #ffb347;
-      --error: #f97373;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --accent-strong: rgba(249, 115, 22, 0.18);
+      --accent-glow: 0 18px 45px rgba(249, 115, 22, 0.55);
+      --danger: #f97373;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --btn-bg: #111827;
+      --btn-hover: #1f2933;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top, #111827 0%, #020617 60%);
-      color: #e5e7eb;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
+      color: var(--text);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 1.5rem;
     }
 
-    .page {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 1.25rem 1.25rem 2.5rem;
+    .page-shell {
+      max-width: 1100px;
+      width: 100%;
+      margin: auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 1.8rem;
     }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
     }
 
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      gap: 0.8rem;
     }
 
     .logo-mark {
@@ -60,250 +76,634 @@
       display: grid;
       place-items: center;
       font-size: 0.85rem;
-      background: radial-gradient(circle at top left, #ffe0aa, #ff8f2f);
-      color: #111827;
-    }
-
-    a {
+      background: radial-gradient(circle at 30% 0, #1f2937 0, #020617 55%);
       color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 25px rgba(15, 23, 42, 0.8);
     }
 
-    a:hover { color: #ffd08a; }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
 
-    .back-link { font-size: 0.9rem; color: var(--muted); }
+    .brand-title {
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      color: #e5e7eb;
+    }
 
-    .layout {
+    .brand-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.4rem;
+      font-size: 0.85rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 0.15rem;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f97316, #facc15);
+      transition: width 0.2s ease-out;
+    }
+
+    .nav-links a:hover {
+      color: #e5e7eb;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    main {
       display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       gap: 1.8rem;
-      align-items: start;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 880px) {
+      body {
+        padding: 1.25rem;
+      }
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
     .board-card, .side-card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 1.2rem 1.3rem;
-      border: 1px solid rgba(148,163,184,0.25);
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.7);
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border-radius: 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: var(--shadow-soft);
+      padding: 1.4rem 1.5rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .board-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.16), transparent 60%),
+        radial-gradient(circle at 70% 0%, rgba(94, 234, 212, 0.12), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .board-card-inner {
+      position: relative;
+      z-index: 1;
     }
 
     .board-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.9rem;
-      font-size: 0.9rem;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
 
-    .board-header span.level {
-      padding: 0.2rem 0.6rem;
+    .board-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .board-title span.badge {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.5rem;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      font-size: 0.75rem;
+      border: 1px solid rgba(248, 250, 252, 0.12);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
+      letter-spacing: 0.12em;
     }
 
-    /* GRID */
-
-    .grid {
-      max-width: 480px;
-      margin: 0 auto;
-      aspect-ratio: 1 / 1;
-      border-radius: 12px;
-      padding: 0.45rem;
-      background: #020617;
-      display: grid;
-      grid-template-columns: repeat(9, 1fr);
-      grid-template-rows: repeat(9, 1fr);
-      border: 2px solid var(--grid-box);
+    .board-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      max-width: 320px;
     }
 
-    .cell {
+    .controls-row {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      color: var(--digit);
-      border: 1px solid var(--grid-line);
-      user-select: none;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .difficulty-group {
+      display: inline-flex;
+      padding: 0.15rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+    }
+
+    .btn-difficulty {
+      border: none;
+      background: transparent;
+      padding: 0.22rem 0.75rem;
+      border-radius: 999px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
       cursor: pointer;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, color 0.15s ease;
     }
 
-    .cell.box-right { border-right: 2px solid var(--grid-box); }
-    .cell.box-bottom { border-bottom: 2px solid var(--grid-box); }
-
-    .cell.given { font-weight: 700; }
-    .cell.empty { color: rgba(148,163,184,0.45); }
-
-    .cell.selected {
-      outline: 2px solid var(--accent);
-      outline-offset: -2px;
-      background: rgba(248,250,252,0.06);
+    .btn-difficulty.active {
+      background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 40%, #b91c1c 100%);
+      color: #f9fafb;
+      box-shadow: 0 0 0 1px rgba(248, 250, 252, 0.08), var(--accent-glow);
     }
 
-    .cell.highlight {
-      background: rgba(148,163,184,0.22);
+    .btn-difficulty:not(.active):hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
     }
 
-    .cell.error {
-      background: rgba(248,113,113,0.25);
-      color: var(--error);
-    }
-
-    .controls {
-      margin-top: 1rem;
+    .board-buttons {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      font-size: 0.9rem;
+      gap: 0.5rem;
     }
 
     .btn {
-      padding: 0.4rem 0.85rem;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
       color: #e5e7eb;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.8rem;
       cursor: pointer;
-      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    }
+
+    .btn:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
     }
 
     .btn-primary {
-      border-color: transparent;
-      background: linear-gradient(135deg, #ffb347, #ff8f2f);
-      color: #111827;
-      font-weight: 600;
+      border-color: rgba(248, 250, 252, 0.15);
+      background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 40%, #b91c1c 100%);
+      color: #f9fafb;
+      box-shadow: var(--accent-glow);
     }
 
-    .btn:hover { filter: brightness(1.1); }
+    .btn-primary:hover {
+      border-color: rgba(248, 250, 252, 0.25);
+      background: radial-gradient(circle at 20% 0, #fb923c 0, #ea580c 45%, #b91c1c 100%);
+    }
 
-    .side-card h2 { margin-top: 0; font-size: 1.1rem; }
+    .btn-outline {
+      background: rgba(15, 23, 42, 0.95);
+    }
 
-    .side-card p { font-size: 0.9rem; color: var(--muted); }
+    .btn-outline-danger {
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+    }
 
-    .difficulty-row {
+    .btn-outline-danger:hover {
+      background: rgba(127, 29, 29, 0.75);
+      border-color: rgba(252, 165, 165, 0.95);
+    }
+
+    .board-wrapper {
+      background: radial-gradient(circle at 50% 0, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      gap: 0;
+      border-radius: 0.9rem;
+      overflow: hidden;
+      border: 2px solid var(--grid-line);
+      aspect-ratio: 1 / 1;
+      background: #020617;
+    }
+
+    .cell {
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(55, 65, 81, 0.8);
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin: 0.8rem 0;
-    }
-
-    .pill {
-      font-size: 0.8rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      color: var(--muted);
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
       cursor: pointer;
       user-select: none;
-    }
-
-    .pill.active {
-      background: rgba(248,250,252,0.08);
-      border-color: var(--accent);
+      transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
       color: #f9fafb;
     }
 
-    footer {
-      margin-top: 2.5rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-align: center;
+    .cell.box-right {
+      border-right-width: 2px;
     }
 
-    @media (max-width: 860px) {
-      .layout {
-        grid-template-columns: 1fr;
+    .cell.box-bottom {
+      border-bottom-width: 2px;
+    }
+
+    .cell.given {
+      background: #020617;
+      font-weight: 600;
+    }
+
+    .cell.empty {
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .cell.selected {
+      background: rgba(248, 250, 252, 0.06);
+      box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
+    }
+
+    .cell.error {
+      background: rgba(220, 38, 38, 0.25);
+      box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
+    }
+
+    .cell.filled:not(.given):not(.error) {
+      color: #facc15;
+    }
+
+    .side-card {
+      min-height: 260px;
+    }
+
+    .side-card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .side-heading {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    .side-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .side-section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+      font-size: 0.84rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .feature-bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f97316, #facc15);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.85), 0 0 0 4px rgba(249, 115, 22, 0.18);
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.45rem 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .legend span.key {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    footer {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+      padding-top: 0.8rem;
+    }
+
+    footer a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 700px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.9rem;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .board-card, .side-card {
+        padding: 1.2rem 1.1rem 1.3rem;
+      }
+      .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .board-buttons {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+      .board-card, .side-card {
+        border-radius: 1rem;
+      }
+      .board-wrapper {
+        padding: 0.9rem;
+      }
+      .board-title {
+        font-size: 1.05rem;
+      }
+      .nav-links {
+        font-size: 0.8rem;
+      }
+      .logo-mark {
+        width: 26px;
+        height: 26px;
       }
     }
   </style>
 </head>
 <body>
-<div class="page">
+<div class="page-shell">
   <header>
-    <div class="logo">
+    <div class="brand">
       <div class="logo-mark">AL</div>
-      <div>
-        <div>Alex Liam Puzzles</div>
-        <div style="font-size:0.7rem; color:var(--muted); text-transform:none;">
-          Online Sudoku
-        </div>
+      <div class="brand-text">
+        <div class="brand-title">Alex Liam Puzzles</div>
+        <div class="brand-sub">Relaxing logic puzzles</div>
       </div>
     </div>
-    <a href="/" class="back-link">← Back to printables</a>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="/printables/easy-sudoku.html">Printables</a>
+      <a href="https://www.amazon.com/stores/author/B0D7JXK7X9">My books</a>
+    </nav>
   </header>
 
-  <div class="layout">
-    <div class="board-card">
-      <div class="board-header">
-        <div>Sudoku board</div>
-        <span class="level" id="level-label">Easy</span>
-      </div>
+  <main>
+    <section class="board-card">
+      <div class="board-card-inner">
+        <div class="board-header">
+          <div>
+            <div class="board-title">
+              Online Sudoku
+              <span class="badge">Beta</span>
+            </div>
+            <p class="board-subtitle">
+              Choose a difficulty and play directly in your browser. Puzzles are taken from my
+              hand-checked collections.
+            </p>
+          </div>
+        </div>
 
-      <!-- dynamic board -->
-      <div class="grid" id="board"></div>
+        <div class="controls-row">
+          <div class="difficulty-group" aria-label="Difficulty selection">
+            <button class="btn-difficulty active" data-level="easy">Easy</button>
+            <button class="btn-difficulty" data-level="medium">Medium</button>
+            <button class="btn-difficulty" data-level="hard">Hard</button>
+          </div>
 
-      <div class="controls">
-        <button class="btn-primary" id="btn-new">New puzzle</button>
-        <button class="btn" id="btn-check">Check</button>
-        <button class="btn" id="btn-solution">Show solution</button>
-        <button class="btn" id="btn-notes" disabled>Notes mode (soon)</button>
-      </div>
-    </div>
+          <div class="board-buttons">
+            <button id="btn-new" class="btn btn-primary">
+              New puzzle
+            </button>
+            <button id="btn-check" class="btn btn-outline">
+              Check
+            </button>
+            <button id="btn-solution" class="btn btn-outline btn-outline-danger">
+              Show solution
+            </button>
+          </div>
+        </div>
 
-    <div class="side-card">
-      <h2>How this will work</h2>
-      <p>
-        This is a preview of the upcoming online Sudoku player. The final version will load puzzles
-        from the same generator used for the books, with clear logic-based solutions.
-      </p>
-      <div class="difficulty-row">
-        <span class="pill active" data-difficulty="easy">Easy</span>
-        <span class="pill" data-difficulty="medium">Medium</span>
-        <span class="pill" data-difficulty="hard">Hard</span>
+        <div class="board-wrapper">
+          <div id="board" class="board" aria-label="Sudoku grid"></div>
+        </div>
       </div>
-      <p style="font-size:0.85rem; color:var(--muted);">
-        For now, you can download printable PDFs on the main site and solve on paper.
-      </p>
-      <p style="font-size:0.85rem; margin-top:1rem;">
-        <a href="/">← Back to free printable Sudoku</a>
-      </p>
-    </div>
-  </div>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-card-inner">
+        <h2 class="side-heading">How this works</h2>
+        <p class="side-sub">
+          Each board is a valid Sudoku with a single solution, generated and checked by my solver.
+        </p>
+
+        <div>
+          <div class="side-section-title">Difficulty</div>
+          <ul class="feature-list">
+            <li>
+              <span class="feature-bullet"></span>
+              Easy – good for warm-up and beginners.
+            </li>
+            <li>
+              <span class="feature-bullet"></span>
+              Medium – steady logical challenge.
+            </li>
+            <li>
+              <span class="feature-bullet"></span>
+              Hard – tougher grids that may need pencil-marks.
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="side-section-title">Keyboard tips</div>
+          <div class="legend">
+            <div><span class="key">1–9</span> – fill a number</div>
+            <div><span class="key">Backspace</span> – clear cell</div>
+            <div><span class="key">Click</span> – select a cell</div>
+            <div><span class="key">Check</span> – validate progress</div>
+          </div>
+        </div>
+
+        <div class="pill">
+          <span class="pill-dot"></span>
+          All puzzles are drawn from my print books &amp; bonus packs.
+        </div>
+      </div>
+    </aside>
+  </main>
 
   <footer>
-    © <span id="year"></span> Alex Liam Puzzles · Online Sudoku preview
+    <span>© <span id="year"></span> Alex Liam Puzzles</span>
+    <span>Want printable PDFs? <a href="/printables/easy-sudoku.html">Get free Sudoku printables</a></span>
   </footer>
 </div>
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // --- TEMP DATA: replace these with puzzles from your generator later ---
-  // 81-char strings, 0 = empty
-  const PUZZLES = {
-    easy: [{
-      puzzle: "530070000600195000098000060800060003400803001700020006060000280000419005000080079",
-      solution:"534678912672195348198342567859761423426853791713924856961537284287419635345286179"
-    }],
-    medium: [{
-      puzzle: "006020300000000070020070009000040600040609080002010000700080090010000000008030700",
-      solution:"976821345851943672423576819389247651147659283562318497734185926615792438298434567"
-    }],
-    hard: [{
-      puzzle: "000900080009002000500006900007060000008000700000030800001600005000500200020007000",
-      solution:"614973582839452671572186934347269158258814793196735846781692345463598217925347869"
-    }]
+  // --- Puzzle data loading from JSON files in /data/ ---
+  // Each JSON file (classic_easy.json, classic_medium.json, classic_hard.json)
+  // has the form: { count, level, puzzles: [ { index, clues, puzzle, solution }, ... ] }
+  // where puzzle/solution are 9×9 arrays of numbers.
+  const DATA_FILES = {
+    easy: "/data/classic_easy.json",
+    medium: "/data/classic_medium.json",
+    hard: "/data/classic_hard.json"
   };
 
+  // After loading, PUZZLES[level] will be an array of
+  // { puzzle: "...81 chars...", solution: "...81 chars..." }
+  const PUZZLES = {
+    easy: [],
+    medium: [],
+    hard: []
+  };
+
+  function gridToString(grid) {
+    // Accept either a 9×9 array or an 81-char string and normalize to a string.
+    if (!Array.isArray(grid)) {
+      return String(grid || "");
+    }
+    const flat = [];
+    for (let r = 0; r < grid.length; r++) {
+      const row = grid[r] || [];
+      for (let c = 0; c < row.length; c++) {
+        const v = row[c] == null ? 0 : row[c];
+        flat.push(String(v));
+      }
+    }
+    return flat.join("");
+  }
+
+  async function ensurePuzzlesLoaded(level) {
+    if (PUZZLES[level] && PUZZLES[level].length) return;
+
+    const url = DATA_FILES[level];
+    if (!url) {
+      console.error("No data file configured for level", level);
+      return;
+    }
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+      const data = await response.json();
+      if (!data || !data.puzzles || !Array.isArray(data.puzzles)) {
+        throw new Error("Invalid puzzle JSON format");
+      }
+
+      PUZZLES[level] = data.puzzles.map((entry) => ({
+        puzzle: gridToString(entry.puzzle),
+        solution: gridToString(entry.solution)
+      }));
+    } catch (err) {
+      console.error("Failed to load puzzles for", level, err);
+      alert("Sorry, I couldn't load the " + level + " puzzles right now. Please try again in a moment.");
+    }
+  }
+
   const boardEl = document.getElementById("board");
-  const levelLabel = document.getElementById("level-label");
-  const pills = document.querySelectorAll("[data-difficulty]");
+  const buttonsDifficulty = document.querySelectorAll(".btn-difficulty");
   const btnNew = document.getElementById("btn-new");
   const btnCheck = document.getElementById("btn-check");
   const btnSolution = document.getElementById("btn-solution");
@@ -312,22 +712,29 @@
   let currentPuzzle = null;
   let selectedCell = null;
 
-  function boxClasses(row, col) {
+  function boxClasses(r, c) {
     const classes = [];
-    if ((col + 1) % 3 === 0 && col !== 8) classes.push("box-right");
-    if ((row + 1) % 3 === 0 && row !== 8) classes.push("box-bottom");
+    if (r === 2 || r === 5) classes.push("box-bottom");
+    if (c === 2 || c === 5) classes.push("box-right");
     return classes.join(" ");
   }
 
-  function loadRandomPuzzle(diff) {
-    const list = PUZZLES[diff];
-    currentPuzzle = list[Math.floor(Math.random() * list.length)];
+  async function loadRandomPuzzle(level) {
+    await ensurePuzzlesLoaded(level);
+    const list = PUZZLES[level];
+    if (!list || !list.length) {
+      return;
+    }
+    const idx = Math.floor(Math.random() * list.length);
+    currentPuzzle = list[idx];
     renderBoard();
   }
 
   function renderBoard() {
     boardEl.innerHTML = "";
     selectedCell = null;
+
+    if (!currentPuzzle) return;
 
     const p = currentPuzzle.puzzle;
     for (let r = 0; r < 9; r++) {
@@ -345,6 +752,7 @@
           cell.textContent = ch;
           cell.classList.add("given");
         } else {
+          cell.textContent = "";
           cell.classList.add("empty");
         }
 
@@ -354,8 +762,13 @@
     }
   }
 
+  function clearSelection() {
+    const cells = boardEl.querySelectorAll(".cell");
+    cells.forEach((cell) => cell.classList.remove("selected"));
+  }
+
   function selectCell(cell) {
-    if (selectedCell) selectedCell.classList.remove("selected");
+    clearSelection();
     selectedCell = cell;
     selectedCell.classList.add("selected");
   }
@@ -377,9 +790,11 @@
   }
 
   function checkBoard() {
+    if (!currentPuzzle) return;
     const solution = currentPuzzle.solution;
     const cells = boardEl.querySelectorAll(".cell");
     let complete = true;
+
     cells.forEach((cell) => {
       cell.classList.remove("error");
       const r = parseInt(cell.dataset.row, 10);
@@ -403,34 +818,32 @@
     if (complete) {
       alert("Nice! This solution is correct.");
     } else {
-      alert("Some cells are incorrect or empty. Errors are highlighted.");
+      alert("Some entries are incorrect or missing. Incorrect cells are highlighted.");
     }
   }
 
   function showSolution() {
+    if (!currentPuzzle) return;
     const solution = currentPuzzle.solution;
     const cells = boardEl.querySelectorAll(".cell");
+
     cells.forEach((cell) => {
       const r = parseInt(cell.dataset.row, 10);
       const c = parseInt(cell.dataset.col, 10);
       const idx = r * 9 + c;
-      const ch = solution[idx];
-      cell.textContent = ch;
-      cell.classList.remove("empty", "error");
+      cell.textContent = solution[idx];
+      cell.classList.remove("error", "empty");
       if (!cell.classList.contains("given")) {
-        cell.style.opacity = 0.9;
+        cell.classList.add("filled");
       }
     });
   }
 
-  // difficulty switching
-  pills.forEach(pill => {
-    pill.addEventListener("click", () => {
-      pills.forEach(p => p.classList.remove("active"));
-      pill.classList.add("active");
-      currentDifficulty = pill.dataset.difficulty;
-      levelLabel.textContent =
-        currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
+  buttonsDifficulty.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      buttonsDifficulty.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentDifficulty = btn.dataset.level;
       loadRandomPuzzle(currentDifficulty);
     });
   });
@@ -440,7 +853,7 @@
   btnSolution.addEventListener("click", showSolution);
   window.addEventListener("keydown", handleKeyDown);
 
-  // initial
+  // initial load
   loadRandomPuzzle(currentDifficulty);
 </script>
 
