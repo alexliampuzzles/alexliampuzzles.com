@@ -757,6 +757,17 @@
         }
 
         cell.addEventListener("click", () => selectCell(cell));
+
+        // Extra handler so taps work reliably on phones
+        cell.addEventListener(
+            "touchstart",
+            (e) => {
+                e.preventDefault();   // stops the touch from turning into a delayed click/scroll
+                selectCell(cell);
+            },
+            { passive: false }
+        );
+
         boardEl.appendChild(cell);
       }
     }
