@@ -464,16 +464,21 @@
       border-color: rgba(148, 163, 184, 0.35);
     }
 
-     .board {
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    /* rows will auto-size from cell aspect ratio */
-    gap: 0;
-    border-radius: 0.9rem;
-    overflow: hidden;
-    border: 3px solid rgba(229, 231, 235, 0.95); /* strongest main border */
-    background: #0b1220;
-  }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      /* rows will auto-size from cell aspect ratio */
+      gap: 0;
+      width: 100%;
+      max-width: 540px;      /* or whatever max size you like */
+      margin: 0 auto;
+    
+      border-radius: 0.9rem;
+      /* IMPORTANT: remove overflow: hidden to avoid clipping
+         when rounding creates a 1–2px mismatch */
+      border: 3px solid rgba(229, 231, 235, 0.95); /* strongest main border */
+      background: #0b1220;
+    }
 
 
     body.theme-light .board {
