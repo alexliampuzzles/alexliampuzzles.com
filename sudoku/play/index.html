@@ -606,7 +606,7 @@
 
   
     .cell.given {
-          font-weight: 700;
+          font-weight: 600;
           color: #f9fafb;      /* bright white for givens in dark theme */
     }
     
@@ -621,7 +621,7 @@
     }
     
     body.theme-light .cell.given {
-          font-weight: 700;
+          font-weight: 600;
           color: #111827;      /* strong black for clues */
           /* same background as other cells */
     }
@@ -699,7 +699,7 @@
 
    /* User inputs have same weight as givens */
     .cell.filled:not(.error) {
-      font-weight: 700;
+      font-weight: 600;
     }
     
     /* DARK MODE – user input color */
@@ -715,6 +715,18 @@
     /* LIGHT MODE – override user input color */
     body.theme-light .cell.filled:not(.given):not(.error) {
       color: #1d4ed8;  /* nice dark blue for user entries */
+    }
+
+    /* When a digit is selected, ALL same digits (givens + user) use the same color */
+
+    /* Dark mode */
+    .cell.same-digit:not(.error) {
+      color: #facc15;  /* bright yellow for all same digits */
+    }
+    
+    /* Light mode */
+    body.theme-light .cell.same-digit:not(.error) {
+      color: #92400e;  /* strong dark amber on light background */
     }
 
 
