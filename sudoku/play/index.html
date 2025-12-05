@@ -326,6 +326,58 @@
       background: #020617;
     }
 
+    .number-pad {
+      margin-top: 0.9rem;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+
+    .num-key {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 0.95rem;
+      padding: 0.45rem 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    }
+
+    .num-key:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+    }
+
+    .num-key:active {
+      transform: translateY(1px);
+    }
+
+    .num-key-erase {
+      border-color: rgba(248, 113, 113, 0.75);
+      color: #fecaca;
+    }
+
+    .num-key-erase:hover {
+      background: rgba(127, 29, 29, 0.85);
+      border-color: rgba(252, 165, 165, 1);
+    }
+
+    @media (max-width: 480px) {
+      .number-pad {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.35rem;
+      }
+      .num-key {
+        padding: 0.4rem 0;
+        font-size: 0.9rem;
+      }
+    }
+
+
     .cell {
       width: 100%;
       height: 100%;
@@ -359,9 +411,14 @@
     }
 
     .cell.selected {
-      background: rgba(248, 250, 252, 0.06);
-      box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
+      background: rgba(248, 250, 252, 0.10);
+      border-color: #facc15; /* bright yellow border */
+      box-shadow:
+        inset 0 0 0 2px #facc15,
+        0 0 0 1px rgba(0, 0, 0, 0.7);
+      z-index: 2;
     }
+
 
     .cell.error {
       background: rgba(220, 38, 38, 0.25);
@@ -581,11 +638,26 @@
           </div>
         </div>
 
-        <div class="board-wrapper">
+               <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
+        </div>
+
+        <!-- On-screen number pad for mobile & desktop -->
+        <div class="number-pad" aria-label="Number input">
+          <button class="num-key" data-value="1">1</button>
+          <button class="num-key" data-value="2">2</button>
+          <button class="num-key" data-value="3">3</button>
+          <button class="num-key" data-value="4">4</button>
+          <button class="num-key" data-value="5">5</button>
+          <button class="num-key" data-value="6">6</button>
+          <button class="num-key" data-value="7">7</button>
+          <button class="num-key" data-value="8">8</button>
+          <button class="num-key" data-value="9">9</button>
+          <button class="num-key num-key-erase" data-value="clear">⌫</button>
         </div>
       </div>
     </section>
+
 
     <aside class="side-card">
       <div class="side-card-inner">
@@ -707,6 +779,8 @@
   const btnNew = document.getElementById("btn-new");
   const btnCheck = document.getElementById("btn-check");
   const btnSolution = document.getElementById("btn-solution");
+  const numKeys = document.querySelectorAll(".num-key");
+
 
   // ----- Pointer handling (desktop + mobile) -----
 
@@ -809,6 +883,16 @@ boardEl.addEventListener(
     cell.classList.remove("error");
   }
 
+    function handleNumInput(value) {
+    if (!selectedCell) return;
+    if (value === "clear") {
+      setCellValue(selectedCell, "");
+    } else {
+      setCellValue(selectedCell, value);
+    }
+  }
+
+
   function handleKeyDown(e) {
     if (!selectedCell) return;
     if (e.key >= "1" && e.key <= "9") {
@@ -882,6 +966,23 @@ boardEl.addEventListener(
   btnSolution.addEventListener("click", showSolution);
   window.addEventListener("keydown", handleKeyDown);
 
+    numKeys.forEach((key) => {
+    const val = key.dataset.value;
+
+    key.addEventListener("click", () => handleNumInput(val));
+
+    // For iPhone / mobile taps
+    key.addEventListener(
+      "touchend",
+      (e) => {
+        e.preventDefault();
+        handleNumInput(val);
+      },
+      { passive: false }
+    );
+  });
+
+  
   // initial load
   loadRandomPuzzle(currentDifficulty);
 </script>
