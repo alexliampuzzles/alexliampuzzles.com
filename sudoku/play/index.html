@@ -349,7 +349,7 @@
     body.theme-light .btn-difficulty.active {
       background: linear-gradient(135deg, #f97316, #fb923c);
       color: #111827;
-      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.35), , var(--accent-glow);
+      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.35), var(--accent-glow);
     }
 
     .btn-difficulty:not(.active):hover {
@@ -419,7 +419,7 @@
       background: linear-gradient(135deg, #f97316, #fb923c);
       color: #111827;
       border-color: transparent;
-      box-shadow:var(--accent-glow);
+      box-shadow: var(--accent-glow);
     }
 
     .btn-outline {
@@ -473,7 +473,7 @@
       overflow: hidden;
       border: 3px solid rgba(229, 231, 235, 0.95); /* strongest main border */
       aspect-ratio: 1 / 1;
-      background: #020617;
+      background: #0b1220;
     }
 
     body.theme-light .board {
@@ -525,6 +525,7 @@
       background: #ffffff;
       color: #111827;
       border-color: rgba(148, 163, 184, 0.7);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.07);
     }
 
     body.theme-light .num-key:hover {
@@ -569,26 +570,27 @@
       color: #f9fafb;
     }
 
-   /* =============================
-   Light Mode Grid Line Enhancements
-   ============================= */
+    /* =============================
+       Light Mode Grid Line Enhancements
+       ============================= */
 
     body.theme-light .cell {
-        border-color: rgba(100, 116, 139, 0.9); /* inner grid lines darker */
-    }
-    
-    body.theme-light .cell.box-right {
-        border-right: 2px solid rgba(55, 65, 81, 1); /* strong box border */
-    }
-    
-    body.theme-light .cell.box-bottom {
-        border-bottom: 2px solid rgba(55, 65, 81, 1); /* strong box border */
-    }
-    
-    body.theme-light .board {
-        border: 3px solid rgba(30, 41, 59, 1); /* outer frame darkest */
+      border-color: rgba(100, 116, 139, 0.9); /* inner grid lines darker */
+      color: #111827;
+      background: #ffffff;
     }
 
+    body.theme-light .cell.box-right {
+      border-right: 2px solid rgba(30, 41, 59, 1); /* stronger box border */
+    }
+
+    body.theme-light .cell.box-bottom {
+      border-bottom: 2px solid rgba(30, 41, 59, 1); /* stronger box border */
+    }
+
+    body.theme-light .board {
+      border: 3px solid rgba(30, 41, 59, 1); /* outer frame darkest */
+    }
 
     @media (max-width: 700px) {
       .cell {
@@ -604,107 +606,79 @@
       border-bottom: 2px solid rgba(229, 231, 235, 0.85);
     }
 
-  
     .cell.given {
-          font-weight: 600;
-          color: #f9fafb;      /* bright white for givens in dark theme */
+      font-weight: 600;
+      color: #f9fafb;      /* bright white for givens in dark theme */
     }
-    
+
     .cell.empty {
-          color: var(--text-muted);  /* grey / “waiting” */
+      color: var(--text-muted);  /* grey / “waiting” */
     }
 
-
-    body.theme-light .cell {
-      color: #111827;
-      background: #ffffff;
-    }
-    
     body.theme-light .cell.given {
-          font-weight: 600;
-          color: #111827;      /* strong black for clues */
-          /* same background as other cells */
+      font-weight: 600;
+      color: #111827;      /* strong black for clues */
     }
-    
+
     body.theme-light .cell.empty {
-          color: #9ca3af;      /* lighter grey for empty cells */
-          /* same background as other cells */
+      color: #9ca3af;      /* lighter grey for empty cells */
     }
 
+    /* ===== Highlighting ===== */
 
-    /* ===== Improved Highlighting ===== */
-
-    /* Row highlight */
-    .cell.row-highlight:not(.selected):not(.error) {
-      background: rgba(96, 165, 250, 0.22);  /* brighter blue */
-    }
-
-    /* Column highlight */
-    .cell.col-highlight:not(.selected):not(.error) {
-      background: rgba(96, 165, 250, 0.15);
-    }
-
-    /* Same-digit highlight */
-    .cell.same-digit:not(.selected):not(.error) {
-      background: rgba(250, 204, 21, 0.30);  /* stronger yellow */
-      color: #facc15;
-    }
-
-    /* 3×3 box highlight */
+    /* Base (dark mode) – same background for row/col/box */
+    .cell.row-highlight:not(.selected):not(.error),
+    .cell.col-highlight:not(.selected):not(.error),
     .cell.box-highlight:not(.selected):not(.error) {
-      background: rgba(147, 197, 253, 0.20); /* soft sky-blue overlay */
+      background: rgba(96, 165, 250, 0.28);  /* sky-400 overlay */
     }
 
-    /* Selected cell */
+    /* Same-digit highlight background (dark) */
+    .cell.same-digit:not(.selected):not(.error) {
+      background: rgba(250, 204, 21, 0.30);
+    }
+
+    /* Selected cell – dark mode base */
     .cell.selected {
       background: rgba(248, 250, 252, 0.18);
       border-color: #facc15;
       box-shadow:
         inset 0 0 0 2px #facc15,
-        0 0 8px rgba(250, 204, 21, 0.45),
+        0 0 6px rgba(250, 204, 21, 0.35),
         0 0 0 1px rgba(0, 0, 0, 0.6);
       z-index: 5;
     }
 
     /* ----- Light theme highlight tuning ----- */
 
-    body.theme-light .cell.row-highlight:not(.selected):not(.error) {
-        background: #dbeafe;  /* Tailwind sky-100 */
-    }
-    
-    body.theme-light .cell.col-highlight:not(.selected):not(.error) {
-        background: #e5edff;  /* very light blue */
-    }
-    
+    body.theme-light .cell.row-highlight:not(.selected):not(.error),
+    body.theme-light .cell.col-highlight:not(.selected):not(.error),
     body.theme-light .cell.box-highlight:not(.selected):not(.error) {
-        background: #e0f2fe;  /* light sky-blue */
-    }
-    
-    /* Same-digit highlight in light mode: stronger contrast */
-    body.theme-light .cell.same-digit:not(.selected):not(.error) {
-        background: #fef3c7;  /* amber-100 */
-        color: #92400e;       /* amber-800 – very readable on white */
-    }
-    
-    /* Selected cell in light mode */
-    body.theme-light .cell.selected {
-        background: #fef3c7;
-        border-color: #ea580c;  /* strong orange */
-        box-shadow:
-          inset 0 0 0 2px #ea580c,
-          0 0 8px rgba(248, 113, 22, 0.55),
-          0 0 0 1px rgba(0, 0, 0, 0.1);
-        z-index: 5;
+      background: #dbeafe;  /* sky-100 */
     }
 
-   /* User inputs have same weight as givens */
+    body.theme-light .cell.same-digit:not(.selected):not(.error) {
+      background: #fef3c7;  /* amber-100 */
+    }
+
+    body.theme-light .cell.selected {
+      background: #fef3c7;
+      border-color: #ea580c;  /* strong orange */
+      box-shadow:
+        inset 0 0 0 2px #ea580c,
+        0 0 8px rgba(248, 113, 22, 0.55),
+        0 0 0 1px rgba(0, 0, 0, 0.1);
+      z-index: 5;
+    }
+
+    /* User inputs have same weight as givens */
     .cell.filled:not(.error) {
       font-weight: 600;
     }
-    
-    /* DARK MODE – user input color */
+
+    /* DARK MODE – user input color (slightly brighter) */
     .cell.filled:not(.given):not(.error) {
-      color: #60a5fa; /* sky-400 – readable on dark background */
+      color: #7dd3fc; /* sky-300 – readable on dark background */
     }
 
     .cell.error {
@@ -712,9 +686,9 @@
       box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
     }
 
-    /* LIGHT MODE – override user input color */
+    /* LIGHT MODE – user input color */
     body.theme-light .cell.filled:not(.given):not(.error) {
-      color: #1d4ed8;  /* nice dark blue for user entries */
+      color: #1d4ed8;  /* dark blue for user entries */
     }
 
     /* When a digit is selected, ALL same digits (givens + user) use the same color */
@@ -725,16 +699,13 @@
     .cell.given.same-digit:not(.error) {
       color: #facc15;  /* bright yellow for all same digits */
     }
-    
+
     /* Light mode */
     body.theme-light .cell.same-digit:not(.error),
     body.theme-light .cell.filled.same-digit:not(.error),
     body.theme-light .cell.given.same-digit:not(.error) {
-      color: #92400e;  /* strong dark amber on light background */
+      color: #b45309;  /* higher-contrast amber on light background */
     }
-
-
-
 
     .side-card {
       min-height: 260px;
@@ -1072,9 +1043,6 @@
   });
 
   // --- Puzzle data loading from JSON files in /data/ ---
-  // Each JSON file (classic_easy.json, classic_medium.json, classic_hard.json)
-  // has the form: { count, level, puzzles: [ { index, clues, puzzle, solution }, ... ] }
-  // where puzzle/solution are 9×9 arrays of numbers.
   const DATA_FILES = {
     easy: "data/classic_easy.json",
     medium: "data/classic_medium.json",
@@ -1288,26 +1256,25 @@
 
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
-  
+
     const hasValue = !!value;
-  
+
     cell.textContent = hasValue ? value : "";
     cell.classList.toggle("empty", !hasValue);
     cell.classList.remove("error");
-  
+
     // Mark user-entered digits
     if (hasValue) {
       cell.classList.add("filled");
     } else {
       cell.classList.remove("filled");
     }
-  
+
     // If we're editing the selected cell, refresh same-digit and row/col highlights
     if (cell === selectedCell) {
       updateHighlights();
     }
   }
-
 
   function handleNumInput(value) {
     if (!selectedCell) return;
