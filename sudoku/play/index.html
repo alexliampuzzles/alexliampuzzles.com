@@ -720,14 +720,19 @@
     /* When a digit is selected, ALL same digits (givens + user) use the same color */
 
     /* Dark mode */
-    .cell.same-digit:not(.error) {
+    .cell.same-digit:not(.error),
+    .cell.filled.same-digit:not(.error),
+    .cell.given.same-digit:not(.error) {
       color: #facc15;  /* bright yellow for all same digits */
     }
     
     /* Light mode */
-    body.theme-light .cell.same-digit:not(.error) {
+    body.theme-light .cell.same-digit:not(.error),
+    body.theme-light .cell.filled.same-digit:not(.error),
+    body.theme-light .cell.given.same-digit:not(.error) {
       color: #92400e;  /* strong dark amber on light background */
     }
+
 
 
 
