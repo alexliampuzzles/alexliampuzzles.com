@@ -5,10 +5,11 @@
   <title>Play Sudoku Online – Alex Liam Puzzles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description"
-        content="Play Sudoku online with a clean dark board. Easy, medium and hard puzzles by Alex Liam Puzzles.">
+        content="Play Sudoku online with a clean board. Easy, medium and hard puzzles by Alex Liam Puzzles.">
 
   <style>
     :root {
+      /* Dark theme palette (defaults) */
       --bg: #050816;
       --bg-alt: #0b1020;
       --card: #111827;
@@ -25,6 +26,11 @@
       --btn-bg: #111827;
       --btn-hover: #1f2933;
       --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
+
+      /* Light theme palette (overridden via body.theme-light) */
+      --bg-light-1: #f5f7fc;
+      --bg-light-2: #eef1f8;
+      --bg-light-3: #e7ebf5;
     }
 
     * {
@@ -36,12 +42,35 @@
     body {
       min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
-      color: var(--text);
       display: flex;
       align-items: stretch;
       justify-content: center;
       padding: 1.5rem;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
+    }
+
+    /* ----- THEME MODES ----- */
+
+    body.theme-dark {
+      color: var(--text);
+      background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
+    }
+
+    body.theme-light {
+      color: #111827;
+      background: linear-gradient(
+        180deg,
+        var(--bg-light-1) 0%,
+        var(--bg-light-2) 45%,
+        var(--bg-light-3) 100%
+      );
+      --text: #111827;
+      --text-muted: #6b7280;
+      --card: #ffffff;
+      --btn-bg: #ffffff;
+      --btn-hover: #f3f4f6;
+      --shadow-soft: 0 18px 35px rgba(15, 23, 42, 0.12);
     }
 
     .page-shell {
@@ -81,6 +110,11 @@
       box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 25px rgba(15, 23, 42, 0.8);
     }
 
+    body.theme-light .logo-mark {
+      background: radial-gradient(circle at 30% 0, #fef3c7 0, #fed7aa 45%, #f97316 100%);
+      color: #111827;
+    }
+
     .brand-text {
       display: flex;
       flex-direction: column;
@@ -95,11 +129,21 @@
       color: #e5e7eb;
     }
 
+    body.theme-light .brand-title {
+      color: #111827;
+    }
+
     .brand-sub {
       font-size: 0.7rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
     }
 
     .nav-links {
@@ -129,9 +173,43 @@
     .nav-links a:hover {
       color: #e5e7eb;
     }
+    body.theme-light .nav-links a:hover {
+      color: #111827;
+    }
 
     .nav-links a:hover::after {
       width: 100%;
+    }
+
+    .btn-theme {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.75rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease, color 0.15s ease;
+    }
+
+    .btn-theme:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+    }
+
+    body.theme-light .btn-theme {
+      background: #ffffff;
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    body.theme-light .btn-theme:hover {
+      background: #f3f4f6;
     }
 
     main {
@@ -172,6 +250,17 @@
       mix-blend-mode: screen;
     }
 
+    body.theme-light .board-card,
+    body.theme-light .side-card {
+      background: #ffffff;
+      border-radius: 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+    }
+    body.theme-light .board-card::before {
+      display: none;
+    }
+
     .board-card-inner {
       position: relative;
       z-index: 1;
@@ -205,6 +294,12 @@
       letter-spacing: 0.12em;
     }
 
+    body.theme-light .board-title span.badge {
+      background: #f9fafb;
+      border-color: rgba(148, 163, 184, 0.5);
+      color: #6b7280;
+    }
+
     .board-subtitle {
       font-size: 0.82rem;
       color: var(--text-muted);
@@ -227,6 +322,11 @@
       border: 1px solid rgba(148, 163, 184, 0.55);
     }
 
+    body.theme-light .difficulty-group {
+      background: #f9fafb;
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
     .btn-difficulty {
       border: none;
       background: transparent;
@@ -246,9 +346,20 @@
       box-shadow: 0 0 0 1px rgba(248, 250, 252, 0.08), var(--accent-glow);
     }
 
+    body.theme-light .btn-difficulty.active {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #111827;
+      box-shadow: 0 8px 20px rgba(248, 113, 22, 0.35);
+    }
+
     .btn-difficulty:not(.active):hover {
       background: rgba(15, 23, 42, 0.9);
       color: #e5e7eb;
+    }
+
+    body.theme-light .btn-difficulty:not(.active):hover {
+      background: #e5e7eb;
+      color: #111827;
     }
 
     .board-buttons {
@@ -277,6 +388,17 @@
       border-color: #e5e7eb;
     }
 
+    body.theme-light .btn {
+      background: #ffffff;
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    body.theme-light .btn:hover {
+      background: #f3f4f6;
+      border-color: rgba(55, 65, 81, 0.7);
+    }
+
     .btn:active {
       transform: translateY(1px);
     }
@@ -293,6 +415,13 @@
       background: radial-gradient(circle at 20% 0, #fb923c 0, #ea580c 45%, #b91c1c 100%);
     }
 
+    body.theme-light .btn-primary {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #111827;
+      border-color: transparent;
+      box-shadow: 0 10px 24px rgba(248, 113, 22, 0.35);
+    }
+
     .btn-outline {
       background: rgba(15, 23, 42, 0.95);
     }
@@ -307,11 +436,32 @@
       border-color: rgba(252, 165, 165, 0.95);
     }
 
+    body.theme-light .btn-outline {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    body.theme-light .btn-outline-danger {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    body.theme-light .btn-outline-danger:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
     .board-wrapper {
       background: radial-gradient(circle at 50% 0, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
       border-radius: 1.2rem;
       padding: 1.2rem;
       border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    body.theme-light .board-wrapper {
+      background: #f9fafb;
+      border-color: rgba(148, 163, 184, 0.35);
     }
 
     .board {
@@ -324,6 +474,11 @@
       border: 3px solid rgba(229, 231, 235, 0.95); /* strongest main border */
       aspect-ratio: 1 / 1;
       background: #020617;
+    }
+
+    body.theme-light .board {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.9);
     }
 
     .number-pad {
@@ -366,6 +521,28 @@
       border-color: rgba(252, 165, 165, 1);
     }
 
+    body.theme-light .num-key {
+      background: #ffffff;
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    body.theme-light .num-key:hover {
+      background: #f3f4f6;
+      border-color: rgba(55, 65, 81, 0.7);
+    }
+
+    body.theme-light .num-key-erase {
+      color: #b91c1c;
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    body.theme-light .num-key-erase:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
     @media (max-width: 480px) {
       .number-pad {
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -377,7 +554,6 @@
       }
     }
 
-
     .cell {
       width: 100%;
       height: 100%;
@@ -385,13 +561,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      font-size: 1.7rem; /* larger digits on desktop */
       cursor: pointer;
       user-select: none;
       transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
       color: #f9fafb;
     }
 
+    @media (max-width: 700px) {
+      .cell {
+        font-size: 1.2rem; /* smaller on mobile so grid fits nicely */
+      }
+    }
 
     .cell.box-right {
       border-right: 2px solid rgba(229, 231, 235, 0.85);
@@ -411,43 +592,54 @@
       background: rgba(15, 23, 42, 0.95);
     }
 
-        /* Row/column and same-digit highlights */
+    body.theme-light .cell {
+      color: #111827;
+      background: #ffffff;
+    }
+
+    body.theme-light .cell.given {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    body.theme-light .cell.empty {
+      background: #ffffff;
+      color: #9ca3af;
+    }
 
     /* ===== Improved Highlighting ===== */
 
-/* Row highlight */
-  .cell.row-highlight:not(.selected):not(.error) {
+    /* Row highlight */
+    .cell.row-highlight:not(.selected):not(.error) {
       background: rgba(96, 165, 250, 0.22);  /* brighter blue */
-  }
-  
-  /* Column highlight */
-  .cell.col-highlight:not(.selected):not(.error) {
+    }
+
+    /* Column highlight */
+    .cell.col-highlight:not(.selected):not(.error) {
       background: rgba(96, 165, 250, 0.15);
-  }
-  
-  /* Same-digit highlight */
-  .cell.same-digit:not(.selected):not(.error) {
+    }
+
+    /* Same-digit highlight */
+    .cell.same-digit:not(.selected):not(.error) {
       background: rgba(250, 204, 21, 0.30);  /* stronger yellow */
       color: #facc15;
-  }
-  
-  /* 3×3 box highlight */
-  .cell.box-highlight:not(.selected):not(.error) {
+    }
+
+    /* 3×3 box highlight */
+    .cell.box-highlight:not(.selected):not(.error) {
       background: rgba(147, 197, 253, 0.20); /* soft sky-blue overlay */
-  }
-  
-  /* Selected cell */
-  .cell.selected {
+    }
+
+    /* Selected cell */
+    .cell.selected {
       background: rgba(248, 250, 252, 0.18);
       border-color: #facc15;
       box-shadow:
-          inset 0 0 0 2px #facc15,
-          0 0 8px rgba(250, 204, 21, 0.45),
-          0 0 0 1px rgba(0, 0, 0, 0.6);
+        inset 0 0 0 2px #facc15,
+        0 0 8px rgba(250, 204, 21, 0.45),
+        0 0 0 1px rgba(0, 0, 0, 0.6);
       z-index: 5;
-  }
-
-
+    }
 
     .cell.error {
       background: rgba(220, 38, 38, 0.25);
@@ -523,6 +715,9 @@
       color: #e5e7eb;
       font-weight: 500;
     }
+    body.theme-light .legend span.key {
+      color: #111827;
+    }
 
     .pill {
       display: inline-flex;
@@ -542,6 +737,11 @@
       height: 7px;
       border-radius: 999px;
       background: #22c55e;
+    }
+
+    body.theme-light .pill {
+      background: #f9fafb;
+      color: #4b5563;
     }
 
     footer {
@@ -565,14 +765,22 @@
       text-decoration: underline;
     }
 
+    body.theme-light footer {
+      border-top-color: rgba(148, 163, 184, 0.5);
+    }
+
     @media (max-width: 700px) {
       header {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.9rem;
       }
-      .nav-links {
+      .header-right {
         width: 100%;
+        justify-content: space-between;
+      }
+      .nav-links {
+        width: auto;
         justify-content: flex-start;
         gap: 1rem;
         flex-wrap: wrap;
@@ -614,7 +822,7 @@
     }
   </style>
 </head>
-<body>
+<body class="theme-dark">
 <div class="page-shell">
   <header>
     <div class="brand">
@@ -624,11 +832,16 @@
         <div class="brand-sub">Relaxing logic puzzles</div>
       </div>
     </div>
-    <nav class="nav-links">
-      <a href="/">Home</a>
-      <a href="/printables/easy-sudoku.html">Printables</a>
-      <a href="https://www.amazon.com/stores/author/B0D7JXK7X9">My books</a>
-    </nav>
+    <div class="header-right">
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/printables/easy-sudoku.html">Printables</a>
+        <a href="https://www.amazon.com/stores/author/B0D7JXK7X9">My books</a>
+      </nav>
+      <button id="theme-toggle" class="btn-theme" type="button">
+        🌙 Dark
+      </button>
+    </div>
   </header>
 
   <main>
@@ -667,7 +880,7 @@
           </div>
         </div>
 
-               <div class="board-wrapper">
+        <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
         </div>
 
@@ -686,7 +899,6 @@
         </div>
       </div>
     </section>
-
 
     <aside class="side-card">
       <div class="side-card-inner">
@@ -739,6 +951,39 @@
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  // --- Theme toggle ---
+  const themeToggleBtn = document.getElementById("theme-toggle");
+
+  function applyTheme(theme) {
+    document.body.classList.remove("theme-dark", "theme-light");
+    document.body.classList.add("theme-" + theme);
+    if (theme === "dark") {
+      themeToggleBtn.textContent = "🌙 Dark";
+    } else {
+      themeToggleBtn.textContent = "☀ Light";
+    }
+  }
+
+  (function initTheme() {
+    let saved = localStorage.getItem("sudokuTheme");
+    if (!saved) {
+      // Use system preference on first visit
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+        saved = "light";
+      } else {
+        saved = "dark";
+      }
+    }
+    applyTheme(saved);
+  })();
+
+  themeToggleBtn.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("theme-dark");
+    const next = isDark ? "light" : "dark";
+    applyTheme(next);
+    localStorage.setItem("sudokuTheme", next);
+  });
 
   // --- Puzzle data loading from JSON files in /data/ ---
   // Each JSON file (classic_easy.json, classic_medium.json, classic_hard.json)
@@ -810,35 +1055,33 @@
   const btnSolution = document.getElementById("btn-solution");
   const numKeys = document.querySelectorAll(".num-key");
 
-
   // ----- Pointer handling (desktop + mobile) -----
 
-// Clicks (desktop + mobile)
-boardEl.addEventListener("click", (e) => {
-  const cell = e.target.closest(".cell");
-  if (!cell) return;
-  selectCell(cell);
-});
-
-// Touch (iPhone / Android) – use touch coordinates to find the cell
-boardEl.addEventListener(
-  "touchend",
-  (e) => {
-    const touch = e.changedTouches && e.changedTouches[0];
-    if (!touch) return;
-
-    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!target) return;
-
-    const cell = target.closest(".cell");
+  // Clicks (desktop + mobile)
+  boardEl.addEventListener("click", (e) => {
+    const cell = e.target.closest(".cell");
     if (!cell) return;
-
-    e.preventDefault();
     selectCell(cell);
-  },
-  { passive: false }
-);
+  });
 
+  // Touch (iPhone / Android) – use touch coordinates to find the cell
+  boardEl.addEventListener(
+    "touchend",
+    (e) => {
+      const touch = e.changedTouches && e.changedTouches[0];
+      if (!touch) return;
+
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!target) return;
+
+      const cell = target.closest(".cell");
+      if (!cell) return;
+
+      e.preventDefault();
+      selectCell(cell);
+    },
+    { passive: false }
+  );
 
   let currentDifficulty = "easy";
   let currentPuzzle = null;
@@ -889,80 +1132,75 @@ boardEl.addEventListener(
         }
 
         boardEl.appendChild(cell);
-
       }
     }
   }
 
-    function clearSelection() {
-      const cells = boardEl.querySelectorAll(".cell");
-      cells.forEach((cell) => {
-        cell.classList.remove("selected", "row-highlight", "col-highlight", "same-digit");
-      });
-    }
-  
-      function updateHighlights() {
-      const cells = boardEl.querySelectorAll(".cell");
-  
-      // Clear old highlights
-      cells.forEach(cell => {
-          cell.classList.remove("row-highlight", "col-highlight", "same-digit", "box-highlight");
-      });
-  
-      if (!selectedCell) return;
-  
-      const row = parseInt(selectedCell.dataset.row, 10);
-      const col = parseInt(selectedCell.dataset.col, 10);
-      const value = selectedCell.textContent;
-  
-      // Determine selected box (0..2)
-      const boxRow = Math.floor(row / 3);
-      const boxCol = Math.floor(col / 3);
-  
-      cells.forEach(cell => {
-          const r = parseInt(cell.dataset.row, 10);
-          const c = parseInt(cell.dataset.col, 10);
-  
-          // Row highlight
-          if (r === row) {
-              cell.classList.add("row-highlight");
-          }
-  
-          // Column highlight
-          if (c === col) {
-              cell.classList.add("col-highlight");
-          }
-  
-          // 3×3 box highlight
-          const br = Math.floor(r / 3);
-          const bc = Math.floor(c / 3);
-  
-          if (br === boxRow && bc === boxCol) {
-              cell.classList.add("box-highlight");
-          }
-  
-          // Same-digit highlight
-          if (value && cell.textContent === value) {
-              cell.classList.add("same-digit");
-          }
-      });
-  
-      // Selected cell stays strongest
-      selectedCell.classList.add("selected");
+  function clearSelection() {
+    const cells = boardEl.querySelectorAll(".cell");
+    cells.forEach((cell) => {
+      cell.classList.remove("selected", "row-highlight", "col-highlight", "same-digit", "box-highlight");
+    });
   }
 
+  function updateHighlights() {
+    const cells = boardEl.querySelectorAll(".cell");
 
+    // Clear old highlights
+    cells.forEach(cell => {
+      cell.classList.remove("row-highlight", "col-highlight", "same-digit", "box-highlight");
+    });
 
+    if (!selectedCell) return;
 
-    function selectCell(cell) {
+    const row = parseInt(selectedCell.dataset.row, 10);
+    const col = parseInt(selectedCell.dataset.col, 10);
+    const value = selectedCell.textContent;
+
+    // Determine selected box (0..2)
+    const boxRow = Math.floor(row / 3);
+    const boxCol = Math.floor(col / 3);
+
+    cells.forEach(cell => {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+
+      // Row highlight
+      if (r === row) {
+        cell.classList.add("row-highlight");
+      }
+
+      // Column highlight
+      if (c === col) {
+        cell.classList.add("col-highlight");
+      }
+
+      // 3×3 box highlight
+      const br = Math.floor(r / 3);
+      const bc = Math.floor(c / 3);
+
+      if (br === boxRow && bc === boxCol) {
+        cell.classList.add("box-highlight");
+      }
+
+      // Same-digit highlight
+      if (value && cell.textContent === value) {
+        cell.classList.add("same-digit");
+      }
+    });
+
+    // Selected cell stays strongest
+    selectedCell.classList.add("selected");
+  }
+
+  function selectCell(cell) {
     clearSelection();
     selectedCell = cell;
     selectedCell.classList.add("selected");
     updateHighlights();
   }
 
-
-    function setCellValue(cell, value) {
+  function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     cell.textContent = value || "";
     cell.classList.toggle("empty", !value);
@@ -974,8 +1212,7 @@ boardEl.addEventListener(
     }
   }
 
-
-    function handleNumInput(value) {
+  function handleNumInput(value) {
     if (!selectedCell) return;
     if (value === "clear") {
       setCellValue(selectedCell, "");
@@ -983,7 +1220,6 @@ boardEl.addEventListener(
       setCellValue(selectedCell, value);
     }
   }
-
 
   function handleKeyDown(e) {
     if (!selectedCell) return;
@@ -1058,7 +1294,7 @@ boardEl.addEventListener(
   btnSolution.addEventListener("click", showSolution);
   window.addEventListener("keydown", handleKeyDown);
 
-    numKeys.forEach((key) => {
+  numKeys.forEach((key) => {
     const val = key.dataset.value;
 
     key.addEventListener("click", () => handleNumInput(val));
@@ -1074,7 +1310,6 @@ boardEl.addEventListener(
     );
   });
 
-  
   // initial load
   loadRandomPuzzle(currentDifficulty);
 </script>
