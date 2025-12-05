@@ -708,6 +708,35 @@
   const btnCheck = document.getElementById("btn-check");
   const btnSolution = document.getElementById("btn-solution");
 
+  // ----- Pointer handling (desktop + mobile) -----
+
+// Clicks (desktop + mobile)
+boardEl.addEventListener("click", (e) => {
+  const cell = e.target.closest(".cell");
+  if (!cell) return;
+  selectCell(cell);
+});
+
+// Touch (iPhone / Android) – use touch coordinates to find the cell
+boardEl.addEventListener(
+  "touchend",
+  (e) => {
+    const touch = e.changedTouches && e.changedTouches[0];
+    if (!touch) return;
+
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!target) return;
+
+    const cell = target.closest(".cell");
+    if (!cell) return;
+
+    e.preventDefault();
+    selectCell(cell);
+  },
+  { passive: false }
+);
+
+
   let currentDifficulty = "easy";
   let currentPuzzle = null;
   let selectedCell = null;
@@ -756,19 +785,8 @@
           cell.classList.add("empty");
         }
 
-        cell.addEventListener("click", () => selectCell(cell));
-
-        // Extra handler so taps work reliably on phones
-        cell.addEventListener(
-            "touchstart",
-            (e) => {
-                e.preventDefault();   // stops the touch from turning into a delayed click/scroll
-                selectCell(cell);
-            },
-            { passive: false }
-        );
-
         boardEl.appendChild(cell);
+
       }
     }
   }
