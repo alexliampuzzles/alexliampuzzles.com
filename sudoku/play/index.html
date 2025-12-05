@@ -562,7 +562,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.7rem; /* larger digits on desktop */
+      font-size: 2rem; /* larger digits on desktop */
       cursor: pointer;
       user-select: none;
       transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
@@ -697,6 +697,11 @@
         z-index: 5;
     }
 
+    /* User inputs have same weight as givens */
+    .cell.filled:not(.error) {
+        font-weight: 700;
+         color: #60a5fa; /* sky-400 – readable on dark */
+    }
 
     .cell.error {
       background: rgba(220, 38, 38, 0.25);
@@ -704,7 +709,7 @@
     }
 
     .body.theme-light .cell.filled:not(.given):not(.error) {
-      color: #2563eb;  /* nice blue for user entries */
+      color: #1d4ed8;  /* nice blue for user entries */
     }
 
 
