@@ -569,8 +569,24 @@
       color: #f9fafb;
     }
 
+   /* =============================
+   Light Mode Grid Line Enhancements
+   ============================= */
+
     body.theme-light .cell {
-        border-color: rgba(100, 116, 139, 0.9);  /* slate-500 — clearly visible */
+        border-color: rgba(100, 116, 139, 0.9); /* inner grid lines darker */
+    }
+    
+    body.theme-light .cell.box-right {
+        border-right: 2px solid rgba(55, 65, 81, 1); /* strong box border */
+    }
+    
+    body.theme-light .cell.box-bottom {
+        border-bottom: 2px solid rgba(55, 65, 81, 1); /* strong box border */
+    }
+    
+    body.theme-light .board {
+        border: 3px solid rgba(30, 41, 59, 1); /* outer frame darkest */
     }
 
 
