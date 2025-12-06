@@ -109,14 +109,14 @@
       font-weight: 600;
       letter-spacing: 0.07em;
       text-transform: uppercase;
-      font-size: 1.14rem; /* 0.76 * 1.5 */
+      font-size: 1.14rem;
       color: #e5e7eb;
     }
 
     body.theme-light .brand-title { color: #111827; }
 
     .brand-sub {
-      font-size: 0.9rem; /* 0.7 * 1.5 */
+      font-size: 0.9rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -414,6 +414,7 @@
       border-radius: 1.2rem;
       padding: 1.2rem;
       border: 1px solid rgba(148, 163, 184, 0.3);
+      position: relative;
     }
 
     body.theme-light .board-wrapper {
@@ -436,6 +437,58 @@
     body.theme-light .board {
       background: #ffffff;
       border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    /* Overlay shown when paused (covers grid) */
+    .board-overlay {
+      position: absolute;
+      inset: 0.4rem;
+      border-radius: 0.9rem;
+      background: rgba(15, 23, 42, 0.96);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    body.theme-light .board-overlay {
+      background: rgba(249, 250, 251, 0.97);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    .overlay-content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .overlay-title {
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .overlay-resume { align-self: center; }
+
+    /* Completion banner under timer */
+    .completion-banner {
+      display: none;
+      margin-top: 0.5rem;
+      padding: 0.32rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.7);
+      background: rgba(22, 163, 74, 0.18);
+      color: #bbf7d0;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    body.theme-light .completion-banner {
+      background: #ecfdf3;
+      border-color: #22c55e;
+      color: #15803d;
     }
 
     /* Timer bar */
@@ -461,7 +514,7 @@
       font-weight: 600;
       color: #e5e7eb;
       margin-left: 0.4rem;
-      font-size: 1rem; /* 20% larger */
+      font-size: 1rem;
     }
 
     .timer-pause {
@@ -528,7 +581,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease, opacity 0.15s ease;
+      position: relative;
     }
 
     .num-key:hover {
@@ -547,6 +601,26 @@
     .num-key-erase:hover {
       background: rgba(127, 29, 29, 0.85);
       border-color: rgba(252, 165, 165, 1);
+    }
+
+    /* Completed digit: faded with checkmark */
+    .num-key.completed {
+      opacity: 0.35;
+    }
+
+    .num-key.completed::after {
+      content: "✓";
+      position: absolute;
+      right: 8px;
+      bottom: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #22c55e;
+      opacity: 0.95;
+    }
+
+    body.theme-light .num-key.completed::after {
+      color: #16a34a;
     }
 
     /* Notes + Check buttons in right column */
@@ -638,8 +712,8 @@
 
     /* Desktop: enlarge num keys + Notes/Check about 20% */
     @media (min-width: 880px) {
-      .num-key { font-size: 1.56rem; }        /* 1.3 * 1.2 */
-      .num-key-erase { font-size: 1.32rem; }  /* 1.1 * 1.2 */
+      .num-key { font-size: 1.56rem; }
+      .num-key-erase { font-size: 1.32rem; }
 
       .btn-notes,
       .btn-check-inline {
@@ -662,7 +736,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.94rem; /* 0.78 * 1.2 */
+      font-size: 0.94rem;
       color: var(--text-muted);
       padding: 0.18rem 0.7rem;
       border-radius: 999px;
@@ -812,19 +886,6 @@
       background: #fef3c7;
     }
 
-    /* Light mode selected cell — subtle green highlight */
-    body.theme-light .cell.selected {
-      background: #E6F8EC !important;    /* very soft green tint */
-      border-color: #166534 !important;  /* dark green (emerald 800) */
-      box-shadow:
-        inset 0 0 0 1.5px #166534,       /* thinner, cleaner outline */
-        0 0 6px rgba(22, 101, 52, 0.30); /* soft emerald glow */
-      color: #166534 !important;         /* selected digit turns dark green */
-      z-index: 5;
-    }
-
-
-
     .cell.filled { font-weight: 600; }
 
     .cell.filled:not(.given):not(.error) {
@@ -853,13 +914,13 @@
     .cell.given.same-digit:not(.error) {
       color: #facc15;
     }
-    
+
     /* Light mode: same-digit background + green digits */
     body.theme-light .cell.same-digit:not(.error) {
-      background: #fef3c7;   /* yellow background for all same digits */
-      color: #166534;        /* dark green text */
+      background: #fef3c7;
+      color: #166534;
     }
-    
+
     /* Light mode: selected cell – yellow background, green digit + outline */
     body.theme-light .cell.selected {
       background: #fef3c7;
@@ -870,17 +931,15 @@
       color: #166534;
       z-index: 5;
     }
-    
+
     /* Light mode: given digits that are same-digit also become dark green */
     body.theme-light .cell.given.same-digit:not(.error) {
       color: #166534;
     }
 
-    /* Keep side-card rule separate (no accidental selector list) */
     .side-card {
       min-height: 260px;
     }
-
 
     .side-card-inner { position: relative; z-index: 1; }
 
@@ -892,7 +951,7 @@
     }
 
     .side-sub {
-      font-size: 0.98rem; /* 0.82 * 1.2 */
+      font-size: 0.98rem;
       color: var(--text-muted);
       margin-bottom: 1.2rem;
     }
@@ -1039,7 +1098,7 @@
       <nav class="nav-links">
         <a href="/">Home</a>
         <a href="/printables/easy-sudoku.html">Printables</a>
-        <a href="https://www.amazon.com/stores/author/B0D7JXK7X9">My books</a>
+        <a href="https://www.amazon.com/author/alex_liam">My books</a>
       </nav>
       <button id="theme-toggle" class="btn-theme" type="button">
         🌙 Dark
@@ -1056,10 +1115,9 @@
               Online Sudoku
               <span class="badge">Beta</span>
             </div>
-          <p class="board-subtitle">
-            Easy, Medium or Hard — one puzzle at a time.
-          </p>
-
+            <p class="board-subtitle">
+              Easy, Medium or Hard — one puzzle at a time.
+            </p>
           </div>
         </div>
 
@@ -1090,8 +1148,23 @@
           <button id="btn-timer-pause" class="timer-pause">Pause</button>
         </div>
 
+        <!-- Completion banner -->
+        <div id="completion-banner" class="completion-banner">
+          🎉 Congratulations! Puzzle solved.
+        </div>
+
         <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
+
+          <!-- Overlay when paused -->
+          <div id="board-overlay" class="board-overlay" aria-hidden="true">
+            <div class="overlay-content">
+              <div class="overlay-title">Paused</div>
+              <button id="btn-resume-big" class="btn btn-primary overlay-resume" type="button">
+                Resume
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Number pad: 3×3 numbers + right column with erase + notes + check -->
@@ -1167,11 +1240,6 @@
             <div><span class="key">Check</span> – validate progress</div>
           </div>
         </div>
-
-     <!--   <div class="pill">
-          <span class="pill-dot"></span>
-          All puzzles are drawn from my print books &amp; bonus packs.
-        </div>   -->
       </div>
     </aside>
   </main>
@@ -1269,6 +1337,16 @@
   const timerContainer = document.getElementById("timer-container");
   const timerTimeEl = document.getElementById("timer-time");
   const btnTimerPause = document.getElementById("btn-timer-pause");
+  const completionBanner = document.getElementById("completion-banner");
+  const boardOverlay = document.getElementById("board-overlay");
+  const btnResumeBig = document.getElementById("btn-resume-big");
+
+  // map digit -> key button (exclude clear)
+  const digitKeyMap = {};
+  Array.from(numKeys).forEach(key => {
+    const v = key.dataset.value;
+    if (v && v !== "clear") digitKeyMap[v] = key;
+  });
 
   boardEl.addEventListener("click", (e) => {
     const cell = e.target.closest(".cell");
@@ -1296,6 +1374,7 @@
   let selectedCell = null;
   let notesMode = false;
   let showMistakes = true;
+  let puzzleCompleted = false;
 
   let timerEnabled = false;
   let timerRunning = false;
@@ -1323,6 +1402,14 @@
     updateTimerDisplay();
   }
 
+  function hidePauseOverlay() {
+    if (boardOverlay) boardOverlay.style.display = "none";
+  }
+
+  function showPauseOverlay() {
+    if (boardOverlay) boardOverlay.style.display = "flex";
+  }
+
   function startTimer() {
     if (!timerEnabled) return;
     timerRunning = true;
@@ -1330,9 +1417,10 @@
     clearInterval(timerInterval);
     timerInterval = setInterval(tickTimer, 1000);
     btnTimerPause.textContent = "Pause";
+    hidePauseOverlay();
   }
 
-  function pauseTimer() {
+  function pauseTimer(showOverlay = true) {
     if (!timerRunning) return;
     timerRunning = false;
     timerElapsedMs = performance.now() - timerStartMs;
@@ -1340,6 +1428,7 @@
     timerInterval = null;
     updateTimerDisplay();
     btnTimerPause.textContent = "Resume";
+    if (showOverlay) showPauseOverlay();
   }
 
   function resetTimer() {
@@ -1364,9 +1453,25 @@
       timerRunning = false;
       timerElapsedMs = 0;
       updateTimerDisplay();
+      hidePauseOverlay();
     } else {
       resetTimer();
     }
+  }
+
+  function showCompletionMessage() {
+    if (puzzleCompleted) return;
+    puzzleCompleted = true;
+    if (completionBanner) completionBanner.style.display = "block";
+    // stop timer but keep grid visible
+    if (timerEnabled) {
+      pauseTimer(false);
+    }
+  }
+
+  function hideCompletionBanner() {
+    puzzleCompleted = false;
+    if (completionBanner) completionBanner.style.display = "none";
   }
 
   let ignoreNextPauseClick = false;
@@ -1378,11 +1483,18 @@
     }
     if (!timerEnabled) return;
     if (timerRunning) {
-      pauseTimer();
+      pauseTimer(true);
     } else {
       startTimer();
     }
   });
+
+  if (btnResumeBig) {
+    btnResumeBig.addEventListener("click", () => {
+      hidePauseOverlay();
+      if (timerEnabled) startTimer();
+    });
+  }
 
   function boxClasses(r, c) {
     const classes = [];
@@ -1397,6 +1509,7 @@
     if (!list || !list.length) return;
     const idx = Math.floor(Math.random() * list.length);
     currentPuzzle = list[idx];
+    hideCompletionBanner();
     renderBoard();
     if (timerEnabled) resetTimer();
   }
@@ -1437,6 +1550,7 @@
     }
 
     recomputeConflicts();
+    updateNumberKeyStatus();
   }
 
   function clearSelection() {
@@ -1634,6 +1748,47 @@
     });
   }
 
+  function updateNumberKeyStatus() {
+    const counts = { "1":0,"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0 };
+    const cells = boardEl.querySelectorAll(".cell");
+    cells.forEach(cell => {
+      const v = getCellValue(cell);
+      if (v >= "1" && v <= "9") {
+        counts[v] = (counts[v] || 0) + 1;
+      }
+    });
+
+    for (let d = 1; d <= 9; d++) {
+      const key = digitKeyMap[String(d)];
+      if (!key) continue;
+      if ((counts[String(d)] || 0) >= 9) {
+        key.classList.add("completed");
+      } else {
+        key.classList.remove("completed");
+      }
+    }
+  }
+
+  function checkCompletionAuto() {
+    if (!currentPuzzle || puzzleCompleted) return;
+    const solution = currentPuzzle.solution;
+    const cells = boardEl.querySelectorAll(".cell");
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const idx = r * 9 + c;
+        const cell = boardEl.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
+        if (!cell) return;
+        const val = getCellValue(cell);
+        const correct = solution[idx];
+        if (val !== correct) {
+          return;
+        }
+      }
+    }
+    // all correct
+    showCompletionMessage();
+  }
+
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     const valueEl = cell.querySelector(".cell-value");
@@ -1663,6 +1818,8 @@
     }
 
     recomputeConflicts();
+    updateNumberKeyStatus();
+    checkCompletionAuto();
 
     if (cell === selectedCell) updateHighlights();
   }
@@ -1722,7 +1879,7 @@
     });
 
     if (complete) {
-      alert("Nice! This solution is correct.");
+      showCompletionMessage();
     } else {
       alert("Some entries are incorrect or missing. Incorrect cells are highlighted.");
     }
@@ -1748,6 +1905,9 @@
       }
       clearNotes(cell);
     });
+
+    updateNumberKeyStatus();
+    showCompletionMessage();
   }
 
   function setMistakesMode(on) {
