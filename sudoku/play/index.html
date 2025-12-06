@@ -461,6 +461,7 @@
       font-weight: 600;
       color: #e5e7eb;
       margin-left: 0.4rem;
+      font-size: 1rem; /* ~20% larger */
     }
 
     .timer-pause {
@@ -635,11 +636,23 @@
       .num-key { font-size: 1rem; padding: 0.35rem 0; }
     }
 
+    /* Desktop: enlarge num keys + Notes/Check about 20% */
+    @media (min-width: 880px) {
+      .num-key { font-size: 1.56rem; }        /* 1.3 * 1.2 */
+      .num-key-erase { font-size: 1.32rem; }  /* 1.1 * 1.2 */
+
+      .btn-notes,
+      .btn-check-inline {
+        font-size: 1.05rem;
+        padding: 0.45rem 0.5rem;
+      }
+    }
+
     /* helper toggles row */
     .helper-toggle {
       margin-top: 0.8rem;
       display: flex;
-      justify-content: flex-end;
+      justify-content: center; /* center under grid */
       gap: 0.5rem;
       flex-wrap: wrap;
     }
