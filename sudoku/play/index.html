@@ -264,12 +264,14 @@
       max-width: 320px;
     }
 
+    /* top control bar: difficulty + main action buttons */
     .controls-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
       margin-bottom: 1.2rem;
+      flex-wrap: wrap;
     }
 
     .difficulty-group {
@@ -436,6 +438,62 @@
       border-color: rgba(148, 163, 184, 0.9);
     }
 
+    /* Timer bar */
+    .timer-container {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .timer-label {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .timer-time {
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-left: 0.4rem;
+    }
+
+    .timer-pause {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.6rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .timer-pause:hover {
+      background: #111827;
+    }
+
+    body.theme-light .timer-container {
+      background: #f9fafb;
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #4b5563;
+    }
+
+    body.theme-light .timer-time {
+      color: #111827;
+    }
+
+    body.theme-light .timer-pause {
+      background: #ffffff;
+      color: #111827;
+    }
+
     /* ===== Number pad: 3×3 + right column ===== */
     .number-pad {
       margin-top: 0.7rem;
@@ -490,8 +548,9 @@
       border-color: rgba(252, 165, 165, 1);
     }
 
-    /* Notes button inside pad */
-    .btn-notes {
+    /* Notes + Check buttons in right column */
+    .btn-notes,
+    .btn-check-inline {
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.7);
       background: rgba(15, 23, 42, 0.9);
@@ -510,16 +569,18 @@
 
     .btn-notes span.icon { font-size: 1.1rem; }
 
-    .btn-notes:hover {
+    .btn-notes:hover,
+    .btn-check-inline:hover {
       background: #111827;
       border-color: #e5e7eb;
       color: #e5e7eb;
     }
 
+    /* Notes ON: green border */
     .btn-notes.active {
-      background: rgba(249, 115, 22, 0.12);
-      border-color: #f97316;
-      color: #fed7aa;
+      background: rgba(34, 197, 94, 0.16);
+      border-color: #22c55e;
+      color: #bbf7d0;
     }
 
     body.theme-light .num-key {
@@ -545,21 +606,23 @@
       border-color: #fca5a5;
     }
 
-    body.theme-light .btn-notes {
+    body.theme-light .btn-notes,
+    body.theme-light .btn-check-inline {
       background: #f9fafb;
       color: #4b5563;
       border-color: rgba(148, 163, 184, 0.7);
     }
 
-    body.theme-light .btn-notes:hover {
+    body.theme-light .btn-notes:hover,
+    body.theme-light .btn-check-inline:hover {
       background: #e5e7eb;
       color: #111827;
     }
 
     body.theme-light .btn-notes.active {
-      background: #fffbeb;
-      border-color: #f97316;
-      color: #b45309;
+      background: #ecfdf3;
+      border-color: #22c55e;
+      color: #15803d;
     }
 
     @media (max-width: 480px) {
@@ -572,11 +635,13 @@
       .num-key { font-size: 1rem; padding: 0.35rem 0; }
     }
 
-    /* helper toggle */
+    /* helper toggles row */
     .helper-toggle {
-      margin-top: 0.5rem;
+      margin-top: 0.8rem;
       display: flex;
       justify-content: flex-end;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .helper-pill {
@@ -910,9 +975,7 @@
         align-items: stretch;
       }
       .board-buttons {
-        width: 100%;
         justify-content: flex-start;
-        flex-wrap: wrap;
       }
     }
 
@@ -964,6 +1027,7 @@
           </div>
         </div>
 
+        <!-- top bar: difficulty + main actions -->
         <div class="controls-row">
           <div class="difficulty-group" aria-label="Difficulty selection">
             <button class="btn-difficulty active" data-level="easy">Easy</button>
@@ -975,20 +1039,26 @@
             <button id="btn-new" class="btn btn-primary">
               New puzzle
             </button>
-            <button id="btn-check" class="btn btn-outline">
-              Check
-            </button>
             <button id="btn-solution" class="btn btn-outline btn-outline-danger">
               Show solution
             </button>
           </div>
         </div>
 
+        <!-- Timer (shown when enabled) -->
+        <div id="timer-container" class="timer-container">
+          <div class="timer-label">
+            Time
+            <span id="timer-time" class="timer-time">00:00</span>
+          </div>
+          <button id="btn-timer-pause" class="timer-pause">Pause</button>
+        </div>
+
         <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
         </div>
 
-        <!-- Number pad: 3×3 numbers + right column with erase + notes -->
+        <!-- Number pad: 3×3 numbers + right column with erase + notes + check -->
         <div class="number-pad" aria-label="Number input">
           <div class="number-grid">
             <button class="num-key" data-value="1">1</button>
@@ -1007,14 +1077,21 @@
               <span class="icon">✏</span>
               <span class="label">Notes</span>
             </button>
+            <button id="btn-check" class="btn-check-inline" type="button">
+              Check
+            </button>
           </div>
         </div>
 
-        <!-- Show mistakes toggle -->
+        <!-- helper toggles -->
         <div class="helper-toggle">
           <label class="helper-pill">
             <input type="checkbox" id="toggle-mistakes">
             <span>Show mistakes (real-time)</span>
+          </label>
+          <label class="helper-pill">
+            <input type="checkbox" id="toggle-timer">
+            <span>Timer</span>
           </label>
         </div>
       </div>
@@ -1147,11 +1224,15 @@
   const boardEl = document.getElementById("board");
   const buttonsDifficulty = document.querySelectorAll(".btn-difficulty");
   const btnNew = document.getElementById("btn-new");
-  const btnCheck = document.getElementById("btn-check");
   const btnSolution = document.getElementById("btn-solution");
+  const btnCheck = document.getElementById("btn-check");
   const numKeys = document.querySelectorAll(".num-key");
   const btnNotes = document.getElementById("btn-notes");
   const mistakesToggle = document.getElementById("toggle-mistakes");
+  const timerToggle = document.getElementById("toggle-timer");
+  const timerContainer = document.getElementById("timer-container");
+  const timerTimeEl = document.getElementById("timer-time");
+  const btnTimerPause = document.getElementById("btn-timer-pause");
 
   boardEl.addEventListener("click", (e) => {
     const cell = e.target.closest(".cell");
@@ -1180,6 +1261,94 @@
   let notesMode = false;
   let showMistakes = true; // default for Easy
 
+  // timer state
+  let timerEnabled = false;
+  let timerRunning = false;
+  let timerStartMs = 0;
+  let timerElapsedMs = 0;
+  let timerInterval = null;
+
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const mm = String(minutes).padStart(2, "0");
+    const ss = String(seconds).padStart(2, "0");
+    return mm + ":" + ss;
+  }
+
+  function updateTimerDisplay() {
+    timerTimeEl.textContent = formatTime(timerElapsedMs);
+  }
+
+  function tickTimer() {
+    if (!timerRunning) return;
+    const now = performance.now();
+    timerElapsedMs = now - timerStartMs;
+    updateTimerDisplay();
+  }
+
+  function startTimer() {
+    if (!timerEnabled) return;
+    timerRunning = true;
+    timerStartMs = performance.now() - timerElapsedMs;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(tickTimer, 1000);
+    btnTimerPause.textContent = "Pause";
+  }
+
+  function pauseTimer() {
+    if (!timerRunning) return;
+    timerRunning = false;
+    timerElapsedMs = performance.now() - timerStartMs;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    updateTimerDisplay();
+    btnTimerPause.textContent = "Resume";
+  }
+
+  function resetTimer() {
+    timerElapsedMs = 0;
+    updateTimerDisplay();
+    if (timerEnabled) {
+      startTimer();
+    } else {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRunning = false;
+    }
+  }
+
+  function setTimerEnabled(on) {
+    timerEnabled = !!on;
+    timerToggle.checked = timerEnabled;
+    timerContainer.style.display = timerEnabled ? "flex" : "none";
+    if (!timerEnabled) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRunning = false;
+      timerElapsedMs = 0;
+      updateTimerDisplay();
+    } else {
+      resetTimer();
+    }
+  }
+
+  let ignoreNextPauseClick = false;
+
+  btnTimerPause.addEventListener("click", () => {
+    if (ignoreNextPauseClick) {
+      ignoreNextPauseClick = false;
+      return;
+    }
+    if (!timerEnabled) return;
+    if (timerRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  });
+
   function boxClasses(r, c) {
     const classes = [];
     if (r === 2 || r === 5) classes.push("box-bottom");
@@ -1194,6 +1363,7 @@
     const idx = Math.floor(Math.random() * list.length);
     currentPuzzle = list[idx];
     renderBoard();
+    if (timerEnabled) resetTimer();
   }
 
   function renderBoard() {
@@ -1560,7 +1730,7 @@
     }
   }
 
-  // Difficulty defaults: Easy -> show mistakes ON, Medium/Hard -> OFF
+  // Difficulty defaults: Easy -> mistakes ON, Medium/Hard -> OFF
   function updateMistakesDefault(level) {
     setMistakesMode(level === "easy");
   }
@@ -1575,9 +1745,11 @@
     });
   });
 
-  btnNew.addEventListener("click", () => loadRandomPuzzle(currentDifficulty));
-  btnCheck.addEventListener("click", checkBoard);
+  btnNew.addEventListener("click", () => {
+    loadRandomPuzzle(currentDifficulty);
+  });
   btnSolution.addEventListener("click", showSolution);
+  btnCheck.addEventListener("click", checkBoard);
   window.addEventListener("keydown", handleKeyDown);
 
   numKeys.forEach((key) => {
@@ -1605,8 +1777,15 @@
     setMistakesMode(mistakesToggle.checked);
   });
 
+  timerToggle.addEventListener("change", () => {
+    setTimerEnabled(timerToggle.checked);
+    // avoid treating this click as a pause click when timer just appears
+    ignoreNextPauseClick = true;
+  });
+
   // initial state
   updateMistakesDefault(currentDifficulty);
+  setTimerEnabled(false); // timer off by default
   loadRandomPuzzle(currentDifficulty);
 </script>
 
