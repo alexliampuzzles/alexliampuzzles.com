@@ -365,6 +365,7 @@
     .board-buttons {
       display: flex;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -482,7 +483,7 @@
     }
 
     .number-pad {
-      margin-top: 0.9rem;
+      margin-top: 0.7rem;
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 0.4rem;
@@ -555,6 +556,7 @@
       }
     }
 
+    /* ==== CELLS & NOTES ==== */
 
     .cell {
       width: 100%;
@@ -563,11 +565,41 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem; /* larger digits on desktop */
       cursor: pointer;
       user-select: none;
       transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
       color: #f9fafb;
+      font-size: 2.2rem; /* base font-size for main digits */
+      position: relative;
+    }
+
+    .cell-value {
+      line-height: 1;
+    }
+
+    .cell-notes {
+      position: absolute;
+      inset: 0.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      line-height: 1.1;
+      color: var(--text-muted);
+      text-align: center;
+      pointer-events: none;
+      white-space: pre-wrap;
+    }
+
+    body.theme-light .cell-notes {
+      color: #6b7280;
+    }
+
+    @media (max-width: 700px) {
+      .cell {
+        font-size: 1.2rem; /* value size; notes stay small */
+      }
     }
 
     /* =============================
@@ -590,12 +622,6 @@
 
     body.theme-light .board {
       border: 3px solid rgba(30, 41, 59, 1); /* outer frame darkest */
-    }
-
-    @media (max-width: 700px) {
-      .cell {
-        font-size: 1.2rem; /* smaller on mobile so grid fits nicely */
-      }
     }
 
     .cell.box-right {
@@ -676,13 +702,12 @@
       font-weight: 600;
     }
 
-  
     /* DARK MODE – user input color (slightly brighter) */
     .cell.filled:not(.given):not(.error) {
       color: #7dd3fc; /* sky-300 – readable on dark background */
     }
 
-        /* Dark mode error */
+    /* Dark mode error */
     .cell.error {
       background: rgba(239, 68, 68, 0.28);  /* soft red overlay */
       box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
@@ -695,7 +720,6 @@
       box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.3);
       color: #b91c1c;  /* dark red text */
     }
-
 
     /* LIGHT MODE – user input color */
     body.theme-light .cell.filled:not(.given):not(.error) {
@@ -888,6 +912,62 @@
         height: 26px;
       }
     }
+
+    /* Notes toggle button */
+    .notes-toggle {
+      margin-bottom: 0.6rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-notes {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.7rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+    }
+
+    .btn-notes span.icon {
+      font-size: 0.85rem;
+    }
+
+    .btn-notes:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+      color: #e5e7eb;
+    }
+
+    .btn-notes.active {
+      background: rgba(249, 115, 22, 0.12);
+      border-color: #f97316;
+      color: #fed7aa;
+    }
+
+    body.theme-light .btn-notes {
+      background: #f9fafb;
+      color: #4b5563;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    body.theme-light .btn-notes:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    body.theme-light .btn-notes.active {
+      background: #fffbeb;
+      border-color: #f97316;
+      color: #b45309;
+    }
   </style>
 </head>
 <body class="theme-dark">
@@ -946,6 +1026,14 @@
               Show solution
             </button>
           </div>
+        </div>
+
+        <!-- Notes toggle -->
+        <div class="notes-toggle">
+          <button id="btn-notes" class="btn-notes" type="button" aria-pressed="false">
+            <span class="icon">✏</span>
+            <span class="label">Notes off</span>
+          </button>
         </div>
 
         <div class="board-wrapper">
@@ -1119,6 +1207,7 @@
   const btnCheck = document.getElementById("btn-check");
   const btnSolution = document.getElementById("btn-solution");
   const numKeys = document.querySelectorAll(".num-key");
+  const btnNotes = document.getElementById("btn-notes");
 
   // ----- Pointer handling (desktop + mobile) -----
 
@@ -1151,6 +1240,7 @@
   let currentDifficulty = "easy";
   let currentPuzzle = null;
   let selectedCell = null;
+  let notesMode = false; // global notes toggle
 
   function boxClasses(r, c) {
     const classes = [];
@@ -1187,15 +1277,21 @@
         cell.className = "cell " + boxClasses(r, c);
         cell.dataset.row = r;
         cell.dataset.col = c;
+        cell.dataset.value = isGiven ? ch : "";
+        cell.dataset.notes = "";
+
+        const valueEl = document.createElement("div");
+        valueEl.className = "cell-value";
 
         if (isGiven) {
-          cell.textContent = ch;
+          valueEl.textContent = ch;
           cell.classList.add("given");
         } else {
-          cell.textContent = "";
+          valueEl.textContent = "";
           cell.classList.add("empty");
         }
 
+        cell.appendChild(valueEl);
         boardEl.appendChild(cell);
       }
     }
@@ -1206,6 +1302,10 @@
     cells.forEach((cell) => {
       cell.classList.remove("selected", "row-highlight", "col-highlight", "same-digit", "box-highlight");
     });
+  }
+
+  function getCellValue(cell) {
+    return cell ? (cell.dataset.value || "") : "";
   }
 
   function updateHighlights() {
@@ -1220,7 +1320,7 @@
 
     const row = parseInt(selectedCell.dataset.row, 10);
     const col = parseInt(selectedCell.dataset.col, 10);
-    const value = selectedCell.textContent;
+    const value = getCellValue(selectedCell);
 
     // Determine selected box (0..2)
     const boxRow = Math.floor(row / 3);
@@ -1249,7 +1349,7 @@
       }
 
       // Same-digit highlight
-      if (value && cell.textContent === value) {
+      if (value && getCellValue(cell) === value) {
         cell.classList.add("same-digit");
       }
     });
@@ -1265,23 +1365,82 @@
     updateHighlights();
   }
 
+  function clearNotes(cell) {
+    if (!cell) return;
+    cell.dataset.notes = "";
+    const notesEl = cell.querySelector(".cell-notes");
+    if (notesEl) {
+      notesEl.remove();
+    }
+  }
+
+  function ensureNotesElement(cell) {
+    let notesEl = cell.querySelector(".cell-notes");
+    if (!notesEl) {
+      notesEl = document.createElement("div");
+      notesEl.className = "cell-notes";
+      cell.appendChild(notesEl);
+    }
+    return notesEl;
+  }
+
+  function toggleNote(cell, value) {
+    if (!cell || cell.classList.contains("given")) return;
+    if (!value || value < "1" || value > "9") return;
+
+    // If cell has a main value, clear it first when entering notes
+    if (cell.dataset.value) {
+      setCellValue(cell, "");
+    }
+
+    let notes = (cell.dataset.notes || "").split("").filter(Boolean);
+    const idx = notes.indexOf(value);
+    if (idx >= 0) {
+      notes.splice(idx, 1);
+    } else {
+      notes.push(value);
+    }
+    notes.sort();
+    cell.dataset.notes = notes.join("");
+
+    if (notes.length) {
+      const el = ensureNotesElement(cell);
+      el.textContent = notes.join(" ");
+      cell.classList.remove("empty");
+    } else {
+      clearNotes(cell);
+      if (!cell.dataset.value) {
+        cell.classList.add("empty");
+      }
+    }
+
+    if (cell === selectedCell) {
+      updateHighlights();
+    }
+  }
+
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
 
-    const hasValue = !!value;
+    const valueEl = cell.querySelector(".cell-value");
+    cell.dataset.value = value || "";
 
-    cell.textContent = hasValue ? value : "";
-    cell.classList.toggle("empty", !hasValue);
-    cell.classList.remove("error");
-
-    // Mark user-entered digits
-    if (hasValue) {
+    if (value) {
+      // When we set a definitive value, remove notes
+      clearNotes(cell);
+      valueEl.textContent = value;
       cell.classList.add("filled");
+      cell.classList.remove("empty");
     } else {
+      valueEl.textContent = "";
       cell.classList.remove("filled");
+      if (!cell.dataset.notes) {
+        cell.classList.add("empty");
+      }
     }
 
-    // If we're editing the selected cell, refresh same-digit and row/col highlights
+    cell.classList.remove("error");
+
     if (cell === selectedCell) {
       updateHighlights();
     }
@@ -1290,7 +1449,15 @@
   function handleNumInput(value) {
     if (!selectedCell) return;
     if (value === "clear") {
+      // Clear value and any notes
       setCellValue(selectedCell, "");
+      clearNotes(selectedCell);
+      selectedCell.classList.add("empty");
+      return;
+    }
+
+    if (notesMode) {
+      toggleNote(selectedCell, value);
     } else {
       setCellValue(selectedCell, value);
     }
@@ -1299,9 +1466,15 @@
   function handleKeyDown(e) {
     if (!selectedCell) return;
     if (e.key >= "1" && e.key <= "9") {
-      setCellValue(selectedCell, e.key);
+      if (notesMode) {
+        toggleNote(selectedCell, e.key);
+      } else {
+        setCellValue(selectedCell, e.key);
+      }
     } else if (e.key === "Backspace" || e.key === "Delete" || e.key === "0") {
       setCellValue(selectedCell, "");
+      clearNotes(selectedCell);
+      selectedCell.classList.add("empty");
     }
   }
 
@@ -1317,7 +1490,7 @@
       const c = parseInt(cell.dataset.col, 10);
       const idx = r * 9 + c;
       const correct = solution[idx];
-      const val = cell.textContent || "0";
+      const val = getCellValue(cell) || "0";
 
       if (cell.classList.contains("given")) return;
 
@@ -1347,11 +1520,17 @@
       const r = parseInt(cell.dataset.row, 10);
       const c = parseInt(cell.dataset.col, 10);
       const idx = r * 9 + c;
-      cell.textContent = solution[idx];
+      const val = solution[idx];
+
       cell.classList.remove("error", "empty");
       if (!cell.classList.contains("given")) {
-        cell.classList.add("filled");
+        setCellValue(cell, val);
+      } else {
+        // Ensure given cells display correctly too
+        const valueEl = cell.querySelector(".cell-value");
+        if (valueEl) valueEl.textContent = val;
       }
+      clearNotes(cell);
     });
   }
 
@@ -1383,6 +1562,17 @@
       },
       { passive: false }
     );
+  });
+
+  // Notes toggle button behaviour
+  btnNotes.addEventListener("click", () => {
+    notesMode = !notesMode;
+    btnNotes.classList.toggle("active", notesMode);
+    btnNotes.setAttribute("aria-pressed", notesMode ? "true" : "false");
+    const label = btnNotes.querySelector(".label");
+    if (label) {
+      label.textContent = notesMode ? "Notes on" : "Notes off";
+    }
   });
 
   // initial load
