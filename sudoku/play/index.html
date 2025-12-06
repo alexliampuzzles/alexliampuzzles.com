@@ -379,9 +379,7 @@
       box-shadow: var(--accent-glow);
     }
 
-    .btn-outline {
-      background: rgba(15, 23, 42, 0.95);
-    }
+    .btn-outline { background: rgba(15, 23, 42, 0.95); }
 
     .btn-outline-danger {
       border-color: rgba(248, 113, 113, 0.7);
@@ -572,6 +570,49 @@
       .number-grid { gap: 0.35rem; }
       .number-extra { gap: 0.35rem; }
       .num-key { font-size: 1rem; padding: 0.35rem 0; }
+    }
+
+    /* helper toggle */
+    .helper-toggle {
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .helper-pill {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      padding: 0.18rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .helper-pill input {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      position: relative;
+    }
+
+    .helper-pill input:checked::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f97316, #facc15);
+    }
+
+    body.theme-light .helper-pill {
+      background: #f9fafb;
+      color: #4b5563;
+      border-color: rgba(148, 163, 184, 0.7);
     }
 
     /* ==== CELLS & NOTES ==== */
@@ -968,6 +1009,14 @@
             </button>
           </div>
         </div>
+
+        <!-- Show mistakes toggle -->
+        <div class="helper-toggle">
+          <label class="helper-pill">
+            <input type="checkbox" id="toggle-mistakes">
+            <span>Show mistakes (real-time)</span>
+          </label>
+        </div>
       </div>
     </section>
 
@@ -1102,6 +1151,7 @@
   const btnSolution = document.getElementById("btn-solution");
   const numKeys = document.querySelectorAll(".num-key");
   const btnNotes = document.getElementById("btn-notes");
+  const mistakesToggle = document.getElementById("toggle-mistakes");
 
   boardEl.addEventListener("click", (e) => {
     const cell = e.target.closest(".cell");
@@ -1128,6 +1178,7 @@
   let currentPuzzle = null;
   let selectedCell = null;
   let notesMode = false;
+  let showMistakes = true; // default for Easy
 
   function boxClasses(r, c) {
     const classes = [];
@@ -1179,6 +1230,8 @@
         boardEl.appendChild(cell);
       }
     }
+
+    recomputeConflicts(); // in case showMistakes is on
   }
 
   function clearSelection() {
@@ -1270,6 +1323,43 @@
     }
   }
 
+  function removeNoteFromCell(cell, value) {
+    if (!cell) return;
+    let notes = (cell.dataset.notes || "").split("").filter(Boolean);
+    const idx = notes.indexOf(value);
+    if (idx === -1) return;
+
+    notes.splice(idx, 1);
+    cell.dataset.notes = notes.join("");
+    if (notes.length) {
+      syncNotesView(cell, notes);
+    } else {
+      clearNotes(cell);
+      if (!cell.dataset.value) cell.classList.add("empty");
+    }
+  }
+
+  // remove value from notes in same row / col / box when digit is correct
+  function clearDigitFromPeers(row, col, value) {
+    const cells = boardEl.querySelectorAll(".cell");
+    const boxRow = Math.floor(row / 3);
+    const boxCol = Math.floor(col / 3);
+
+    cells.forEach(cell => {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+      if (r === row && c === col) return;
+
+      const sameRow = r === row;
+      const sameCol = c === col;
+      const sameBox = Math.floor(r / 3) === boxRow && Math.floor(c / 3) === boxCol;
+
+      if (sameRow || sameCol || sameBox) {
+        removeNoteFromCell(cell, value);
+      }
+    });
+  }
+
   function toggleNote(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     if (!value || value < "1" || value > "9") return;
@@ -1298,6 +1388,51 @@
     if (cell === selectedCell) updateHighlights();
   }
 
+  function recomputeConflicts() {
+    if (!showMistakes) return;
+    const cells = Array.from(boardEl.querySelectorAll(".cell"));
+    cells.forEach(cell => cell.classList.remove("error"));
+
+    cells.forEach(cell => {
+      const v = getCellValue(cell);
+      if (!v) return;
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+
+      // row
+      for (let cc = 0; cc < 9; cc++) {
+        if (cc === c) continue;
+        const other = boardEl.querySelector(`.cell[data-row="${r}"][data-col="${cc}"]`);
+        if (other && getCellValue(other) === v) {
+          cell.classList.add("error");
+          other.classList.add("error");
+        }
+      }
+      // col
+      for (let rr = 0; rr < 9; rr++) {
+        if (rr === r) continue;
+        const other = boardEl.querySelector(`.cell[data-row="${rr}"][data-col="${c}"]`);
+        if (other && getCellValue(other) === v) {
+          cell.classList.add("error");
+          other.classList.add("error");
+        }
+      }
+      // box
+      const br = Math.floor(r / 3) * 3;
+      const bc = Math.floor(c / 3) * 3;
+      for (let rr = br; rr < br + 3; rr++) {
+        for (let cc = bc; cc < bc + 3; cc++) {
+          if (rr === r && cc === c) continue;
+          const other = boardEl.querySelector(`.cell[data-row="${rr}"][data-col="${cc}"]`);
+          if (other && getCellValue(other) === v) {
+            cell.classList.add("error");
+            other.classList.add("error");
+          }
+        }
+      }
+    });
+  }
+
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     const valueEl = cell.querySelector(".cell-value");
@@ -1315,6 +1450,20 @@
     }
 
     cell.classList.remove("error");
+
+    // if correct vs solution, clear that digit from notes in row/col/box
+    if (value && currentPuzzle && currentPuzzle.solution) {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+      const idx = r * 9 + c;
+      const correct = currentPuzzle.solution[idx];
+      if (value === correct) {
+        clearDigitFromPeers(r, c, value);
+      }
+    }
+
+    recomputeConflicts();
+
     if (cell === selectedCell) updateHighlights();
   }
 
@@ -1401,11 +1550,27 @@
     });
   }
 
+  function setMistakesMode(on) {
+    showMistakes = !!on;
+    mistakesToggle.checked = showMistakes;
+    if (!showMistakes) {
+      boardEl.querySelectorAll(".cell").forEach(c => c.classList.remove("error"));
+    } else {
+      recomputeConflicts();
+    }
+  }
+
+  // Difficulty defaults: Easy -> show mistakes ON, Medium/Hard -> OFF
+  function updateMistakesDefault(level) {
+    setMistakesMode(level === "easy");
+  }
+
   buttonsDifficulty.forEach((btn) => {
     btn.addEventListener("click", () => {
       buttonsDifficulty.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       currentDifficulty = btn.dataset.level;
+      updateMistakesDefault(currentDifficulty);
       loadRandomPuzzle(currentDifficulty);
     });
   });
@@ -1436,6 +1601,12 @@
     if (label) label.textContent = notesMode ? "Notes on" : "Notes";
   });
 
+  mistakesToggle.addEventListener("change", () => {
+    setMistakesMode(mistakesToggle.checked);
+  });
+
+  // initial state
+  updateMistakesDefault(currentDifficulty);
   loadRandomPuzzle(currentDifficulty);
 </script>
 
