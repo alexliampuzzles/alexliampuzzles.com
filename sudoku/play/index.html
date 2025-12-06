@@ -109,14 +109,14 @@
       font-weight: 600;
       letter-spacing: 0.07em;
       text-transform: uppercase;
-      font-size: 0.76rem;
+      font-size: 1.14rem; /* 0.76 * 1.5 */
       color: #e5e7eb;
     }
 
     body.theme-light .brand-title { color: #111827; }
 
     .brand-sub {
-      font-size: 0.7rem;
+      font-size: 1.05rem; /* 0.7 * 1.5 */
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -461,7 +461,7 @@
       font-weight: 600;
       color: #e5e7eb;
       margin-left: 0.4rem;
-      font-size: 1rem; /* ~20% larger */
+      font-size: 1rem; /* 20% larger */
     }
 
     .timer-pause {
@@ -652,7 +652,7 @@
     .helper-toggle {
       margin-top: 0.8rem;
       display: flex;
-      justify-content: center; /* center under grid */
+      justify-content: center;
       gap: 0.5rem;
       flex-wrap: wrap;
     }
@@ -662,7 +662,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.78rem;
+      font-size: 0.94rem; /* 0.78 * 1.2 */
       color: var(--text-muted);
       padding: 0.18rem 0.7rem;
       border-radius: 999px;
@@ -712,7 +712,6 @@
 
     .cell-value { line-height: 1; }
 
-    /* 3×3 mini-grid for notes */
     .cell-notes {
       position: absolute;
       inset: 0.18rem;
@@ -783,7 +782,6 @@
       color: #9ca3af;
     }
 
-    /* Row / col / box highlights */
     .cell.row-highlight:not(.selected):not(.error),
     .cell.col-highlight:not(.selected):not(.error),
     .cell.box-highlight:not(.selected):not(.error) {
@@ -870,7 +868,7 @@
     }
 
     .side-sub {
-      font-size: 0.82rem;
+      font-size: 0.98rem; /* 0.82 * 1.2 */
       color: var(--text-muted);
       margin-bottom: 1rem;
     }
@@ -1272,9 +1270,8 @@
   let currentPuzzle = null;
   let selectedCell = null;
   let notesMode = false;
-  let showMistakes = true; // default for Easy
+  let showMistakes = true;
 
-  // timer state
   let timerEnabled = false;
   let timerRunning = false;
   let timerStartMs = 0;
@@ -1414,7 +1411,7 @@
       }
     }
 
-    recomputeConflicts(); // in case showMistakes is on
+    recomputeConflicts();
   }
 
   function clearSelection() {
@@ -1522,7 +1519,6 @@
     }
   }
 
-  // remove value from notes in same row / col / box when digit is correct
   function clearDigitFromPeers(row, col, value) {
     const cells = boardEl.querySelectorAll(".cell");
     const boxRow = Math.floor(row / 3);
@@ -1582,7 +1578,6 @@
       const r = parseInt(cell.dataset.row, 10);
       const c = parseInt(cell.dataset.col, 10);
 
-      // row
       for (let cc = 0; cc < 9; cc++) {
         if (cc === c) continue;
         const other = boardEl.querySelector(`.cell[data-row="${r}"][data-col="${cc}"]`);
@@ -1591,7 +1586,6 @@
           other.classList.add("error");
         }
       }
-      // col
       for (let rr = 0; rr < 9; rr++) {
         if (rr === r) continue;
         const other = boardEl.querySelector(`.cell[data-row="${rr}"][data-col="${c}"]`);
@@ -1600,7 +1594,6 @@
           other.classList.add("error");
         }
       }
-      // box
       const br = Math.floor(r / 3) * 3;
       const bc = Math.floor(c / 3) * 3;
       for (let rr = br; rr < br + 3; rr++) {
@@ -1634,7 +1627,6 @@
 
     cell.classList.remove("error");
 
-    // if correct vs solution, clear that digit from notes in row/col/box
     if (value && currentPuzzle && currentPuzzle.solution) {
       const r = parseInt(cell.dataset.row, 10);
       const c = parseInt(cell.dataset.col, 10);
@@ -1743,7 +1735,6 @@
     }
   }
 
-  // Difficulty defaults: Easy -> mistakes ON, Medium/Hard -> OFF
   function updateMistakesDefault(level) {
     setMistakesMode(level === "easy");
   }
@@ -1792,13 +1783,11 @@
 
   timerToggle.addEventListener("change", () => {
     setTimerEnabled(timerToggle.checked);
-    // avoid treating this click as a pause click when timer just appears
     ignoreNextPauseClick = true;
   });
 
-  // initial state
   updateMistakesDefault(currentDifficulty);
-  setTimerEnabled(false); // timer off by default
+  setTimerEnabled(false);
   loadRandomPuzzle(currentDifficulty);
 </script>
 
