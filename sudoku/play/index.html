@@ -9,11 +9,10 @@
 
   <style>
     :root {
-      /* Dark theme palette (defaults) */
       --bg: #050816;
       --bg-alt: #0b1020;
       --card: #111827;
-      --grid-line: #d1d5db; /* light silver */
+      --grid-line: #d1d5db;
       --grid-box: #9ca3af;
       --text: #e5e7eb;
       --text-muted: #9ca3af;
@@ -27,17 +26,12 @@
       --btn-hover: #1f2933;
       --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
 
-      /* Light theme palette (overridden via body.theme-light) */
       --bg-light-1: #f5f7fc;
       --bg-light-2: #eef1f8;
       --bg-light-3: #e7ebf5;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
@@ -49,8 +43,6 @@
       color: var(--text);
       background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
     }
-
-    /* ----- THEME MODES ----- */
 
     body.theme-dark {
       color: var(--text);
@@ -91,11 +83,7 @@
       font-size: 0.9rem;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
+    .brand { display: flex; align-items: center; gap: 0.8rem; }
 
     .logo-mark {
       width: 28px;
@@ -115,11 +103,7 @@
       color: #111827;
     }
 
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 0.1rem;
-    }
+    .brand-text { display: flex; flex-direction: column; gap: 0.1rem; }
 
     .brand-title {
       font-weight: 600;
@@ -129,9 +113,7 @@
       color: #e5e7eb;
     }
 
-    body.theme-light .brand-title {
-      color: #111827;
-    }
+    body.theme-light .brand-title { color: #111827; }
 
     .brand-sub {
       font-size: 0.7rem;
@@ -140,17 +122,9 @@
       color: var(--text-muted);
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 1.2rem;
-    }
+    .header-right { display: flex; align-items: center; gap: 1.2rem; }
 
-    .nav-links {
-      display: flex;
-      gap: 1.4rem;
-      font-size: 0.85rem;
-    }
+    .nav-links { display: flex; gap: 1.4rem; font-size: 0.85rem; }
 
     .nav-links a {
       color: var(--text-muted);
@@ -170,16 +144,9 @@
       transition: width 0.2s ease-out;
     }
 
-    .nav-links a:hover {
-      color: #e5e7eb;
-    }
-    body.theme-light .nav-links a:hover {
-      color: #111827;
-    }
-
-    .nav-links a:hover::after {
-      width: 100%;
-    }
+    .nav-links a:hover { color: #e5e7eb; }
+    body.theme-light .nav-links a:hover { color: #111827; }
+    .nav-links a:hover::after { width: 100%; }
 
     .btn-theme {
       border-radius: 999px;
@@ -220,12 +187,8 @@
     }
 
     @media (max-width: 880px) {
-      body {
-        padding: 1.25rem;
-      }
-      main {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      body { padding: 1.25rem; }
+      main { grid-template-columns: minmax(0, 1fr); }
     }
 
     .board-card, .side-card {
@@ -257,14 +220,9 @@
       border: 1px solid rgba(148, 163, 184, 0.35);
       box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
     }
-    body.theme-light .board-card::before {
-      display: none;
-    }
+    body.theme-light .board-card::before { display: none; }
 
-    .board-card-inner {
-      position: relative;
-      z-index: 1;
-    }
+    .board-card-inner { position: relative; z-index: 1; }
 
     .board-header {
       display: flex;
@@ -400,9 +358,7 @@
       border-color: rgba(55, 65, 81, 0.7);
     }
 
-    .btn:active {
-      transform: translateY(1px);
-    }
+    .btn:active { transform: translateY(1px); }
 
     .btn-primary {
       border-color: rgba(248, 250, 252, 0.15);
@@ -472,7 +428,7 @@
       gap: 0;
       border-radius: 0.9rem;
       overflow: hidden;
-      border: 3px solid rgba(229, 231, 235, 0.95); /* strongest main border */
+      border: 3px solid rgba(229, 231, 235, 0.95);
       aspect-ratio: 1 / 1;
       background: #0b1220;
     }
@@ -482,10 +438,25 @@
       border-color: rgba(148, 163, 184, 0.9);
     }
 
+    /* ===== Number pad: 3×3 + right column ===== */
     .number-pad {
       margin-top: 0.7rem;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: 3fr 1fr;
+      column-gap: 0.5rem;
+      align-items: stretch;
+    }
+
+    .number-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+
+    .number-extra {
+      display: flex;
+      flex-direction: column;
       gap: 0.4rem;
     }
 
@@ -494,7 +465,7 @@
       border: 1px solid rgba(148, 163, 184, 0.7);
       background: rgba(15, 23, 42, 0.95);
       color: #e5e7eb;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       padding: 0.45rem 0;
       cursor: pointer;
       display: inline-flex;
@@ -508,18 +479,49 @@
       border-color: #e5e7eb;
     }
 
-    .num-key:active {
-      transform: translateY(1px);
-    }
+    .num-key:active { transform: translateY(1px); }
 
     .num-key-erase {
       border-color: rgba(248, 113, 113, 0.75);
       color: #fecaca;
+      font-size: 1.1rem;
     }
 
     .num-key-erase:hover {
       background: rgba(127, 29, 29, 0.85);
       border-color: rgba(252, 165, 165, 1);
+    }
+
+    /* Notes button inside pad */
+    .btn-notes {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      padding: 0.3rem 0.4rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+    }
+
+    .btn-notes span.icon { font-size: 1.1rem; }
+
+    .btn-notes:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+      color: #e5e7eb;
+    }
+
+    .btn-notes.active {
+      background: rgba(249, 115, 22, 0.12);
+      border-color: #f97316;
+      color: #fed7aa;
     }
 
     body.theme-light .num-key {
@@ -545,15 +547,31 @@
       border-color: #fca5a5;
     }
 
+    body.theme-light .btn-notes {
+      background: #f9fafb;
+      color: #4b5563;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    body.theme-light .btn-notes:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    body.theme-light .btn-notes.active {
+      background: #fffbeb;
+      border-color: #f97316;
+      color: #b45309;
+    }
+
     @media (max-width: 480px) {
       .number-pad {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 0.35rem;
+        grid-template-columns: 3fr 1.2fr;
+        column-gap: 0.35rem;
       }
-      .num-key {
-        padding: 0.4rem 0;
-        font-size: 1rem;
-      }
+      .number-grid { gap: 0.35rem; }
+      .number-extra { gap: 0.35rem; }
+      .num-key { font-size: 1rem; padding: 0.35rem 0; }
     }
 
     /* ==== CELLS & NOTES ==== */
@@ -561,7 +579,7 @@
     .cell {
       width: 100%;
       height: 100%;
-      border: 1px solid rgba(229, 231, 235, 0.35); /* light silver */
+      border: 1px solid rgba(229, 231, 235, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -569,59 +587,55 @@
       user-select: none;
       transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
       color: #f9fafb;
-      font-size: 2.2rem; /* base font-size for main digits */
+      font-size: 2.2rem;
       position: relative;
     }
 
-    .cell-value {
-      line-height: 1;
-    }
+    .cell-value { line-height: 1; }
 
+    /* 3×3 mini-grid for notes */
     .cell-notes {
       position: absolute;
-      inset: 0.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      font-size: 0.75rem;
-      line-height: 1.1;
+      inset: 0.18rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      font-size: 0.6rem;
+      line-height: 1;
       color: var(--text-muted);
       text-align: center;
       pointer-events: none;
-      white-space: pre-wrap;
     }
 
-    body.theme-light .cell-notes {
-      color: #6b7280;
+    .cell-notes span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
+    body.theme-light .cell-notes { color: #6b7280; }
 
     @media (max-width: 700px) {
-      .cell {
-        font-size: 1.2rem; /* value size; notes stay small */
-      }
+      .cell { font-size: 1.2rem; }
+      .cell-notes { font-size: 0.45rem; }
     }
 
-    /* =============================
-       Light Mode Grid Line Enhancements
-       ============================= */
-
     body.theme-light .cell {
-      border-color: rgba(100, 116, 139, 0.9); /* inner grid lines darker */
+      border-color: rgba(100, 116, 139, 0.9);
       color: #111827;
       background: #ffffff;
     }
 
     body.theme-light .cell.box-right {
-      border-right: 2px solid rgba(30, 41, 59, 1); /* stronger box border */
+      border-right: 2px solid rgba(30, 41, 59, 1);
     }
 
     body.theme-light .cell.box-bottom {
-      border-bottom: 2px solid rgba(30, 41, 59, 1); /* stronger box border */
+      border-bottom: 2px solid rgba(30, 41, 59, 1);
     }
 
     body.theme-light .board {
-      border: 3px solid rgba(30, 41, 59, 1); /* outer frame darkest */
+      border: 3px solid rgba(30, 41, 59, 1);
     }
 
     .cell.box-right {
@@ -634,37 +648,33 @@
 
     .cell.given {
       font-weight: 600;
-      color: #f9fafb;      /* bright white for givens in dark theme */
+      color: #f9fafb;
     }
 
     .cell.empty {
-      color: var(--text-muted);  /* grey / “waiting” */
+      color: var(--text-muted);
     }
 
     body.theme-light .cell.given {
       font-weight: 600;
-      color: #111827;      /* strong black for clues */
+      color: #111827;
     }
 
     body.theme-light .cell.empty {
-      color: #9ca3af;      /* lighter grey for empty cells */
+      color: #9ca3af;
     }
 
-    /* ===== Highlighting ===== */
-
-    /* Base (dark mode) – same background for row/col/box */
+    /* Row / col / box highlights */
     .cell.row-highlight:not(.selected):not(.error),
     .cell.col-highlight:not(.selected):not(.error),
     .cell.box-highlight:not(.selected):not(.error) {
-      background: rgba(96, 165, 250, 0.28);  /* sky-400 overlay */
+      background: rgba(96, 165, 250, 0.28);
     }
 
-    /* Same-digit highlight background (dark) */
     .cell.same-digit:not(.selected):not(.error) {
       background: rgba(250, 204, 21, 0.30);
     }
 
-    /* Selected cell – dark mode base */
     .cell.selected {
       background: rgba(248, 250, 252, 0.18);
       border-color: #facc15;
@@ -675,21 +685,19 @@
       z-index: 5;
     }
 
-    /* ----- Light theme highlight tuning ----- */
-
     body.theme-light .cell.row-highlight:not(.selected):not(.error),
     body.theme-light .cell.col-highlight:not(.selected):not(.error),
     body.theme-light .cell.box-highlight:not(.selected):not(.error) {
-      background: #dbeafe;  /* sky-100 */
+      background: #dbeafe;
     }
 
     body.theme-light .cell.same-digit:not(.selected):not(.error) {
-      background: #fef3c7;  /* amber-100 */
+      background: #fef3c7;
     }
 
     body.theme-light .cell.selected {
       background: #fef3c7;
-      border-color: #ea580c;  /* strong orange */
+      border-color: #ea580c;
       box-shadow:
         inset 0 0 0 2px #ea580c,
         0 0 8px rgba(248, 113, 22, 0.55),
@@ -697,59 +705,43 @@
       z-index: 5;
     }
 
-    /* User inputs have same weight as givens, even when marked as error */
-    .cell.filled {
-      font-weight: 600;
-    }
+    .cell.filled { font-weight: 600; }
 
-    /* DARK MODE – user input color (slightly brighter) */
     .cell.filled:not(.given):not(.error) {
-      color: #7dd3fc; /* sky-300 – readable on dark background */
+      color: #7dd3fc;
     }
 
-    /* Dark mode error */
     .cell.error {
-      background: rgba(239, 68, 68, 0.28);  /* soft red overlay */
+      background: rgba(239, 68, 68, 0.28);
       box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
-      color: #fecaca;  /* light red text, still very readable on dark */
+      color: #fecaca;
     }
 
-    /* Light mode error override */
     body.theme-light .cell.error {
-      background: #fee2e2;  /* light red background */
+      background: #fee2e2;
       box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.3);
-      color: #b91c1c;  /* dark red text */
+      color: #b91c1c;
     }
 
-    /* LIGHT MODE – user input color */
     body.theme-light .cell.filled:not(.given):not(.error) {
-      color: #1d4ed8;  /* dark blue for user entries */
+      color: #1d4ed8;
     }
 
-    /* When a digit is selected, ALL same digits (givens + user) use the same color */
-
-    /* Dark mode */
     .cell.same-digit:not(.error),
     .cell.filled.same-digit:not(.error),
     .cell.given.same-digit:not(.error) {
-      color: #facc15;  /* bright yellow for all same digits */
+      color: #facc15;
     }
 
-    /* Light mode */
     body.theme-light .cell.same-digit:not(.error),
     body.theme-light .cell.filled.same-digit:not(.error),
     body.theme-light .cell.given.same-digit:not(.error) {
-      color: #b45309;  /* higher-contrast amber on light background */
+      color: #b45309;
     }
 
-    .side-card {
-      min-height: 260px;
-    }
+    .side-card { min-height: 260px; }
 
-    .side-card-inner {
-      position: relative;
-      z-index: 1;
-    }
+    .side-card-inner { position: relative; z-index: 1; }
 
     .side-heading {
       font-size: 1.05rem;
@@ -807,9 +799,7 @@
       color: #e5e7eb;
       font-weight: 500;
     }
-    body.theme-light .legend span.key {
-      color: #111827;
-    }
+    body.theme-light .legend span.key { color: #111827; }
 
     .pill {
       display: inline-flex;
@@ -848,14 +838,8 @@
       padding-top: 0.8rem;
     }
 
-    footer a {
-      color: #60a5fa;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
+    footer a { color: #60a5fa; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
 
     body.theme-light footer {
       border-top-color: rgba(148, 163, 184, 0.5);
@@ -892,81 +876,12 @@
     }
 
     @media (max-width: 480px) {
-      body {
-        padding: 1rem;
-      }
-      .board-card, .side-card {
-        border-radius: 1rem;
-      }
-      .board-wrapper {
-        padding: 0.9rem;
-      }
-      .board-title {
-        font-size: 1.05rem;
-      }
-      .nav-links {
-        font-size: 0.8rem;
-      }
-      .logo-mark {
-        width: 26px;
-        height: 26px;
-      }
-    }
-
-    /* Notes toggle button */
-    .notes-toggle {
-      margin-bottom: 0.6rem;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .btn-notes {
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      padding: 0.25rem 0.7rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
-    }
-
-    .btn-notes span.icon {
-      font-size: 0.85rem;
-    }
-
-    .btn-notes:hover {
-      background: #111827;
-      border-color: #e5e7eb;
-      color: #e5e7eb;
-    }
-
-    .btn-notes.active {
-      background: rgba(249, 115, 22, 0.12);
-      border-color: #f97316;
-      color: #fed7aa;
-    }
-
-    body.theme-light .btn-notes {
-      background: #f9fafb;
-      color: #4b5563;
-      border-color: rgba(148, 163, 184, 0.7);
-    }
-
-    body.theme-light .btn-notes:hover {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    body.theme-light .btn-notes.active {
-      background: #fffbeb;
-      border-color: #f97316;
-      color: #b45309;
+      body { padding: 1rem; }
+      .board-card, .side-card { border-radius: 1rem; }
+      .board-wrapper { padding: 0.9rem; }
+      .board-title { font-size: 1.05rem; }
+      .nav-links { font-size: 0.8rem; }
+      .logo-mark { width: 26px; height: 26px; }
     }
   </style>
 </head>
@@ -1028,30 +943,30 @@
           </div>
         </div>
 
-        <!-- Notes toggle -->
-        <div class="notes-toggle">
-          <button id="btn-notes" class="btn-notes" type="button" aria-pressed="false">
-            <span class="icon">✏</span>
-            <span class="label">Notes off</span>
-          </button>
-        </div>
-
         <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
         </div>
 
-        <!-- On-screen number pad for mobile & desktop -->
+        <!-- Number pad: 3×3 numbers + right column with erase + notes -->
         <div class="number-pad" aria-label="Number input">
-          <button class="num-key" data-value="1">1</button>
-          <button class="num-key" data-value="2">2</button>
-          <button class="num-key" data-value="3">3</button>
-          <button class="num-key" data-value="4">4</button>
-          <button class="num-key" data-value="5">5</button>
-          <button class="num-key" data-value="6">6</button>
-          <button class="num-key" data-value="7">7</button>
-          <button class="num-key" data-value="8">8</button>
-          <button class="num-key" data-value="9">9</button>
-          <button class="num-key num-key-erase" data-value="clear">⌫</button>
+          <div class="number-grid">
+            <button class="num-key" data-value="1">1</button>
+            <button class="num-key" data-value="2">2</button>
+            <button class="num-key" data-value="3">3</button>
+            <button class="num-key" data-value="4">4</button>
+            <button class="num-key" data-value="5">5</button>
+            <button class="num-key" data-value="6">6</button>
+            <button class="num-key" data-value="7">7</button>
+            <button class="num-key" data-value="8">8</button>
+            <button class="num-key" data-value="9">9</button>
+          </div>
+          <div class="number-extra">
+            <button class="num-key num-key-erase" data-value="clear">⌫</button>
+            <button id="btn-notes" class="btn-notes" type="button" aria-pressed="false">
+              <span class="icon">✏</span>
+              <span class="label">Notes</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -1114,17 +1029,12 @@
   function applyTheme(theme) {
     document.body.classList.remove("theme-dark", "theme-light");
     document.body.classList.add("theme-" + theme);
-    if (theme === "dark") {
-      themeToggleBtn.textContent = "🌙 Dark";
-    } else {
-      themeToggleBtn.textContent = "☀ Light";
-    }
+    themeToggleBtn.textContent = theme === "dark" ? "🌙 Dark" : "☀ Light";
   }
 
   (function initTheme() {
     let saved = localStorage.getItem("sudokuTheme");
     if (!saved) {
-      // Use system preference on first visit
       if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
         saved = "light";
       } else {
@@ -1141,26 +1051,17 @@
     localStorage.setItem("sudokuTheme", next);
   });
 
-  // --- Puzzle data loading from JSON files in /data/ ---
+  // --- Puzzle data ---
   const DATA_FILES = {
     easy: "data/classic_easy.json",
     medium: "data/classic_medium.json",
     hard: "data/classic_hard.json"
   };
 
-  // After loading, PUZZLES[level] will be an array of
-  // { puzzle: "...81 chars...", solution: "...81 chars..." }
-  const PUZZLES = {
-    easy: [],
-    medium: [],
-    hard: []
-  };
+  const PUZZLES = { easy: [], medium: [], hard: [] };
 
   function gridToString(grid) {
-    // Accept either a 9×9 array or an 81-char string and normalize to a string.
-    if (!Array.isArray(grid)) {
-      return String(grid || "");
-    }
+    if (!Array.isArray(grid)) return String(grid || "");
     const flat = [];
     for (let r = 0; r < grid.length; r++) {
       const row = grid[r] || [];
@@ -1174,30 +1075,23 @@
 
   async function ensurePuzzlesLoaded(level) {
     if (PUZZLES[level] && PUZZLES[level].length) return;
-
     const url = DATA_FILES[level];
-    if (!url) {
-      console.error("No data file configured for level", level);
-      return;
-    }
+    if (!url) return;
 
     try {
       const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("HTTP " + response.status);
-      }
+      if (!response.ok) throw new Error("HTTP " + response.status);
       const data = await response.json();
       if (!data || !data.puzzles || !Array.isArray(data.puzzles)) {
         throw new Error("Invalid puzzle JSON format");
       }
-
       PUZZLES[level] = data.puzzles.map((entry) => ({
         puzzle: gridToString(entry.puzzle),
         solution: gridToString(entry.solution)
       }));
     } catch (err) {
       console.error("Failed to load puzzles for", level, err);
-      alert("Sorry, I couldn't load the " + level + " puzzles right now. Please try again in a moment.");
+      alert("Sorry, I couldn't load the " + level + " puzzles right now.");
     }
   }
 
@@ -1209,28 +1103,21 @@
   const numKeys = document.querySelectorAll(".num-key");
   const btnNotes = document.getElementById("btn-notes");
 
-  // ----- Pointer handling (desktop + mobile) -----
-
-  // Clicks (desktop + mobile)
   boardEl.addEventListener("click", (e) => {
     const cell = e.target.closest(".cell");
     if (!cell) return;
     selectCell(cell);
   });
 
-  // Touch (iPhone / Android) – use touch coordinates to find the cell
   boardEl.addEventListener(
     "touchend",
     (e) => {
       const touch = e.changedTouches && e.changedTouches[0];
       if (!touch) return;
-
       const target = document.elementFromPoint(touch.clientX, touch.clientY);
       if (!target) return;
-
       const cell = target.closest(".cell");
       if (!cell) return;
-
       e.preventDefault();
       selectCell(cell);
     },
@@ -1240,7 +1127,7 @@
   let currentDifficulty = "easy";
   let currentPuzzle = null;
   let selectedCell = null;
-  let notesMode = false; // global notes toggle
+  let notesMode = false;
 
   function boxClasses(r, c) {
     const classes = [];
@@ -1252,9 +1139,7 @@
   async function loadRandomPuzzle(level) {
     await ensurePuzzlesLoaded(level);
     const list = PUZZLES[level];
-    if (!list || !list.length) {
-      return;
-    }
+    if (!list || !list.length) return;
     const idx = Math.floor(Math.random() * list.length);
     currentPuzzle = list[idx];
     renderBoard();
@@ -1263,7 +1148,6 @@
   function renderBoard() {
     boardEl.innerHTML = "";
     selectedCell = null;
-
     if (!currentPuzzle) return;
 
     const p = currentPuzzle.puzzle;
@@ -1310,8 +1194,6 @@
 
   function updateHighlights() {
     const cells = boardEl.querySelectorAll(".cell");
-
-    // Clear old highlights
     cells.forEach(cell => {
       cell.classList.remove("row-highlight", "col-highlight", "same-digit", "box-highlight");
     });
@@ -1322,7 +1204,6 @@
     const col = parseInt(selectedCell.dataset.col, 10);
     const value = getCellValue(selectedCell);
 
-    // Determine selected box (0..2)
     const boxRow = Math.floor(row / 3);
     const boxCol = Math.floor(col / 3);
 
@@ -1330,31 +1211,18 @@
       const r = parseInt(cell.dataset.row, 10);
       const c = parseInt(cell.dataset.col, 10);
 
-      // Row highlight
-      if (r === row) {
-        cell.classList.add("row-highlight");
-      }
+      if (r === row) cell.classList.add("row-highlight");
+      if (c === col) cell.classList.add("col-highlight");
 
-      // Column highlight
-      if (c === col) {
-        cell.classList.add("col-highlight");
-      }
-
-      // 3×3 box highlight
       const br = Math.floor(r / 3);
       const bc = Math.floor(c / 3);
+      if (br === boxRow && bc === boxCol) cell.classList.add("box-highlight");
 
-      if (br === boxRow && bc === boxCol) {
-        cell.classList.add("box-highlight");
-      }
-
-      // Same-digit highlight
       if (value && getCellValue(cell) === value) {
         cell.classList.add("same-digit");
       }
     });
 
-    // Selected cell stays strongest
     selectedCell.classList.add("selected");
   }
 
@@ -1369,9 +1237,7 @@
     if (!cell) return;
     cell.dataset.notes = "";
     const notesEl = cell.querySelector(".cell-notes");
-    if (notesEl) {
-      notesEl.remove();
-    }
+    if (notesEl) notesEl.remove();
   }
 
   function ensureNotesElement(cell) {
@@ -1379,16 +1245,35 @@
     if (!notesEl) {
       notesEl = document.createElement("div");
       notesEl.className = "cell-notes";
+      for (let d = 1; d <= 9; d++) {
+        const span = document.createElement("span");
+        span.dataset.digit = String(d);
+        span.textContent = "";
+        notesEl.appendChild(span);
+      }
       cell.appendChild(notesEl);
     }
     return notesEl;
+  }
+
+  function syncNotesView(cell, notes) {
+    const notesSet = new Set(notes);
+    const notesEl = ensureNotesElement(cell);
+    notesEl.querySelectorAll("span").forEach(span => {
+      const d = span.dataset.digit;
+      span.textContent = notesSet.has(d) ? d : "";
+    });
+    if (notesSet.size) {
+      cell.classList.remove("empty");
+    } else if (!cell.dataset.value) {
+      cell.classList.add("empty");
+    }
   }
 
   function toggleNote(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     if (!value || value < "1" || value > "9") return;
 
-    // If cell has a main value, clear it first when entering notes
     if (cell.dataset.value) {
       setCellValue(cell, "");
     }
@@ -1404,29 +1289,21 @@
     cell.dataset.notes = notes.join("");
 
     if (notes.length) {
-      const el = ensureNotesElement(cell);
-      el.textContent = notes.join(" ");
-      cell.classList.remove("empty");
+      syncNotesView(cell, notes);
     } else {
       clearNotes(cell);
-      if (!cell.dataset.value) {
-        cell.classList.add("empty");
-      }
+      if (!cell.dataset.value) cell.classList.add("empty");
     }
 
-    if (cell === selectedCell) {
-      updateHighlights();
-    }
+    if (cell === selectedCell) updateHighlights();
   }
 
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
-
     const valueEl = cell.querySelector(".cell-value");
     cell.dataset.value = value || "";
 
     if (value) {
-      // When we set a definitive value, remove notes
       clearNotes(cell);
       valueEl.textContent = value;
       cell.classList.add("filled");
@@ -1434,22 +1311,16 @@
     } else {
       valueEl.textContent = "";
       cell.classList.remove("filled");
-      if (!cell.dataset.notes) {
-        cell.classList.add("empty");
-      }
+      if (!cell.dataset.notes) cell.classList.add("empty");
     }
 
     cell.classList.remove("error");
-
-    if (cell === selectedCell) {
-      updateHighlights();
-    }
+    if (cell === selectedCell) updateHighlights();
   }
 
   function handleNumInput(value) {
     if (!selectedCell) return;
     if (value === "clear") {
-      // Clear value and any notes
       setCellValue(selectedCell, "");
       clearNotes(selectedCell);
       selectedCell.classList.add("empty");
@@ -1466,11 +1337,8 @@
   function handleKeyDown(e) {
     if (!selectedCell) return;
     if (e.key >= "1" && e.key <= "9") {
-      if (notesMode) {
-        toggleNote(selectedCell, e.key);
-      } else {
-        setCellValue(selectedCell, e.key);
-      }
+      if (notesMode) toggleNote(selectedCell, e.key);
+      else setCellValue(selectedCell, e.key);
     } else if (e.key === "Backspace" || e.key === "Delete" || e.key === "0") {
       setCellValue(selectedCell, "");
       clearNotes(selectedCell);
@@ -1526,7 +1394,6 @@
       if (!cell.classList.contains("given")) {
         setCellValue(cell, val);
       } else {
-        // Ensure given cells display correctly too
         const valueEl = cell.querySelector(".cell-value");
         if (valueEl) valueEl.textContent = val;
       }
@@ -1550,10 +1417,7 @@
 
   numKeys.forEach((key) => {
     const val = key.dataset.value;
-
     key.addEventListener("click", () => handleNumInput(val));
-
-    // For iPhone / mobile taps
     key.addEventListener(
       "touchend",
       (e) => {
@@ -1564,18 +1428,14 @@
     );
   });
 
-  // Notes toggle button behaviour
   btnNotes.addEventListener("click", () => {
     notesMode = !notesMode;
     btnNotes.classList.toggle("active", notesMode);
     btnNotes.setAttribute("aria-pressed", notesMode ? "true" : "false");
     const label = btnNotes.querySelector(".label");
-    if (label) {
-      label.textContent = notesMode ? "Notes on" : "Notes off";
-    }
+    if (label) label.textContent = notesMode ? "Notes on" : "Notes";
   });
 
-  // initial load
   loadRandomPuzzle(currentDifficulty);
 </script>
 
