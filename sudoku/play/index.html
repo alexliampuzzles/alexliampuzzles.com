@@ -853,11 +853,27 @@
       color: #facc15;
     }
 
-    body.theme-light .cell.same-digit:not(.error),
-    body.theme-light .cell.filled.same-digit:not(.error),
-    body.theme-light .cell.given.same-digit:not(.error) {
-      color: #b45309;
+    /* Light mode: same digit highlight uses dark green text */
+    body.theme-light .cell.same-digit:not(.error) {
+      color: #166534 !important;  /* dark emerald green 800 */
     }
+    
+    /* Light mode: selected cell background = yellow, digit = dark green */
+    body.theme-light .cell.selected {
+      background: #fef3c7 !important;     /* same yellow highlight as before */
+      border-color: #166534 !important;   /* thinner green outline */
+      box-shadow:
+        inset 0 0 0 1.5px #166534,
+        0 0 6px rgba(22, 101, 52, 0.30);
+      color: #166534 !important;          /* selected digit = dark green */
+    }
+
+    /* Light mode: given digits also turn green if they match selected digit */
+    body.theme-light .cell.given.same-digit:not(.selected):not(.error) {
+      color: #166534 !important;
+    }
+
+    body.theme-light .cell.filled.same-digit:not(.error),
 
     .side-card { min-height: 260px; }
 
