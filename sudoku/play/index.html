@@ -604,9 +604,12 @@
     }
 
     /* Completed digit: faded with checkmark */
-    .num-key.completed {
+   .num-key.completed {
       opacity: 0.35;
+      cursor: default;
+      pointer-events: none;   /* 🔒 no mouse / touch input */
     }
+
 
     .num-key.completed::after {
       content: "✓";
@@ -1098,7 +1101,11 @@
       <nav class="nav-links">
         <a href="/">Home</a>
         <a href="/printables/easy-sudoku.html">Printables</a>
-        <a href="https://www.amazon.com/author/alex_liam">My books</a>
+        <a href="https://www.amazon.com/author/alex_liam">
+          target="_blank"
+            rel="noopener noreferrer">
+          My books
+        </a>
       </nav>
       <button id="theme-toggle" class="btn-theme" type="button">
         🌙 Dark
