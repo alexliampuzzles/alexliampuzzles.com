@@ -812,16 +812,17 @@
       background: #fef3c7;
     }
 
-    /* Light mode selected cell – soft green */
+    /* Light mode selected cell — subtle green highlight */
     body.theme-light .cell.selected {
-      background: #D1FADF !important;    /* soft mint background */
-      border-color: #16A34A !important;  /* emerald border */
+      background: #E6F8EC !important;    /* very soft green tint */
+      border-color: #166534 !important;  /* dark green (emerald 800) */
       box-shadow:
-        inset 0 0 0 2px #16A34A,
-        0 0 8px rgba(22, 163, 74, 0.45),
-        0 0 0 1px rgba(0, 0, 0, 0.08);
+        inset 0 0 0 1.5px #166534,       /* thinner, cleaner outline */
+        0 0 6px rgba(22, 101, 52, 0.30); /* soft emerald glow */
+      color: #166534 !important;         /* selected digit turns dark green */
       z-index: 5;
     }
+
 
 
     .cell.filled { font-weight: 600; }
