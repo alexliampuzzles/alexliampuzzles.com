@@ -1807,16 +1807,21 @@
   
   function flashWrongDigit(cell) {
     if (!cell) return;
+  
+    // Brief red flash in BOTH themes
     cell.classList.add("error");
+  
     setTimeout(() => {
-      // only remove if it’s still a “pure” error from our flash
-      if (!cell.classList.contains("given") && !getCellValue(cell)) {
-        cell.classList.remove("error");
+      // If real-time mistakes are enabled, restore "true" errors
+      if (showMistakes) {
+        recomputeConflicts();
       } else {
+        // Otherwise just remove our temporary flash
         cell.classList.remove("error");
       }
-    }, 300);
+    }, 220);
   }
+
   
   /**
    * Only commits a digit to a cell if it matches the solution.
