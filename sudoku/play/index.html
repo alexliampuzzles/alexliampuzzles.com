@@ -1162,17 +1162,18 @@
       position: relative;
     }
     
-    /* Tiny dot — 50% smaller than before */
     .cell.given::before {
-      content: "";
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 5px;   /* smaller */
-      height: 5px;  /* smaller */
-      border-radius: 50%;
-      background: #ef4444; /* red */
-    }
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background: rgba(239, 68, 68, 0.4); /* soft red, not strong */
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    border-radius: 1px;
+  }
+
 
 
 
