@@ -1854,29 +1854,28 @@
     }, 220);
   }
 
-  /**
-   * Only commits a digit to a cell if it matches the solution.
-   * Clearing a cell is always allowed.
-   */
   function trySetCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
-
-    // clearing is always allowed
+  
+    // Clearing is always allowed
     if (!value) {
       setCellValue(cell, "");
       return;
     }
-
-    // check against the known solution
-    if (!isCorrectDigitForCell(cell, value)) {
-      flashWrongDigit(cell);   // show brief red feedback
-      showWrongTooltip();      // show tooltip message
+  
+    // If real-time mistakes are enabled, block wrong digits immediately
+    if (showMistakes && !isCorrectDigitForCell(cell, value)) {
+      flashWrongDigit(cell);   // brief red feedback
+      showWrongTooltip();      // center message on the grid
       return;                  // do NOT store the wrong value
     }
-
-    // correct → commit normally
+  
+    // Either:
+    //  - mistakes OFF → allow any digit
+    //  - mistakes ON and digit is correct → commit it
     setCellValue(cell, value);
   }
+
 
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
