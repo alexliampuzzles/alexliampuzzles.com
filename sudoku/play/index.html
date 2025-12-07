@@ -1123,6 +1123,76 @@
       transform: translate(-50%, -50%) scale(1.02);
     }
 
+    /* === Unified digit color for clues & user entries === */
+
+    /* Dark mode: all digits white-ish */
+    body.theme-dark .cell,
+    body.theme-dark .cell.given,
+    body.theme-dark .cell.filled {
+      color: #f9fafb;
+    }
+    
+    /* Light mode: all digits dark */
+    body.theme-light .cell,
+    body.theme-light .cell.given,
+    body.theme-light .cell.filled {
+      color: #111827;
+    }
+    
+    /* Keep “given” a bit bolder, but same color */
+    .cell.given,
+    .cell.filled {
+      font-weight: 600;
+    }
+    
+    /* Don’t recolor same-digit cells, only background will differ */
+    .cell.same-digit:not(.error),
+    .cell.filled.same-digit:not(.error),
+    .cell.given.same-digit:not(.error),
+    body.theme-light .cell.same-digit:not(.error),
+    body.theme-light .cell.given.same-digit:not(.error) {
+      color: inherit;
+    }
+
+    /* === Red pin for given clues === */
+
+    .cell.given {
+      position: relative; /* so we can position the pin inside */
+    }
+    
+    /* Round pin head */
+    .cell.given::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #ef4444; /* red */
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.65),
+        0 2px 3px rgba(0, 0, 0, 0.45);
+    }
+    
+    /* Optional: little pin stem (small rectangle) */
+    .cell.given::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 7px;
+      width: 2px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+    
+    body.theme-light .cell.given::after {
+      background: rgba(55, 65, 81, 0.9);
+    }
+
+
+
   </style>
 </head>
 <body class="theme-dark">
