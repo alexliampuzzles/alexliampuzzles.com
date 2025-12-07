@@ -1123,60 +1123,6 @@
       transform: translate(-50%, -50%) scale(1.02);
     }
 
-    /* === Unified digit color for clues & user entries === */
-
-    /* Dark mode: all digits white-ish */
-    body.theme-dark .cell,
-    body.theme-dark .cell.given,
-    body.theme-dark .cell.filled {
-      color: #f9fafb;
-    }
-    
-    /* Light mode: all digits dark */
-    body.theme-light .cell,
-    body.theme-light .cell.given,
-    body.theme-light .cell.filled {
-      color: #111827;
-    }
-    
-    /* Keep “given” a bit bolder, but same color */
-    .cell.given,
-    .cell.filled {
-      font-weight: 600;
-    }
-    
-    /* Don’t recolor same-digit cells, only background will differ */
-    .cell.same-digit:not(.error),
-    .cell.filled.same-digit:not(.error),
-    .cell.given.same-digit:not(.error),
-    body.theme-light .cell.same-digit:not(.error),
-    body.theme-light .cell.given.same-digit:not(.error) {
-      color: inherit;
-    }
-
-    /* === Red pin for given clues === */
-
-    /* === Minimal small red dot for given clues === */
-
-    .cell.given {
-      position: relative;
-    }
-    
-    .cell.given::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 6px;
-    background: rgba(239, 68, 68, 0.6); /* soft red, not strong */
-    clip-path: polygon(0 0, 100% 0, 0 100%);
-    border-radius: 1px;
-  }
-
-
-
-
   </style>
 </head>
 <body class="theme-dark">
