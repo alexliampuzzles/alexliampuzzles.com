@@ -1796,6 +1796,52 @@
     showCompletionMessage();
   }
 
+  function isCorrectDigitForCell(cell, value) {
+    if (!currentPuzzle || !currentPuzzle.solution || !cell) return true; // fail-safe
+    const r = parseInt(cell.dataset.row, 10);
+    const c = parseInt(cell.dataset.col, 10);
+    const idx = r * 9 + c;
+    const correct = currentPuzzle.solution[idx];
+    return value === correct;
+  }
+  
+  function flashWrongDigit(cell) {
+    if (!cell) return;
+    cell.classList.add("error");
+    setTimeout(() => {
+      // only remove if it’s still a “pure” error from our flash
+      if (!cell.classList.contains("given") && !getCellValue(cell)) {
+        cell.classList.remove("error");
+      } else {
+        cell.classList.remove("error");
+      }
+    }, 300);
+  }
+  
+  /**
+   * Only commits a digit to a cell if it matches the solution.
+   * Clearing a cell is always allowed.
+   */
+  function trySetCellValue(cell, value) {
+    if (!cell || cell.classList.contains("given")) return;
+  
+    // clearing is always allowed
+    if (!value) {
+      setCellValue(cell, "");
+      return;
+    }
+  
+    // check against the known solution
+    if (!isCorrectDigitForCell(cell, value)) {
+      flashWrongDigit(cell);   // show brief red feedback
+      return;                  // do NOT store the wrong value
+    }
+  
+    // correct → commit normally
+    setCellValue(cell, value);
+  }
+
+  
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     const valueEl = cell.querySelector(".cell-value");
@@ -1833,25 +1879,33 @@
 
   function handleNumInput(value) {
     if (!selectedCell) return;
+  
     if (value === "clear") {
       setCellValue(selectedCell, "");
       clearNotes(selectedCell);
       selectedCell.classList.add("empty");
       return;
     }
-
+  
     if (notesMode) {
+      // notes can be any digits, independent of the solution
       toggleNote(selectedCell, value);
     } else {
-      setCellValue(selectedCell, value);
+      // normal play → only accept if digit matches the solution
+      trySetCellValue(selectedCell, value);
     }
   }
 
+
   function handleKeyDown(e) {
     if (!selectedCell) return;
+  
     if (e.key >= "1" && e.key <= "9") {
-      if (notesMode) toggleNote(selectedCell, e.key);
-      else setCellValue(selectedCell, e.key);
+      if (notesMode) {
+        toggleNote(selectedCell, e.key);
+      } else {
+        trySetCellValue(selectedCell, e.key);
+      }
     } else if (e.key === "Backspace" || e.key === "Delete" || e.key === "0") {
       setCellValue(selectedCell, "");
       clearNotes(selectedCell);
