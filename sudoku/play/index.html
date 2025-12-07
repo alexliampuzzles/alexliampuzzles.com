@@ -1093,33 +1093,36 @@
     }
 
     /* Tooltip for wrong digit warnings */
+    /* Tooltip for wrong digit warnings – centered on the grid */
     .wrong-tooltip {
       position: absolute;
-      top: -10px;
+      top: 50%;
       left: 50%;
-      transform: translate(-50%, -100%);
+      transform: translate(-50%, -50%);
+      max-width: 70%;
+      padding: 8px 16px;
+      border-radius: 999px;
       background: rgba(220, 38, 38, 0.95);
       color: #fff;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      text-align: center;
       letter-spacing: 0.02em;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease, transform 0.25s ease;
-      z-index: 1000;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+      z-index: 20; /* above grid, below pause overlay (z:10) if you like */
     }
-
+    
     body.theme-light .wrong-tooltip {
-      background: rgba(220, 38, 38, 0.95);
+      background: rgba(220, 38, 38, 0.96);
       color: #fff;
     }
-
+    
     .wrong-tooltip.show {
       opacity: 1;
-      transform: translate(-50%, -120%);
+      transform: translate(-50%, -50%) scale(1.02);
     }
+
   </style>
 </head>
 <body class="theme-dark">
@@ -1194,13 +1197,10 @@
         <div id="completion-banner" class="completion-banner">
           🎉 Congratulations! Puzzle solved.
         </div>
-
-        <!-- Wrong digit tooltip -->
-        <div id="wrong-tooltip" class="wrong-tooltip">This number doesn’t belong here</div>
-
+        
         <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
-
+        
           <!-- Overlay when paused -->
           <div id="board-overlay" class="board-overlay" aria-hidden="true">
             <div class="overlay-content">
@@ -1210,7 +1210,11 @@
               </button>
             </div>
           </div>
+        
+          <!-- Wrong digit tooltip (now centered over the grid) -->
+          <div id="wrong-tooltip" class="wrong-tooltip">This number doesn’t belong here</div>
         </div>
+
 
         <!-- Number pad: 3×3 numbers + right column with erase + notes + check -->
         <div class="number-pad" aria-label="Number input">
