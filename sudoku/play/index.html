@@ -603,13 +603,12 @@
       border-color: rgba(252, 165, 165, 1);
     }
 
-    /* Completed digit: faded with checkmark */
-   .num-key.completed {
+    /* Completed digit: faded with checkmark and disabled */
+    .num-key.completed {
       opacity: 0.35;
       cursor: default;
       pointer-events: none;   /* 🔒 no mouse / touch input */
     }
-
 
     .num-key.completed::after {
       content: "✓";
@@ -935,14 +934,6 @@
       z-index: 5;
     }
 
-    /* In light mode, errors must override selected/same-digit visuals */
-body.theme-light .cell.error {
-      background: #fee2e2 !important;
-      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.4) !important;
-      color: #b91c1c !important;
-    }
-
-
     /* Light mode: given digits that are same-digit also become dark green */
     body.theme-light .cell.given.same-digit:not(.error) {
       color: #166534;
@@ -1093,6 +1084,42 @@ body.theme-light .cell.error {
       .nav-links { font-size: 0.8rem; }
       .logo-mark { width: 26px; height: 26px; }
     }
+
+    /* In light mode, errors must override selected/same-digit visuals */
+    body.theme-light .cell.error {
+      background: #fee2e2 !important;
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.4) !important;
+      color: #b91c1c !important;
+    }
+
+    /* Tooltip for wrong digit warnings */
+    .wrong-tooltip {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      background: rgba(220, 38, 38, 0.95);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 1000;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+    }
+
+    body.theme-light .wrong-tooltip {
+      background: rgba(220, 38, 38, 0.95);
+      color: #fff;
+    }
+
+    .wrong-tooltip.show {
+      opacity: 1;
+      transform: translate(-50%, -120%);
+    }
   </style>
 </head>
 <body class="theme-dark">
@@ -1167,6 +1194,9 @@ body.theme-light .cell.error {
         <div id="completion-banner" class="completion-banner">
           🎉 Congratulations! Puzzle solved.
         </div>
+
+        <!-- Wrong digit tooltip -->
+        <div id="wrong-tooltip" class="wrong-tooltip">This number doesn’t belong here</div>
 
         <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
@@ -1355,6 +1385,17 @@ body.theme-light .cell.error {
   const completionBanner = document.getElementById("completion-banner");
   const boardOverlay = document.getElementById("board-overlay");
   const btnResumeBig = document.getElementById("btn-resume-big");
+  const wrongTooltip = document.getElementById("wrong-tooltip");
+  let wrongTooltipTimeout = null;
+
+  function showWrongTooltip() {
+    if (!wrongTooltip) return;
+    wrongTooltip.classList.add("show");
+    clearTimeout(wrongTooltipTimeout);
+    wrongTooltipTimeout = setTimeout(() => {
+      wrongTooltip.classList.remove("show");
+    }, 1200);
+  }
 
   // map digit -> key button (exclude clear)
   const digitKeyMap = {};
@@ -1478,7 +1519,6 @@ body.theme-light .cell.error {
     if (puzzleCompleted) return;
     puzzleCompleted = true;
     if (completionBanner) completionBanner.style.display = "block";
-    // stop timer but keep grid visible
     if (timerEnabled) {
       pauseTimer(false);
     }
@@ -1800,7 +1840,6 @@ body.theme-light .cell.error {
         }
       }
     }
-    // all correct
     showCompletionMessage();
   }
 
@@ -1812,13 +1851,13 @@ body.theme-light .cell.error {
     const correct = currentPuzzle.solution[idx];
     return value === correct;
   }
-  
+
   function flashWrongDigit(cell) {
     if (!cell) return;
-  
+
     // Brief red flash in BOTH themes
     cell.classList.add("error");
-  
+
     setTimeout(() => {
       // If real-time mistakes are enabled, restore "true" errors
       if (showMistakes) {
@@ -1830,31 +1869,30 @@ body.theme-light .cell.error {
     }, 220);
   }
 
-  
   /**
    * Only commits a digit to a cell if it matches the solution.
    * Clearing a cell is always allowed.
    */
   function trySetCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
-  
+
     // clearing is always allowed
     if (!value) {
       setCellValue(cell, "");
       return;
     }
-  
+
     // check against the known solution
     if (!isCorrectDigitForCell(cell, value)) {
       flashWrongDigit(cell);   // show brief red feedback
+      showWrongTooltip();      // show tooltip message
       return;                  // do NOT store the wrong value
     }
-  
+
     // correct → commit normally
     setCellValue(cell, value);
   }
 
-  
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     const valueEl = cell.querySelector(".cell-value");
@@ -1892,14 +1930,14 @@ body.theme-light .cell.error {
 
   function handleNumInput(value) {
     if (!selectedCell) return;
-  
+
     if (value === "clear") {
       setCellValue(selectedCell, "");
       clearNotes(selectedCell);
       selectedCell.classList.add("empty");
       return;
     }
-  
+
     if (notesMode) {
       // notes can be any digits, independent of the solution
       toggleNote(selectedCell, value);
@@ -1909,10 +1947,9 @@ body.theme-light .cell.error {
     }
   }
 
-
   function handleKeyDown(e) {
     if (!selectedCell) return;
-  
+
     if (e.key >= "1" && e.key <= "9") {
       if (notesMode) {
         toggleNote(selectedCell, e.key);
