@@ -878,6 +878,16 @@
       z-index: 5;
     }
 
+    body.theme-light .cell.selected {
+      background: #fef3c7;
+      border-color: #166534;
+      box-shadow:
+        inset 0 0 0 1.5px #166534,
+        0 0 6px rgba(22, 101, 52, 0.30);
+      z-index: 5;
+    }
+
+
     body.theme-light .cell.row-highlight:not(.selected):not(.error),
     body.theme-light .cell.col-highlight:not(.selected):not(.error),
     body.theme-light .cell.box-highlight:not(.selected):not(.error) {
@@ -909,36 +919,7 @@
     body.theme-light .cell.filled:not(.given):not(.error) {
       color: #1d4ed8;
     }
-
-    /* Same-digit colouring – base (dark mode) */
-    .cell.same-digit:not(.error),
-    .cell.filled.same-digit:not(.error),
-    .cell.given.same-digit:not(.error) {
-      color: #facc15;
-    }
-
-    /* Light mode: same-digit background + green digits */
-    body.theme-light .cell.same-digit:not(.error) {
-      background: #fef3c7;
-      color: #166534;
-    }
-
-    /* Light mode: selected cell – yellow background, green digit + outline */
-    body.theme-light .cell.selected {
-      background: #fef3c7;
-      border-color: #166534;
-      box-shadow:
-        inset 0 0 0 1.5px #166534,
-        0 0 6px rgba(22, 101, 52, 0.30);
-      color: #166534;
-      z-index: 5;
-    }
-
-    /* Light mode: given digits that are same-digit also become dark green */
-    body.theme-light .cell.given.same-digit:not(.error) {
-      color: #166534;
-    }
-
+    
     .side-card {
       min-height: 260px;
     }
