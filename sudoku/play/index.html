@@ -1156,24 +1156,24 @@
 
     /* === Red pin for given clues === */
 
+    /* === Minimal small red dot for given clues === */
+
     .cell.given {
-      position: relative; /* so we can position the pin inside */
+      position: relative;
     }
     
-    /* Round pin head */
+    /* Tiny dot — 50% smaller than before */
     .cell.given::before {
       content: "";
       position: absolute;
-      top: 4px;
-      left: 4px;
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
+      top: 3px;
+      left: 3px;
+      width: 5px;   /* smaller */
+      height: 5px;  /* smaller */
+      border-radius: 50%;
       background: #ef4444; /* red */
-      box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.65),
-        0 2px 3px rgba(0, 0, 0, 0.45);
     }
+
     
     /* Optional: little pin stem (small rectangle) */
     .cell.given::after {
