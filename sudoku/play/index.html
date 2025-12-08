@@ -283,6 +283,26 @@
       align-items: center;
       gap: 0.5rem;
       flex-wrap: wrap;
+      width: 100%;
+    }
+
+    /* Show mistakes: align right, green when on */
+    #btn-mistakes {
+      margin-left: auto;
+    }
+
+    #btn-mistakes.mistakes-on {
+      background: rgba(22, 163, 74, 0.18);
+      border-color: #22c55e;
+      color: #bbf7d0;
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.3);
+    }
+
+    body.theme-light #btn-mistakes.mistakes-on {
+      background: #ecfdf3;
+      border-color: #22c55e;
+      color: #166534;
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.4);
     }
 
     .difficulty-group {
@@ -299,7 +319,7 @@
     }
 
     .btn-difficulty {
-      border: none;
+      border: 1px solid transparent;
       background: transparent;
       padding: 0.22rem 0.75rem;
       border-radius: 999px;
@@ -308,8 +328,46 @@
       cursor: pointer;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      transition: background 0.15s ease, color 0.15s ease;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
       white-space: nowrap;
+    }
+
+    /* Colored outlines per level */
+    .btn-difficulty[data-level="warmup"] {
+      border-color: rgba(34, 197, 94, 0.7);
+      color: #bbf7d0;
+    }
+    .btn-difficulty[data-level="easy"] {
+      border-color: rgba(59, 130, 246, 0.7);
+      color: #bfdbfe;
+    }
+    .btn-difficulty[data-level="medium"] {
+      border-color: rgba(234, 179, 8, 0.8);
+      color: #facc15;
+    }
+    .btn-difficulty[data-level="hard"] {
+      border-color: rgba(249, 115, 22, 0.9);
+      color: #fed7aa;
+    }
+    .btn-difficulty[data-level="expert"] {
+      border-color: rgba(239, 68, 68, 0.9);
+      color: #fecaca;
+    }
+
+    body.theme-light .btn-difficulty[data-level="warmup"] {
+      color: #166534;
+    }
+    body.theme-light .btn-difficulty[data-level="easy"] {
+      color: #1d4ed8;
+    }
+    body.theme-light .btn-difficulty[data-level="medium"] {
+      color: #a16207;
+    }
+    body.theme-light .btn-difficulty[data-level="hard"] {
+      color: #c2410c;
+    }
+    body.theme-light .btn-difficulty[data-level="expert"] {
+      color: #b91c1c;
     }
 
     .difficulty-line {
@@ -651,7 +709,7 @@
     .number-extra {
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
 
     .num-key {
@@ -681,7 +739,7 @@
       color: #fecaca;
       font-size: 1rem;
       border-radius: 0.6rem;
-      padding: 0.35rem 0.4rem;
+      padding: 0.55rem 0.4rem; /* taller */
       width: 100%;
       height: auto;
       justify-content: center;
@@ -720,7 +778,7 @@
       background: rgba(15, 23, 42, 0.9);
       color: var(--text-muted);
       font-size: 0.8rem;
-      padding: 0.3rem 0.4rem;
+      padding: 0.5rem 0.4rem; /* taller */
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -795,7 +853,7 @@
         column-gap: 0.35rem;
       }
       .number-grid { gap: 0.35rem; }
-      .number-extra { gap: 0.35rem; }
+      .number-extra { gap: 0.4rem; }
       .num-key { font-size: 1rem; padding: 0.35rem 0; }
     }
 
@@ -806,7 +864,7 @@
       .btn-notes,
       .btn-check-inline {
         font-size: 0.9rem;
-        padding: 0.4rem 0.5rem;
+        padding: 0.6rem 0.5rem;
       }
     }
 
@@ -1242,7 +1300,7 @@
         <!-- top bar: main actions -->
         <div class="controls-row">
           <div class="board-buttons">
-            <!-- Left cluster: Puzzle menu + Show mistakes -->
+            <!-- Left cluster: Puzzle menu + Show mistakes (right) -->
             <div class="left-actions">
               <div class="dropdown">
                 <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
@@ -1974,7 +2032,7 @@
     const r = parseInt(cell.dataset.row, 10);
     const c = parseInt(cell.dataset.col, 10);
     const idx = r * 9 + c;
-    const correct = currentPuzzle.solution[idx];
+       const correct = currentPuzzle.solution[idx];
     return value === correct;
   }
 
@@ -2137,8 +2195,7 @@
     showMistakes = !!on;
 
     if (btnMistakes) {
-      btnMistakes.classList.toggle("btn-primary", showMistakes);
-      btnMistakes.classList.toggle("btn-outline", !showMistakes);
+      btnMistakes.classList.toggle("mistakes-on", showMistakes);
     }
 
     if (!showMistakes) {
