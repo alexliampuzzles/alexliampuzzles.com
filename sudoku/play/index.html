@@ -42,7 +42,7 @@
       padding: 1.5rem;
       color: var(--text);
       background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
-      overflow-x: hidden; /* prevent horizontal scroll on mobile */
+      overflow-x: hidden;
     }
 
     body.theme-dark {
@@ -278,8 +278,7 @@
       flex-wrap: wrap;
     }
 
-    .left-actions,
-    .top-right-actions {
+    .left-actions {
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -441,7 +440,7 @@
       position: absolute;
       top: 110%;
       left: 0;
-      min-width: 170px;
+      min-width: 190px;
       background: rgba(15, 23, 42, 0.97);
       border: 1px solid rgba(148, 163, 184, 0.55);
       border-radius: 0.75rem;
@@ -633,6 +632,7 @@
       color: #111827;
     }
 
+    /* Number pad */
     .number-pad {
       margin-top: 0.7rem;
       display: grid;
@@ -679,7 +679,12 @@
     .num-key-erase {
       border-color: rgba(248, 113, 113, 0.75);
       color: #fecaca;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      border-radius: 0.6rem;
+      padding: 0.35rem 0.4rem;
+      width: 100%;
+      height: auto;
+      justify-content: center;
     }
 
     .num-key-erase:hover {
@@ -710,7 +715,7 @@
 
     .btn-notes,
     .btn-check-inline {
-      border-radius: 999px;
+      border-radius: 0.6rem;
       border: 1px solid rgba(148, 163, 184, 0.7);
       background: rgba(15, 23, 42, 0.9);
       color: var(--text-muted);
@@ -724,6 +729,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+      width: 100%;
     }
 
     .btn-notes span.icon { font-size: 1.1rem; }
@@ -795,12 +801,12 @@
 
     @media (min-width: 880px) {
       .num-key { font-size: 1.56rem; }
-      .num-key-erase { font-size: 1.32rem; }
+      .num-key-erase { font-size: 1.05rem; }
 
       .btn-notes,
       .btn-check-inline {
-        font-size: 1.05rem;
-        padding: 0.45rem 0.5rem;
+        font-size: 0.9rem;
+        padding: 0.4rem 0.5rem;
       }
     }
 
@@ -1121,8 +1127,7 @@
         flex-direction: column;
         align-items: stretch;
       }
-      .left-actions,
-      .top-right-actions {
+      .left-actions {
         justify-content: flex-start;
       }
       .timer-toggle-row {
@@ -1138,7 +1143,6 @@
       .nav-links { font-size: 0.8rem; }
       .logo-mark { width: 26px; height: 26px; }
 
-      /* --- Mobile refinement for difficulty row --- */
       .difficulty-line {
         align-items: flex-start;
         gap: 0.35rem;
@@ -1150,8 +1154,8 @@
       }
 
       .difficulty-group {
-        display: flex;          /* override inline-flex */
-        flex-wrap: wrap;        /* allow wrapping to avoid overflow */
+        display: flex;
+        flex-wrap: wrap;
         justify-content: flex-start;
         row-gap: 0.25rem;
       }
@@ -1238,35 +1242,27 @@
         <!-- top bar: main actions -->
         <div class="controls-row">
           <div class="board-buttons">
-            <!-- Left cluster: New Game + Show mistakes -->
+            <!-- Left cluster: Puzzle menu + Show mistakes -->
             <div class="left-actions">
               <div class="dropdown">
                 <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
-                  New Game ▾
+                  Puzzle ▾
                 </button>
                 <div id="dropdown-menu" class="dropdown-menu">
-                  <button data-level="warmup">Warm-up</button>
-                  <button data-level="easy">Easy</button>
-                  <button data-level="medium">Medium</button>
-                  <button data-level="hard">Hard</button>
-                  <button data-level="expert">Expert</button>
+                  <button data-level="warmup">New Warm-up</button>
+                  <button data-level="easy">New Easy</button>
+                  <button data-level="medium">New Medium</button>
+                  <button data-level="hard">New Hard</button>
+                  <button data-level="expert">New Expert</button>
                   <hr>
-                  <button data-action="restart">Restart</button>
+                  <button data-action="check">Check puzzle</button>
+                  <button data-action="solution">Show solution</button>
+                  <button data-action="restart">Restart puzzle</button>
                 </div>
               </div>
 
               <button id="btn-mistakes" class="btn btn-outline" type="button">
                 Show mistakes
-              </button>
-            </div>
-
-            <!-- Right cluster: Check + Show solution -->
-            <div class="top-right-actions">
-              <button id="btn-check" class="btn btn-outline" type="button">
-                Check
-              </button>
-              <button id="btn-solution" class="btn btn-outline btn-outline-danger" type="button">
-                Show solution
               </button>
             </div>
           </div>
@@ -1333,7 +1329,7 @@
             <button class="num-key" data-value="9">9</button>
           </div>
           <div class="number-extra">
-            <button class="num-key num-key-erase" data-value="clear">⌫</button>
+            <button class="num-key num-key-erase" data-value="clear">⌫ Erase</button>
             <button id="btn-notes" class="btn-notes" type="button" aria-pressed="false">
               <span class="icon">✏</span>
               <span class="label">Notes</span>
@@ -1479,8 +1475,6 @@
   }
 
   const boardEl = document.getElementById("board");
-  const btnSolution = document.getElementById("btn-solution");
-  const btnCheck = document.getElementById("btn-check");
   const btnMistakes = document.getElementById("btn-mistakes");
   const numKeys = document.querySelectorAll(".num-key");
   const btnNotes = document.getElementById("btn-notes");
@@ -1976,7 +1970,7 @@
   }
 
   function isCorrectDigitForCell(cell, value) {
-    if (!currentPuzzle || !currentPuzzle.solution || !cell) return true; // fail-safe
+    if (!currentPuzzle || !currentPuzzle.solution || !cell) return true;
     const r = parseInt(cell.dataset.row, 10);
     const c = parseInt(cell.dataset.col, 10);
     const idx = r * 9 + c;
@@ -2158,8 +2152,6 @@
     setMistakesMode(level === "warmup" || level === "easy");
   }
 
-  btnSolution.addEventListener("click", showSolution);
-  btnCheck.addEventListener("click", checkBoard);
   window.addEventListener("keydown", handleKeyDown);
 
   numKeys.forEach((key) => {
@@ -2223,7 +2215,11 @@
       syncDifficultyButtons();
     }
 
-    if (action === "restart") {
+    if (action === "check") {
+      checkBoard();
+    } else if (action === "solution") {
+      showSolution();
+    } else if (action === "restart") {
       restartCurrentPuzzle();
     }
   });
