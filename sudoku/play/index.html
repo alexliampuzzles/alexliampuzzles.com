@@ -258,19 +258,30 @@
       color: #6b7280;
     }
 
-    .board-subtitle {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      max-width: 320px;
-    }
-
-    /* top control bar: difficulty + main action buttons */
+    /* top control bar: actions */
     .controls-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
       margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .board-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .left-actions,
+    .top-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
 
@@ -304,17 +315,16 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      margin: 0.2rem 0 1rem;
+      margin: 0.2rem 0 0.5rem;
       flex-wrap: wrap;
     }
-    
+
     .difficulty-label {
       font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.14em;
       color: var(--text-muted);
     }
-
 
     .btn-difficulty.active {
       background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 40%, #b91c1c 100%);
@@ -336,12 +346,6 @@
     body.theme-light .btn-difficulty:not(.active):hover {
       background: #e5e7eb;
       color: #111827;
-    }
-
-    .board-buttons {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
     }
 
     .btn {
@@ -409,73 +413,6 @@
       border-color: rgba(252, 165, 165, 0.95);
     }
 
-          /* Dropdown container */
-      .dropdown {
-        position: relative;
-        display: inline-block;
-      }
-      
-      /* Dropdown menu panel */
-      .dropdown-menu {
-        position: absolute;
-        top: 110%;
-        left: 0;
-        min-width: 170px;
-        background: rgba(15, 23, 42, 0.97);
-        border: 1px solid rgba(148, 163, 184, 0.55);
-        border-radius: 0.75rem;
-        padding: 0.4rem 0;
-        display: none;
-        flex-direction: column;
-        z-index: 50;
-        box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
-      }
-      
-      /* Show menu */
-      .dropdown-menu.show {
-        display: flex;
-      }
-      
-      /* Menu buttons */
-      .dropdown-menu button {
-        background: transparent;
-        border: none;
-        color: #e5e7eb;
-        text-align: left;
-        padding: 0.55rem 0.9rem;
-        font-size: 0.85rem;
-        cursor: pointer;
-        width: 100%;
-        letter-spacing: 0.05em;
-      }
-      
-      .dropdown-menu button:hover {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
-      }
-      
-      .dropdown-menu hr {
-        border: none;
-        margin: 0.4rem 0;
-        height: 1px;
-        background: rgba(148, 163, 184, 0.3);
-      }
-      
-      /* Light mode adjustments */
-      body.theme-light .dropdown-menu {
-        background: #ffffff;
-        border-color: rgba(148, 163, 184, 0.5);
-      }
-      
-      body.theme-light .dropdown-menu button {
-        color: #111827;
-      }
-      
-      body.theme-light .dropdown-menu button:hover {
-        background: #f3f4f6;
-      }
-
-
     body.theme-light .btn-outline {
       background: #ffffff;
       color: #111827;
@@ -490,6 +427,68 @@
     body.theme-light .btn-outline-danger:hover {
       background: #fee2e2;
       border-color: #fca5a5;
+    }
+
+    /* Dropdown container */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      min-width: 170px;
+      background: rgba(15, 23, 42, 0.97);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      border-radius: 0.75rem;
+      padding: 0.4rem 0;
+      display: none;
+      flex-direction: column;
+      z-index: 50;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    .dropdown-menu button {
+      background: transparent;
+      border: none;
+      color: #e5e7eb;
+      text-align: left;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      width: 100%;
+      letter-spacing: 0.05em;
+    }
+
+    .dropdown-menu button:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .dropdown-menu hr {
+      border: none;
+      margin: 0.4rem 0;
+      height: 1px;
+      background: rgba(148, 163, 184, 0.3);
+    }
+
+    body.theme-light .dropdown-menu {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+
+    body.theme-light .dropdown-menu button {
+      color: #111827;
+    }
+
+    body.theme-light .dropdown-menu button:hover {
+      background: #f3f4f6;
     }
 
     .board-wrapper {
@@ -522,7 +521,6 @@
       border-color: rgba(148, 163, 184, 0.9);
     }
 
-    /* Overlay shown when paused (covers grid) */
     .board-overlay {
       position: absolute;
       inset: 0.4rem;
@@ -555,7 +553,6 @@
 
     .overlay-resume { align-self: center; }
 
-    /* Completion banner under timer */
     .completion-banner {
       display: none;
       margin-top: 0.5rem;
@@ -574,34 +571,32 @@
       color: #15803d;
     }
 
-    /* Timer bar */
+    /* Timer row: Timer + time + pause, same line */
+    .timer-toggle-row {
+      margin: 0.4rem 0 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
     .timer-container {
       display: none;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.6rem;
-      padding: 0.25rem 0.7rem;
+      justify-content: flex-start;
+      padding: 0.18rem 0.7rem;
       border-radius: 999px;
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid rgba(148, 163, 184, 0.6);
       font-size: 0.8rem;
       color: var(--text-muted);
-    }
-
-    .timer-container {
-      justify-content: center !important;
-      gap: 1rem;
-    }
-
-    .timer-label {
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      gap: 0.6rem;
     }
 
     .timer-time {
       font-weight: 600;
       color: #e5e7eb;
-      margin-left: 0.4rem;
       font-size: 1rem;
     }
 
@@ -636,7 +631,6 @@
       color: #111827;
     }
 
-    /* ===== Number pad: 3×3 + right column ===== */
     .number-pad {
       margin-top: 0.7rem;
       display: grid;
@@ -691,11 +685,10 @@
       border-color: rgba(252, 165, 165, 1);
     }
 
-    /* Completed digit: faded with checkmark and disabled */
     .num-key.completed {
       opacity: 0.35;
       cursor: default;
-      pointer-events: none;   /* 🔒 no mouse / touch input */
+      pointer-events: none;
     }
 
     .num-key.completed::after {
@@ -713,7 +706,6 @@
       color: #16a34a;
     }
 
-    /* Notes + Check buttons in right column */
     .btn-notes,
     .btn-check-inline {
       border-radius: 999px;
@@ -741,7 +733,6 @@
       color: #e5e7eb;
     }
 
-    /* Notes ON: green border */
     .btn-notes.active {
       background: rgba(34, 197, 94, 0.16);
       border-color: #22c55e;
@@ -800,7 +791,6 @@
       .num-key { font-size: 1rem; padding: 0.35rem 0; }
     }
 
-    /* Desktop: enlarge num keys + Notes/Check about 20% */
     @media (min-width: 880px) {
       .num-key { font-size: 1.56rem; }
       .num-key-erase { font-size: 1.32rem; }
@@ -810,15 +800,6 @@
         font-size: 1.05rem;
         padding: 0.45rem 0.5rem;
       }
-    }
-
-    /* helper toggles row */
-    .helper-toggle {
-      margin-top: 0.8rem;
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
     }
 
     .helper-pill {
@@ -856,8 +837,6 @@
       color: #4b5563;
       border-color: rgba(148, 163, 184, 0.7);
     }
-
-    /* ==== CELLS & NOTES ==== */
 
     .cell {
       width: 100%;
@@ -963,7 +942,6 @@
       z-index: 5;
     }
 
-
     body.theme-light .cell.selected {
       background: #fef3c7;
       border-color: #166534;
@@ -972,7 +950,6 @@
         0 0 6px rgba(22, 101, 52, 0.30);
       z-index: 5;
     }
-
 
     body.theme-light .cell.row-highlight:not(.selected):not(.error),
     body.theme-light .cell.col-highlight:not(.selected):not(.error),
@@ -1005,7 +982,7 @@
     body.theme-light .cell.filled:not(.given):not(.error) {
       color: #1d4ed8;
     }
-    
+
     .side-card {
       min-height: 260px;
     }
@@ -1139,7 +1116,15 @@
         align-items: stretch;
       }
       .board-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .left-actions,
+      .top-right-actions {
         justify-content: flex-start;
+      }
+      .timer-toggle-row {
+        flex-direction: column;
       }
     }
 
@@ -1152,15 +1137,12 @@
       .logo-mark { width: 26px; height: 26px; }
     }
 
-    /* In light mode, errors must override selected/same-digit visuals */
     body.theme-light .cell.error {
       background: #fee2e2 !important;
       box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.4) !important;
       color: #b91c1c !important;
     }
 
-    /* Tooltip for wrong digit warnings */
-    /* Tooltip for wrong digit warnings – centered on the grid */
     .wrong-tooltip {
       position: absolute;
       top: 50%;
@@ -1177,14 +1159,14 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease, transform 0.25s ease;
-      z-index: 20; /* above grid, below pause overlay (z:10) if you like */
+      z-index: 20;
     }
-    
+
     body.theme-light .wrong-tooltip {
       background: rgba(220, 38, 38, 0.96);
       color: #fff;
     }
-    
+
     .wrong-tooltip.show {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1.02);
@@ -1207,8 +1189,8 @@
         <a href="/">Home</a>
         <a href="/printables/easy-sudoku.html">Printables</a>
         <a href="https://www.amazon.com/author/alex_liam"
-          target="_blank"
-            rel="noopener noreferrer">
+           target="_blank"
+           rel="noopener noreferrer">
           My books
         </a>
       </nav>
@@ -1222,82 +1204,82 @@
     <section class="board-card">
       <div class="board-card-inner">
         <div class="board-header">
-          <div>
-            <div class="board-title">
-              Online Sudoku
-              <span class="badge">Beta</span>
-            </div>
+          <div class="board-title">
+            Online Sudoku
+            <span class="badge">Beta</span>
           </div>
         </div>
 
         <!-- top bar: main actions -->
-      <div class="controls-row">
-        <!-- New Puzzle Menu -->
-        <div class="board-buttons" style="justify-content: space-between; width: 100%;">
-  
-          <!-- Left side -->
-          <div>
-            <div class="dropdown">
-              <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
-                New Game ▾
-              </button>
-              <div id="dropdown-menu" class="dropdown-menu">
-                <button data-level="warmup">Warm-up</button>
-                <button data-level="easy">Easy</button>
-                <button data-level="medium">Medium</button>
-                <button data-level="hard">Hard</button>
-                <button data-level="expert">Expert</button>
-                <hr>
-                <button data-action="restart">Restart</button>
+        <div class="controls-row">
+          <div class="board-buttons">
+            <!-- Left cluster: New Game + Show mistakes -->
+            <div class="left-actions">
+              <div class="dropdown">
+                <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
+                  New Game ▾
+                </button>
+                <div id="dropdown-menu" class="dropdown-menu">
+                  <button data-level="warmup">Warm-up</button>
+                  <button data-level="easy">Easy</button>
+                  <button data-level="medium">Medium</button>
+                  <button data-level="hard">Hard</button>
+                  <button data-level="expert">Expert</button>
+                  <hr>
+                  <button data-action="restart">Restart</button>
+                </div>
               </div>
+
+              <button id="btn-mistakes" class="btn btn-outline" type="button">
+                Show mistakes
+              </button>
+            </div>
+
+            <!-- Right cluster: Check + Show solution -->
+            <div class="top-right-actions">
+              <button id="btn-check" class="btn btn-outline" type="button">
+                Check
+              </button>
+              <button id="btn-solution" class="btn btn-outline btn-outline-danger" type="button">
+                Show solution
+              </button>
             </div>
           </div>
-        
-          <!-- Right side: Check + Show Solution -->
-          <div class="top-right-actions" style="display:flex; gap:0.5rem;">
-            <button id="btn-check" class="btn btn-outline">Check</button>
-            <button id="btn-solution" class="btn btn-outline btn-outline-danger">
-              Show solution
-            </button>
+        </div>
+
+        <!-- difficulty line under the buttons -->
+        <div class="difficulty-line">
+          <span class="difficulty-label">Difficulty:</span>
+          <div class="difficulty-group" aria-label="Difficulty selection">
+            <button class="btn-difficulty" data-level="warmup">Warm-up</button>
+            <button class="btn-difficulty active" data-level="easy">Easy</button>
+            <button class="btn-difficulty" data-level="medium">Medium</button>
+            <button class="btn-difficulty" data-level="hard">Hard</button>
+            <button class="btn-difficulty" data-level="expert">Expert</button>
           </div>
-        
         </div>
 
-      </div>
-      
-      <!-- difficulty line under the buttons -->
-      <div class="difficulty-line">
-        <span class="difficulty-label">Difficulty:</span>
-        <div class="difficulty-group" aria-label="Difficulty selection">
-          <button class="btn-difficulty" data-level="warmup">Warm-up</button>
-          <button class="btn-difficulty active" data-level="easy">Easy</button>
-          <button class="btn-difficulty" data-level="medium">Medium</button>
-          <button class="btn-difficulty" data-level="hard">Hard</button>
-          <button class="btn-difficulty" data-level="expert">Expert</button>
-        </div>
-      </div>
-
-        <div class="timer-toggle-row" style="margin:0.4rem 0 1rem;">
+        <!-- Timer row: Timer + time + pause on the same line -->
+        <div class="timer-toggle-row">
           <label class="helper-pill">
             <input type="checkbox" id="toggle-timer">
             <span>Timer</span>
           </label>
-        </div>
-        <!-- Timer (shown when enabled) -->
-       <div id="timer-container" class="timer-container">
-          <span id="timer-time" class="timer-time">00:00</span>
-          <button id="btn-timer-pause" class="timer-pause">Pause</button>
-        </div>
 
+          <div id="timer-container" class="timer-container">
+            <span id="timer-time" class="timer-time">00:00</span>
+            <button id="btn-timer-pause" class="timer-pause">Pause</button>
+          </div>
+        </div>
 
         <!-- Completion banner -->
         <div id="completion-banner" class="completion-banner">
           🎉 Congratulations! Puzzle solved.
         </div>
-        
+
         <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
-        
+
           <!-- Overlay when paused -->
           <div id="board-overlay" class="board-overlay" aria-hidden="true">
             <div class="overlay-content">
@@ -1307,13 +1289,12 @@
               </button>
             </div>
           </div>
-        
-          <!-- Wrong digit tooltip (now centered over the grid) -->
+
+          <!-- Wrong digit tooltip -->
           <div id="wrong-tooltip" class="wrong-tooltip">This number doesn’t belong here</div>
         </div>
 
-
-        <!-- Number pad: 3×3 numbers + right column with erase + notes + check -->
+        <!-- Number pad -->
         <div class="number-pad" aria-label="Number input">
           <div class="number-grid">
             <button class="num-key" data-value="1">1</button>
@@ -1334,14 +1315,6 @@
             </button>
           </div>
         </div>
-
-        <!-- helper toggles -->
-        <div class="helper-toggle">
-          <label class="helper-pill">
-            <input type="checkbox" id="toggle-mistakes">
-            <span>Show mistakes (real-time)</span>
-          </label>
-        </div>
       </div>
     </section>
 
@@ -1357,6 +1330,10 @@
           <ul class="feature-list">
             <li>
               <span class="feature-bullet"></span>
+              Warm-up – very gentle introduction to Sudoku.
+            </li>
+            <li>
+              <span class="feature-bullet"></span>
               Easy – good for warm-up and beginners.
             </li>
             <li>
@@ -1366,6 +1343,10 @@
             <li>
               <span class="feature-bullet"></span>
               Hard – tougher grids that may need pencil-marks.
+            </li>
+            <li>
+              <span class="feature-bullet"></span>
+              Expert – deeper logic and careful scanning.
             </li>
           </ul>
         </div>
@@ -1422,15 +1403,20 @@
 
   // --- Puzzle data ---
   const DATA_FILES = {
-      warmup: "data/classic_warm-up.json",
-      easy: "data/classic_easy.json",
-      medium: "data/classic_medium.json",
-      hard: "data/classic_hard.json",
-      expert: "data/classic_expert.json"
-    };
+    warmup: "data/classic_warm-up.json",
+    easy: "data/classic_easy.json",
+    medium: "data/classic_medium.json",
+    hard: "data/classic_hard.json",
+    expert: "data/classic_expert.json"
+  };
 
-
-  const PUZZLES = { easy: [], medium: [], hard: [] };
+  const PUZZLES = {
+    warmup: [],
+    easy: [],
+    medium: [],
+    hard: [],
+    expert: []
+  };
 
   function gridToString(grid) {
     if (!Array.isArray(grid)) return String(grid || "");
@@ -1470,9 +1456,9 @@
   const boardEl = document.getElementById("board");
   const btnSolution = document.getElementById("btn-solution");
   const btnCheck = document.getElementById("btn-check");
+  const btnMistakes = document.getElementById("btn-mistakes");
   const numKeys = document.querySelectorAll(".num-key");
   const btnNotes = document.getElementById("btn-notes");
-  const mistakesToggle = document.getElementById("toggle-mistakes");
   const timerToggle = document.getElementById("toggle-timer");
   const timerContainer = document.getElementById("timer-container");
   const timerTimeEl = document.getElementById("timer-time");
@@ -1492,7 +1478,6 @@
     }, 1200);
   }
 
-  // map digit -> key button (exclude clear)
   const digitKeyMap = {};
   Array.from(numKeys).forEach(key => {
     const v = key.dataset.value;
@@ -1522,25 +1507,6 @@
 
   const buttonsDifficulty = document.querySelectorAll(".btn-difficulty");
 
-  function syncDifficultyButtons() {
-    buttonsDifficulty.forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.level === currentDifficulty);
-    });
-  }
-
-    buttonsDifficulty.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const level = btn.dataset.level;
-      if (!level) return;
-      currentDifficulty = level;
-      updateMistakesDefault(currentDifficulty);
-      loadRandomPuzzle(currentDifficulty);
-      syncDifficultyButtons();
-    });
-  });
-
-
-
   let currentDifficulty = "easy";
   let currentPuzzle = null;
   let selectedCell = null;
@@ -1553,6 +1519,24 @@
   let timerStartMs = 0;
   let timerElapsedMs = 0;
   let timerInterval = null;
+  let ignoreNextPauseClick = false;
+
+  function syncDifficultyButtons() {
+    buttonsDifficulty.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.level === currentDifficulty);
+    });
+  }
+
+  buttonsDifficulty.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const level = btn.dataset.level;
+      if (!level) return;
+      currentDifficulty = level;
+      updateMistakesDefault(currentDifficulty);
+      loadRandomPuzzle(currentDifficulty);
+      syncDifficultyButtons();
+    });
+  });
 
   function formatTime(ms) {
     const totalSeconds = Math.floor(ms / 1000);
@@ -1645,8 +1629,6 @@
     if (completionBanner) completionBanner.style.display = "none";
   }
 
-  let ignoreNextPauseClick = false;
-
   btnTimerPause.addEventListener("click", () => {
     if (ignoreNextPauseClick) {
       ignoreNextPauseClick = false;
@@ -1688,12 +1670,11 @@
   function restartCurrentPuzzle() {
     if (!currentPuzzle) return;
     hideCompletionBanner();
-    renderBoard();            // rebuilds grid from currentPuzzle.puzzle
+    renderBoard();
     if (timerEnabled) {
       resetTimer();
     }
   }
-
 
   function renderBoard() {
     boardEl.innerHTML = "";
@@ -1980,16 +1961,11 @@
 
   function flashWrongDigit(cell) {
     if (!cell) return;
-
-    // Brief red flash in BOTH themes
     cell.classList.add("error");
-
     setTimeout(() => {
-      // If real-time mistakes are enabled, restore "true" errors
       if (showMistakes) {
         recomputeConflicts();
       } else {
-        // Otherwise just remove our temporary flash
         cell.classList.remove("error");
       }
     }, 220);
@@ -1997,26 +1973,20 @@
 
   function trySetCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
-  
-    // Clearing is always allowed
+
     if (!value) {
       setCellValue(cell, "");
       return;
     }
-  
-    // If real-time mistakes are enabled, block wrong digits immediately
+
     if (showMistakes && !isCorrectDigitForCell(cell, value)) {
-      flashWrongDigit(cell);   // brief red feedback
-      showWrongTooltip();      // center message on the grid
-      return;                  // do NOT store the wrong value
+      flashWrongDigit(cell);
+      showWrongTooltip();
+      return;
     }
-  
-    // Either:
-    //  - mistakes OFF → allow any digit
-    //  - mistakes ON and digit is correct → commit it
+
     setCellValue(cell, value);
   }
-
 
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
@@ -2064,10 +2034,8 @@
     }
 
     if (notesMode) {
-      // notes can be any digits, independent of the solution
       toggleNote(selectedCell, value);
     } else {
-      // normal play → only accept if digit matches the solution
       trySetCellValue(selectedCell, value);
     }
   }
@@ -2148,7 +2116,12 @@
 
   function setMistakesMode(on) {
     showMistakes = !!on;
-    mistakesToggle.checked = showMistakes;
+
+    if (btnMistakes) {
+      btnMistakes.classList.toggle("btn-primary", showMistakes);
+      btnMistakes.classList.toggle("btn-outline", !showMistakes);
+    }
+
     if (!showMistakes) {
       boardEl.querySelectorAll(".cell").forEach(c => c.classList.remove("error"));
     } else {
@@ -2159,7 +2132,6 @@
   function updateMistakesDefault(level) {
     setMistakesMode(level === "warmup" || level === "easy");
   }
-
 
   btnSolution.addEventListener("click", showSolution);
   btnCheck.addEventListener("click", checkBoard);
@@ -2186,8 +2158,8 @@
     if (label) label.textContent = notesMode ? "Notes on" : "Notes";
   });
 
-  mistakesToggle.addEventListener("change", () => {
-    setMistakesMode(mistakesToggle.checked);
+  btnMistakes.addEventListener("click", () => {
+    setMistakesMode(!showMistakes);
   });
 
   timerToggle.addEventListener("change", () => {
@@ -2198,46 +2170,43 @@
   // --- Dropdown menu logic ---
   const dropdownToggle = document.getElementById("dropdown-toggle");
   const dropdownMenu = document.getElementById("dropdown-menu");
-  
+
   dropdownToggle.addEventListener("click", () => {
     dropdownMenu.classList.toggle("show");
   });
-  
-  // Close dropdown when clicking outside
+
   document.addEventListener("click", (e) => {
     if (!dropdownToggle.contains(e.target) &&
         !dropdownMenu.contains(e.target)) {
       dropdownMenu.classList.remove("show");
     }
   });
-  
-  // Menu item actions
+
   dropdownMenu.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
-  
+
     const level = btn.dataset.level;
     const action = btn.dataset.action;
-  
+
     dropdownMenu.classList.remove("show");
-  
+
     if (level) {
       currentDifficulty = level;
       updateMistakesDefault(level);
       loadRandomPuzzle(level);
+      syncDifficultyButtons();
     }
-  
+
     if (action === "restart") {
       restartCurrentPuzzle();
     }
   });
 
-
   updateMistakesDefault(currentDifficulty);
   setTimerEnabled(false);
   loadRandomPuzzle(currentDifficulty);
   syncDifficultyButtons();
-
 </script>
 
 </body>
