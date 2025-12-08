@@ -296,6 +296,19 @@
             flex-wrap: wrap;
         }
 
+        html {
+          scroll-behavior: smooth;
+        }
+
+        .back-to-top {
+          color: var(--muted);
+        }
+        
+        .back-to-top:hover {
+          opacity: .75;
+        }
+
+
         @media (max-width: 700px) {
             .hero { grid-template-columns: 1fr; }
             header { flex-direction: column; align-items: flex-start; gap: 0.9rem;}
@@ -303,7 +316,7 @@
         }
     </style>
 </head>
-<body>
+<body id="top">
 <div class="page">
 
     <header>
@@ -399,7 +412,7 @@
     <footer>
         <div>© <span id="year"></span> Alex Liam Puzzles</div>
         <div>
-            <a href="#printables">Printables</a> 
+            <a href="#top" class="back-to-top">Back to top</a>
         </div>
     </footer>
 </div>
