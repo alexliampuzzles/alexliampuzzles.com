@@ -83,45 +83,44 @@
       color: var(--text-muted);
       font-size: 0.9rem;
     }
-
-    .brand { display: flex; align-items: center; gap: 0.8rem; }
-
+    
+    /* Match orange logo/title from main_index.html */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    
     .logo-mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 9px;
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
       border: 2px solid var(--accent);
       display: grid;
       place-items: center;
-      font-size: 0.85rem;
-      background: radial-gradient(circle at 30% 0, #1f2937 0, #020617 55%);
-      color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 25px rgba(15, 23, 42, 0.8);
-    }
-
-    body.theme-light .logo-mark {
-      background: radial-gradient(circle at 30% 0, #fef3c7 0, #fed7aa 45%, #f97316 100%);
-      color: #111827;
-    }
-
-    .brand-text { display: flex; flex-direction: column; gap: 0.1rem; }
-
-    .brand-title {
-      font-weight: 600;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      font-size: 1.14rem;
-      color: #e5e7eb;
-    }
-
-    body.theme-light .brand-title { color: #111827; }
-
-    .brand-sub {
       font-size: 0.9rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
+      background: linear-gradient(135deg, #ffd5a3, #ff8f2f);
+      color: #000;
+      box-shadow: none;
     }
+    
+    /* Subtitle line under 'Alex Liam Puzzles' */
+    .logo-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
 
     .header-right { display: flex; align-items: center; gap: 1.2rem; }
 
@@ -1354,17 +1353,18 @@
 <body class="theme-dark">
 <div class="page-shell">
   <header>
-    <div class="brand">
+    <div class="logo">
       <div class="logo-mark">AL</div>
-      <div class="brand-text">
-        <div class="brand-title">Alex Liam Puzzles</div>
-        <div class="brand-sub">Relaxing logic puzzles</div>
+      <div>
+        <div>Alex Liam Puzzles</div>
+        <div class="logo-sub">Relaxing logic puzzles</div>
       </div>
     </div>
+  
     <div class="header-right">
       <nav class="nav-links">
         <a href="/">Home</a>
-      
+  
         <div class="dropdown">
           <button id="header-printables-toggle" class="nav-button" type="button">
             Printables ▾
@@ -1377,19 +1377,20 @@
             <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
           </div>
         </div>
-      
+  
         <a href="https://www.amazon.com/author/alex_liam"
            target="_blank"
            rel="noopener noreferrer">
           My books
         </a>
       </nav>
-
+  
       <button id="theme-toggle" class="btn-theme" type="button">
         🌙 Dark
       </button>
     </div>
   </header>
+
 
   <main>
     <section class="board-card">
