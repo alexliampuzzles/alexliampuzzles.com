@@ -1432,8 +1432,6 @@
   }
 
   const boardEl = document.getElementById("board");
-  const buttonsDifficulty = document.querySelectorAll(".btn-difficulty");
-  const btnNew = document.getElementById("btn-new");
   const btnSolution = document.getElementById("btn-solution");
   const btnCheck = document.getElementById("btn-check");
   const numKeys = document.querySelectorAll(".num-key");
@@ -2095,19 +2093,7 @@
     setMistakesMode(level === "easy");
   }
 
-  buttonsDifficulty.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      buttonsDifficulty.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      currentDifficulty = btn.dataset.level;
-      updateMistakesDefault(currentDifficulty);
-      loadRandomPuzzle(currentDifficulty);
-    });
-  });
 
-  btnNew.addEventListener("click", () => {
-    loadRandomPuzzle(currentDifficulty);
-  });
   btnSolution.addEventListener("click", showSolution);
   btnCheck.addEventListener("click", checkBoard);
   window.addEventListener("keydown", handleKeyDown);
