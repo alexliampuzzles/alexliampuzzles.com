@@ -305,17 +305,19 @@
       box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.4);
     }
 
+    /* difficulty group WITHOUT outer pill outline */
     .difficulty-group {
-      display: inline-flex;
-      padding: 0.15rem;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.55);
+      display: flex;
+      gap: 0.35rem;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      border: none;
     }
 
     body.theme-light .difficulty-group {
-      background: #f9fafb;
-      border-color: rgba(148, 163, 184, 0.6);
+      background: transparent;
+      border: none;
     }
 
     .btn-difficulty {
@@ -785,7 +787,7 @@
       justify-content: center;
       gap: 0.35rem;
       letter-spacing: 0.08em;
-     /* text-transform: uppercase;*/
+      /* text-transform: uppercase; */
       transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
       width: 100%;
     }
@@ -863,7 +865,7 @@
 
       .btn-notes,
       .btn-check-inline {
-        font-size: 0.9rem;
+        font-size: 1.05rem; /* match Erase on desktop */
         padding: 0.6rem 0.5rem;
       }
     }
@@ -1212,7 +1214,6 @@
       }
 
       .difficulty-group {
-        display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
         row-gap: 0.25rem;
