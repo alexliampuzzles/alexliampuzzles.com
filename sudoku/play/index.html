@@ -149,6 +149,65 @@
     body.theme-light .nav-links a:hover { color: #111827; }
     .nav-links a:hover::after { width: 100%; }
 
+    /* Header nav dropdown button styled like links */
+      .nav-links .nav-button {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        position: relative;
+        padding: 0;
+        padding-bottom: 0.15rem;
+        font: inherit;
+      }
+      
+      .nav-links .nav-button::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #f97316, #facc15);
+        transition: width 0.2s ease-out;
+      }
+      
+      .nav-links .nav-button:hover {
+        color: #e5e7eb;
+      }
+      
+      body.theme-light .nav-links .nav-button:hover {
+        color: #111827;
+      }
+      
+      .nav-links .nav-button:hover::after {
+        width: 100%;
+      }
+      
+      /* Allow dropdown menu items to be links as well as buttons */
+      .dropdown-menu a {
+        display: block;
+        text-decoration: none;
+        background: transparent;
+        padding: 0.55rem 0.9rem;
+        font-size: 0.85rem;
+        color: #e5e7eb;
+      }
+      
+      .dropdown-menu a:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+      }
+      
+      body.theme-light .dropdown-menu a {
+        color: #111827;
+      }
+      
+      body.theme-light .dropdown-menu a:hover {
+        background: #f3f4f6;
+      }
+
+
     .btn-theme {
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.6);
@@ -1305,13 +1364,27 @@
     <div class="header-right">
       <nav class="nav-links">
         <a href="/">Home</a>
-        <a href="/printables/easy-sudoku.html">Printables</a>
+      
+        <div class="dropdown">
+          <button id="header-printables-toggle" class="nav-button" type="button">
+            Printables ▾
+          </button>
+          <div id="header-printables-menu" class="dropdown-menu">
+            <a href="/printables/warm-up-sudoku.html">Warm-up Sudoku</a>
+            <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+            <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+            <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+            <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+          </div>
+        </div>
+      
         <a href="https://www.amazon.com/author/alex_liam"
            target="_blank"
            rel="noopener noreferrer">
           My books
         </a>
       </nav>
+
       <button id="theme-toggle" class="btn-theme" type="button">
         🌙 Dark
       </button>
@@ -2277,45 +2350,69 @@
     ignoreNextPauseClick = true;
   });
 
-  // --- Dropdown menu logic ---
+   // --- Dropdown menu logic ---
+  // Puzzle dropdown (inside the board)
   const dropdownToggle = document.getElementById("dropdown-toggle");
   const dropdownMenu = document.getElementById("dropdown-menu");
-
-  dropdownToggle.addEventListener("click", () => {
-    dropdownMenu.classList.toggle("show");
-  });
-
+  
+  // Header "Printables" dropdown
+  const headerPrintablesToggle = document.getElementById("header-printables-toggle");
+  const headerPrintablesMenu = document.getElementById("header-printables-menu");
+  
+  if (dropdownToggle && dropdownMenu) {
+    dropdownToggle.addEventListener("click", () => {
+      dropdownMenu.classList.toggle("show");
+    });
+  }
+  
+  if (headerPrintablesToggle && headerPrintablesMenu) {
+    headerPrintablesToggle.addEventListener("click", () => {
+      headerPrintablesMenu.classList.toggle("show");
+    });
+  }
+  
+  // Close any open dropdown when clicking outside
   document.addEventListener("click", (e) => {
-    if (!dropdownToggle.contains(e.target) &&
+    if (dropdownToggle && dropdownMenu &&
+        !dropdownToggle.contains(e.target) &&
         !dropdownMenu.contains(e.target)) {
       dropdownMenu.classList.remove("show");
     }
-  });
-
-  dropdownMenu.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
-
-    const level = btn.dataset.level;
-    const action = btn.dataset.action;
-
-    dropdownMenu.classList.remove("show");
-
-    if (level) {
-      currentDifficulty = level;
-      updateMistakesDefault(level);
-      loadRandomPuzzle(level);
-      syncDifficultyButtons();
-    }
-
-    if (action === "check") {
-      checkBoard();
-    } else if (action === "solution") {
-      showSolution();
-    } else if (action === "restart") {
-      restartCurrentPuzzle();
+  
+    if (headerPrintablesToggle && headerPrintablesMenu &&
+        !headerPrintablesToggle.contains(e.target) &&
+        !headerPrintablesMenu.contains(e.target)) {
+      headerPrintablesMenu.classList.remove("show");
     }
   });
+  
+  // Existing handler for Puzzle dropdown items
+  if (dropdownMenu) {
+    dropdownMenu.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+  
+      const level = btn.dataset.level;
+      const action = btn.dataset.action;
+  
+      dropdownMenu.classList.remove("show");
+  
+      if (level) {
+        currentDifficulty = level;
+        updateMistakesDefault(level);
+        loadRandomPuzzle(level);
+        syncDifficultyButtons();
+      }
+  
+      if (action === "check") {
+        checkBoard();
+      } else if (action === "solution") {
+        showSolution();
+      } else if (action === "restart") {
+        restartCurrentPuzzle();
+      }
+    });
+  }
 
   updateMistakesDefault(currentDifficulty);
   setTimerEnabled(false);
