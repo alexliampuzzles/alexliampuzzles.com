@@ -300,6 +300,22 @@
       transition: background 0.15s ease, color 0.15s ease;
     }
 
+    .difficulty-line {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.2rem 0 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .difficulty-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+
     .btn-difficulty.active {
       background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 40%, #b91c1c 100%);
       color: #f9fafb;
@@ -1206,37 +1222,46 @@
               Online Sudoku
               <span class="badge">Beta</span>
             </div>
-            <p class="board-subtitle">
-              Easy, Medium or Hard — one puzzle at a time.
-            </p>
           </div>
         </div>
 
-        <!-- top bar: difficulty + main actions -->
-        <div class="controls-row">
-         <!-- New Puzzle Menu -->
-          <div class="board-buttons">
-            <div class="dropdown">
-              <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
-                New Game ▾
-              </button>
-              <div id="dropdown-menu" class="dropdown-menu">
-                <button data-level="warmup">Warm-up</button>
-                <button data-level="easy">Easy</button>
-                <button data-level="medium">Medium</button>
-                <button data-level="hard">Hard</button>
-                <button data-level="expert">Expert</button>
-                <hr>
-                <button data-action="restart">Restart</button>
-              </div>
-            </div>
-          
-            <button id="btn-solution" class="btn btn-outline btn-outline-danger">
-              Show solution
+        <!-- top bar: main actions -->
+      <div class="controls-row">
+        <!-- New Puzzle Menu -->
+        <div class="board-buttons">
+          <div class="dropdown">
+            <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
+              New Game ▾
             </button>
+            <div id="dropdown-menu" class="dropdown-menu">
+              <button data-level="warmup">Warm-up</button>
+              <button data-level="easy">Easy</button>
+              <button data-level="medium">Medium</button>
+              <button data-level="hard">Hard</button>
+              <button data-level="expert">Expert</button>
+              <hr>
+              <button data-action="restart">Restart</button>
+            </div>
           </div>
-
+      
+          <button id="btn-solution" class="btn btn-outline btn-outline-danger">
+            Show solution
+          </button>
         </div>
+      </div>
+      
+      <!-- difficulty line under the buttons -->
+      <div class="difficulty-line">
+        <span class="difficulty-label">Difficulty:</span>
+        <div class="difficulty-group" aria-label="Difficulty selection">
+          <button class="btn-difficulty" data-level="warmup">Warm-up</button>
+          <button class="btn-difficulty active" data-level="easy">Easy</button>
+          <button class="btn-difficulty" data-level="medium">Medium</button>
+          <button class="btn-difficulty" data-level="hard">Hard</button>
+          <button class="btn-difficulty" data-level="expert">Expert</button>
+        </div>
+      </div>
+
 
         <!-- Timer (shown when enabled) -->
         <div id="timer-container" class="timer-container">
@@ -1484,6 +1509,27 @@
     { passive: false }
   );
 
+  const buttonsDifficulty = document.querySelectorAll(".btn-difficulty");
+
+  function syncDifficultyButtons() {
+    buttonsDifficulty.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.level === currentDifficulty);
+    });
+  }
+
+    buttonsDifficulty.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const level = btn.dataset.level;
+      if (!level) return;
+      currentDifficulty = level;
+      updateMistakesDefault(currentDifficulty);
+      loadRandomPuzzle(currentDifficulty);
+      syncDifficultyButtons();
+    });
+  });
+
+
+
   let currentDifficulty = "easy";
   let currentPuzzle = null;
   let selectedCell = null;
@@ -1627,6 +1673,16 @@
     renderBoard();
     if (timerEnabled) resetTimer();
   }
+
+  function restartCurrentPuzzle() {
+    if (!currentPuzzle) return;
+    hideCompletionBanner();
+    renderBoard();            // rebuilds grid from currentPuzzle.puzzle
+    if (timerEnabled) {
+      resetTimer();
+    }
+  }
+
 
   function renderBoard() {
     boardEl.innerHTML = "";
@@ -2090,7 +2146,7 @@
   }
 
   function updateMistakesDefault(level) {
-    setMistakesMode(level === "easy");
+    setMistakesMode(level === "warmup" || level === "easy");
   }
 
 
@@ -2161,7 +2217,7 @@
     }
   
     if (action === "restart") {
-      loadRandomPuzzle(currentDifficulty);
+      restartCurrentPuzzle();
     }
   });
 
@@ -2169,6 +2225,8 @@
   updateMistakesDefault(currentDifficulty);
   setTimerEnabled(false);
   loadRandomPuzzle(currentDifficulty);
+  syncDifficultyButtons();
+
 </script>
 
 </body>
