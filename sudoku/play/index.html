@@ -123,58 +123,34 @@
       color: var(--text-muted);
     }
 
-    .header-right { display: flex; align-items: center; gap: 1.2rem; }
-
-    .nav-links { display: flex; gap: 1.4rem; font-size: 0.9rem; }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    
+    /* Nav styled like main_index.html (orange links) */
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.95rem;
+      align-items: center;
+    }
+    
+    .nav-item {
       position: relative;
-      padding-bottom: 0.15rem;
+    }
+    
+    .nav-link {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .nav-link:hover {
+      opacity: 0.85;
     }
 
-    .nav-links a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #f97316, #facc15);
-      transition: width 0.2s ease-out;
-    }
-
-    .nav-links a:hover { color: #e5e7eb; }
-    body.theme-light .nav-links a:hover { color: #111827; }
-    .nav-links a:hover::after { width: 100%; }
-
-    /* Header nav dropdown button styled like links */
-      .nav-links .nav-button {
-        background: none;
-        border: none;
-        color: var(--text-muted);
-        cursor: pointer;
-        position: relative;
-        padding: 0;
-        padding-bottom: 0.15rem;
-        font: inherit;
-      }
-      
-      .nav-links .nav-button::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 0;
-        height: 2px;
-        background: linear-gradient(90deg, #f97316, #facc15);
-        transition: width 0.2s ease-out;
-      }
-      
-      .nav-links .nav-button:hover {
-        color: #e5e7eb;
-      }
       
       body.theme-light .nav-links .nav-button:hover {
         color: #111827;
@@ -1363,33 +1339,39 @@
     </div>
     <div class="header-right">
       <nav class="nav-links">
-        <a href="/">Home</a>
-      
-        <div class="dropdown">
-          <button id="header-printables-toggle" class="nav-button" type="button">
+        <div class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </div>
+  
+        <div class="nav-item dropdown">
+          <a href="#" class="nav-link" id="header-printables-toggle">
             Printables ▾
-          </button>
+          </a>
           <div id="header-printables-menu" class="dropdown-menu">
-            <a href="/printables/warm-up-sudoku.html">Warm-up Sudoku</a>
+            <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
             <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
             <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
             <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
             <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
           </div>
         </div>
-      
-        <a href="https://www.amazon.com/author/alex_liam"
-           target="_blank"
-           rel="noopener noreferrer">
-          My books
-        </a>
+  
+        <div class="nav-item">
+          <a class="nav-link"
+             href="https://www.amazon.com/author/alex_liam"
+             target="_blank"
+             rel="noopener noreferrer">
+            My Books
+          </a>
+        </div>
       </nav>
-
+  
       <button id="theme-toggle" class="btn-theme" type="button">
         🌙 Dark
       </button>
     </div>
   </header>
+
 
 
   <main>
@@ -2366,11 +2348,13 @@
     });
   }
   
-  if (headerPrintablesToggle && headerPrintablesMenu) {
-    headerPrintablesToggle.addEventListener("click", () => {
+ if (headerPrintablesToggle && headerPrintablesMenu) {
+    headerPrintablesToggle.addEventListener("click", (e) => {
+      e.preventDefault();
       headerPrintablesMenu.classList.toggle("show");
     });
   }
+
   
   // Close any open dropdown when clicking outside
   document.addEventListener("click", (e) => {
