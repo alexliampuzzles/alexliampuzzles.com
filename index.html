@@ -2,9 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Alex Liam Puzzles – Free Sudoku & Word Search Printables</title>
+    <title>Free Sudoku & Word Search Puzzles | Printables & Online Sudoku | Alex Liam Puzzles</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Free Sudoku and Word Search puzzles by Alex Liam Puzzles. Download printable PDFs, play online, and discover puzzle books.">
+    <meta name="description" content="Play clean, mobile-friendly Sudoku online and download free printable Sudoku and word search PDFs in multiple difficulty levels. Relaxing logic puzzles and puzzle books by Alex Liam Puzzles.">
+    <meta name="keywords" content="Sudoku, online sudoku, free sudoku, play sudoku, sudoku easy, sudoku medium, sudoku hard, sudoku expert, sudoku warm-up, sudoku puzzles, sudoku printables, word search puzzles, puzzle books">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Game",
+      "name": "Online Sudoku",
+      "description": "Free online Sudoku with five difficulty levels: Warm-Up, Easy, Medium, Hard, and Expert. Clean, mobile-friendly interface with a single valid solution for every puzzle.",
+      "genre": "Puzzle",
+      "applicationCategory": "Game",
+      "operatingSystem": "All",
+      "url": "https://www.alexliampuzzles.com/sudoku/play/index.html",
+      "publisher": {
+        "@type": "Person",
+        "name": "Alex Liam"
+      }
+    }
+    </script>
 
     <style>
         :root {
@@ -104,7 +122,6 @@
           color: var(--muted);
         }
 
-
         .nav-links {
             display: flex;
             gap: 1.5rem;
@@ -156,7 +173,6 @@
             display: grid;
             max-width: 720px;
             margin: 0 auto;
-         /*   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);*/
             gap: 2rem;
             padding: 1.6rem 1.6rem 1.8rem;
             border-radius: 22px;
@@ -175,7 +191,6 @@
           margin-left: .4rem;
         }
 
-
         .hero-list {
           margin: 0 0 1.4rem;
           padding: 0 0 0 1.2rem;
@@ -184,7 +199,6 @@
           font-size: 1.05rem;
           border-left: 3px solid rgba(249, 115, 22, 0.12); /* soft orange */
         }
-
         
         .btn-secondary {
           text-decoration: none;
@@ -196,7 +210,6 @@
         .btn-secondary:hover {
           opacity: 0.78;
         }
-
 
         .btn-primary {
             display: inline-flex;
@@ -254,7 +267,6 @@
             box-shadow: 0 8px 20px rgba(0,168,98,0.25);
         }
 
-
         /* CARDS */
         section { margin-top: 2.6rem; }
 
@@ -308,7 +320,6 @@
           opacity: .75;
         }
 
-
         @media (max-width: 700px) {
             .hero { grid-template-columns: 1fr; }
             header { flex-direction: column; align-items: flex-start; gap: 0.9rem;}
@@ -327,7 +338,6 @@
             <div class="brand-sub">Relaxing logic puzzles</div>
           </div>
         </div>
-
 
         <nav class="nav-links">
             <div class="nav-item dropdown">
@@ -350,20 +360,20 @@
     <section class="hero">
         <div>
             <h1 class="hero-title">Welcome to Alex Liam Puzzles</h1>
-                <p class="hero-subtitle">
-                  Free Sudoku and word search puzzles designed for clarity, relaxation, and a satisfying logic challenge.
-                </p>
-                
-                <ul class="hero-list">
-                  <li>Download printable Sudoku and word search PDFs in multiple difficulty levels.</li>
-                  <li>Play clean, mobile-friendly Sudoku directly in your browser.</li>
-                  <li>Explore thoughtfully crafted puzzle books — perfect for offline solving whenever you want a break from screens.</li>
-                </ul>
-                
-                <div class="hero-btn-row">
-                  <a class="btn-primary" href="#printables">⬇️ Get free printables</a>
-                  <a class="btn-primary" href="/sudoku/play/index.html">▶ Play Sudoku online</a>
-                </div>
+            <p class="hero-subtitle">
+              Free Sudoku and word search puzzles designed for clarity, relaxation, and a satisfying logic challenge.
+            </p>
+            
+            <ul class="hero-list">
+              <li>Download printable Sudoku and word search PDFs in multiple difficulty levels.</li>
+              <li>Play clean, mobile-friendly Sudoku directly in your browser.</li>
+              <li>Explore thoughtfully crafted puzzle books — perfect for offline solving whenever you want a break from screens.</li>
+            </ul>
+            
+            <div class="hero-btn-row">
+              <a class="btn-primary" href="#printables">⬇️ Get free printables</a>
+              <a class="btn-primary" href="/sudoku/play/index.html">▶ Play Sudoku online</a>
+            </div>
         </div>
     </section>
 
@@ -396,7 +406,11 @@
 
     <section id="online">
         <h2>Play Puzzles Online</h2>
-        <a href="/sudoku/play/index.html">Play Sudoku </a>
+        <p class="section-sub">
+            Play free online Sudoku with five difficulty levels: Warm-Up, Easy, Medium, Hard, and Expert.
+            Every grid is solver-verified to have a single valid solution, and the interface is clean, ad-free, and mobile-friendly.
+        </p>
+        <a href="/sudoku/play/index.html">Play free online Sudoku</a>
     </section>
 
     <section id="books">
