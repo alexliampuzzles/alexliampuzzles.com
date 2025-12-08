@@ -42,6 +42,7 @@
       padding: 1.5rem;
       color: var(--text);
       background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
+      overflow-x: hidden; /* prevent horizontal scroll on mobile */
     }
 
     body.theme-dark {
@@ -309,6 +310,7 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       transition: background 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
     }
 
     .difficulty-line {
@@ -1135,6 +1137,29 @@
       .board-title { font-size: 1.05rem; }
       .nav-links { font-size: 0.8rem; }
       .logo-mark { width: 26px; height: 26px; }
+
+      /* --- Mobile refinement for difficulty row --- */
+      .difficulty-line {
+        align-items: flex-start;
+        gap: 0.35rem;
+      }
+
+      .difficulty-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+      }
+
+      .difficulty-group {
+        display: flex;          /* override inline-flex */
+        flex-wrap: wrap;        /* allow wrapping to avoid overflow */
+        justify-content: flex-start;
+        row-gap: 0.25rem;
+      }
+
+      .btn-difficulty {
+        font-size: 0.7rem;
+        padding: 0.18rem 0.55rem;
+      }
     }
 
     body.theme-light .cell.error {
