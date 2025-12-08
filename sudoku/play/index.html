@@ -588,6 +588,11 @@
       color: var(--text-muted);
     }
 
+    .timer-container {
+      justify-content: center !important;
+      gap: 1rem;
+    }
+
     .timer-label {
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -1228,26 +1233,36 @@
         <!-- top bar: main actions -->
       <div class="controls-row">
         <!-- New Puzzle Menu -->
-        <div class="board-buttons">
-          <div class="dropdown">
-            <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
-              New Game ▾
-            </button>
-            <div id="dropdown-menu" class="dropdown-menu">
-              <button data-level="warmup">Warm-up</button>
-              <button data-level="easy">Easy</button>
-              <button data-level="medium">Medium</button>
-              <button data-level="hard">Hard</button>
-              <button data-level="expert">Expert</button>
-              <hr>
-              <button data-action="restart">Restart</button>
+        <div class="board-buttons" style="justify-content: space-between; width: 100%;">
+  
+          <!-- Left side -->
+          <div>
+            <div class="dropdown">
+              <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
+                New Game ▾
+              </button>
+              <div id="dropdown-menu" class="dropdown-menu">
+                <button data-level="warmup">Warm-up</button>
+                <button data-level="easy">Easy</button>
+                <button data-level="medium">Medium</button>
+                <button data-level="hard">Hard</button>
+                <button data-level="expert">Expert</button>
+                <hr>
+                <button data-action="restart">Restart</button>
+              </div>
             </div>
           </div>
-      
-          <button id="btn-solution" class="btn btn-outline btn-outline-danger">
-            Show solution
-          </button>
+        
+          <!-- Right side: Check + Show Solution -->
+          <div class="top-right-actions" style="display:flex; gap:0.5rem;">
+            <button id="btn-check" class="btn btn-outline">Check</button>
+            <button id="btn-solution" class="btn btn-outline btn-outline-danger">
+              Show solution
+            </button>
+          </div>
+        
         </div>
+
       </div>
       
       <!-- difficulty line under the buttons -->
@@ -1262,15 +1277,18 @@
         </div>
       </div>
 
-
+        <div class="timer-toggle-row" style="margin:0.4rem 0 1rem;">
+          <label class="helper-pill">
+            <input type="checkbox" id="toggle-timer">
+            <span>Timer</span>
+          </label>
+        </div>
         <!-- Timer (shown when enabled) -->
-        <div id="timer-container" class="timer-container">
-          <div class="timer-label">
-            Time
-            <span id="timer-time" class="timer-time">00:00</span>
-          </div>
+       <div id="timer-container" class="timer-container">
+          <span id="timer-time" class="timer-time">00:00</span>
           <button id="btn-timer-pause" class="timer-pause">Pause</button>
         </div>
+
 
         <!-- Completion banner -->
         <div id="completion-banner" class="completion-banner">
@@ -1314,9 +1332,6 @@
               <span class="icon">✏</span>
               <span class="label">Notes</span>
             </button>
-            <button id="btn-check" class="btn-check-inline" type="button">
-              Check
-            </button>
           </div>
         </div>
 
@@ -1325,10 +1340,6 @@
           <label class="helper-pill">
             <input type="checkbox" id="toggle-mistakes">
             <span>Show mistakes (real-time)</span>
-          </label>
-          <label class="helper-pill">
-            <input type="checkbox" id="toggle-timer">
-            <span>Timer</span>
           </label>
         </div>
       </div>
