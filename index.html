@@ -65,26 +65,45 @@
             padding: 0.75rem 0 1.75rem;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+        .brand {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+        }
+        
+        .logo-mark {
+          width: 28px;
+          height: 28px;
+          border-radius: 9px;
+          border: 2px solid var(--accent);
+          display: grid;
+          place-items: center;
+          font-size: 0.85rem;
+          background: radial-gradient(circle at 30% 0, #1f2937 0, #020617 55%);
+          color: var(--accent);
+        }
+        
+        .brand-text {
+          display: flex;
+          flex-direction: column;
+          gap: 0.1rem;
+        }
+        
+        .brand-title {
+          font-weight: 600;
+          letter-spacing: 0.07em;
+          text-transform: uppercase;
+          font-size: 1.14rem;
+          color: #1a1c22; /* overwrite for light theme */
+        }
+        
+        .brand-sub {
+          font-size: 0.9rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--muted);
         }
 
-        .logo-mark {
-            width: 30px;
-            height: 30px;
-            border-radius: 10px;
-            border: 2px solid var(--accent);
-            display: grid;
-            place-items: center;
-            font-size: 1rem;
-            background: linear-gradient(135deg, #ffd5a3, #ff8f2f);
-            color: #000;
-        }
 
         .nav-links {
             display: flex;
@@ -259,13 +278,14 @@
 <div class="page">
 
     <header>
-        <div class="logo">
-            <div class="logo-mark">AL</div>
-            <div>
-                <div>Alex Liam Puzzles</div>
-                <div style="font-size:0.85rem; color:var(--muted); text-transform:none;">Relaxing logic puzzles</div>
-            </div>
+        <div class="brand">
+          <div class="logo-mark">AL</div>
+          <div class="brand-text">
+            <div class="brand-title">Alex Liam Puzzles</div>
+            <div class="brand-sub">Relaxing logic puzzles</div>
+          </div>
         </div>
+
 
         <nav class="nav-links">
             <div class="nav-item dropdown">
