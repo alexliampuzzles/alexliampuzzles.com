@@ -393,6 +393,73 @@
       border-color: rgba(252, 165, 165, 0.95);
     }
 
+          /* Dropdown container */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      
+      /* Dropdown menu panel */
+      .dropdown-menu {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        min-width: 170px;
+        background: rgba(15, 23, 42, 0.97);
+        border: 1px solid rgba(148, 163, 184, 0.55);
+        border-radius: 0.75rem;
+        padding: 0.4rem 0;
+        display: none;
+        flex-direction: column;
+        z-index: 50;
+        box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+      }
+      
+      /* Show menu */
+      .dropdown-menu.show {
+        display: flex;
+      }
+      
+      /* Menu buttons */
+      .dropdown-menu button {
+        background: transparent;
+        border: none;
+        color: #e5e7eb;
+        text-align: left;
+        padding: 0.55rem 0.9rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        width: 100%;
+        letter-spacing: 0.05em;
+      }
+      
+      .dropdown-menu button:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+      }
+      
+      .dropdown-menu hr {
+        border: none;
+        margin: 0.4rem 0;
+        height: 1px;
+        background: rgba(148, 163, 184, 0.3);
+      }
+      
+      /* Light mode adjustments */
+      body.theme-light .dropdown-menu {
+        background: #ffffff;
+        border-color: rgba(148, 163, 184, 0.5);
+      }
+      
+      body.theme-light .dropdown-menu button {
+        color: #111827;
+      }
+      
+      body.theme-light .dropdown-menu button:hover {
+        background: #f3f4f6;
+      }
+
+
     body.theme-light .btn-outline {
       background: #ffffff;
       color: #111827;
@@ -1147,20 +1214,28 @@
 
         <!-- top bar: difficulty + main actions -->
         <div class="controls-row">
-          <div class="difficulty-group" aria-label="Difficulty selection">
-            <button class="btn-difficulty active" data-level="easy">Easy</button>
-            <button class="btn-difficulty" data-level="medium">Medium</button>
-            <button class="btn-difficulty" data-level="hard">Hard</button>
-          </div>
-
+         <!-- New Puzzle Menu -->
           <div class="board-buttons">
-            <button id="btn-new" class="btn btn-primary">
-              New puzzle
-            </button>
+            <div class="dropdown">
+              <button id="dropdown-toggle" class="btn btn-primary dropdown-toggle">
+                New Game ▾
+              </button>
+              <div id="dropdown-menu" class="dropdown-menu">
+                <button data-level="warmup">Warm-up</button>
+                <button data-level="easy">Easy</button>
+                <button data-level="medium">Medium</button>
+                <button data-level="hard">Hard</button>
+                <button data-level="expert">Expert</button>
+                <hr>
+                <button data-action="restart">Restart</button>
+              </div>
+            </div>
+          
             <button id="btn-solution" class="btn btn-outline btn-outline-danger">
               Show solution
             </button>
           </div>
+
         </div>
 
         <!-- Timer (shown when enabled) -->
@@ -1311,10 +1386,13 @@
 
   // --- Puzzle data ---
   const DATA_FILES = {
-    easy: "data/classic_easy.json",
-    medium: "data/classic_medium.json",
-    hard: "data/classic_hard.json"
-  };
+      warmup: "data/classic_warm-up.json",
+      easy: "data/classic_easy.json",
+      medium: "data/classic_medium.json",
+      hard: "data/classic_hard.json",
+      expert: "data/classic_expert.json"
+    };
+
 
   const PUZZLES = { easy: [], medium: [], hard: [] };
 
@@ -2063,6 +2141,44 @@
     setTimerEnabled(timerToggle.checked);
     ignoreNextPauseClick = true;
   });
+
+  // --- Dropdown menu logic ---
+  const dropdownToggle = document.getElementById("dropdown-toggle");
+  const dropdownMenu = document.getElementById("dropdown-menu");
+  
+  dropdownToggle.addEventListener("click", () => {
+    dropdownMenu.classList.toggle("show");
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!dropdownToggle.contains(e.target) &&
+        !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.remove("show");
+    }
+  });
+  
+  // Menu item actions
+  dropdownMenu.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+  
+    const level = btn.dataset.level;
+    const action = btn.dataset.action;
+  
+    dropdownMenu.classList.remove("show");
+  
+    if (level) {
+      currentDifficulty = level;
+      updateMistakesDefault(level);
+      loadRandomPuzzle(level);
+    }
+  
+    if (action === "restart") {
+      loadRandomPuzzle(currentDifficulty);
+    }
+  });
+
 
   updateMistakesDefault(currentDifficulty);
   setTimerEnabled(false);
