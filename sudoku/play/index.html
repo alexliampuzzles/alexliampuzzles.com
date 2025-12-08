@@ -598,6 +598,46 @@
       border: 1px solid rgba(148, 163, 184, 0.7);
     }
 
+    /* Completion overlay in center of board */
+    .completion-overlay {
+      position: absolute;
+      inset: 0.4rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 11;
+    }
+
+    .completion-box {
+      padding: 0.9rem 1.4rem;
+      border-radius: 1rem;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(248, 250, 252, 0.25);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      text-align: center;
+      max-width: 260px;
+    }
+
+    .completion-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .completion-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    body.theme-light .completion-box {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.7);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.18);
+      color: #111827;
+    }
+
     .overlay-content {
       text-align: center;
       display: flex;
@@ -616,20 +656,6 @@
 
     .completion-banner {
       display: none;
-      margin-top: 0.5rem;
-      padding: 0.32rem 0.8rem;
-      border-radius: 999px;
-      border: 1px solid rgba(34, 197, 94, 0.7);
-      background: rgba(22, 163, 74, 0.18);
-      color: #bbf7d0;
-      font-size: 0.85rem;
-      text-align: center;
-    }
-
-    body.theme-light .completion-banner {
-      background: #ecfdf3;
-      border-color: #22c55e;
-      color: #15803d;
     }
 
     /* Timer row: Timer + time + pause, same line */
@@ -645,7 +671,7 @@
     .timer-container {
       display: none;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       padding: 0.18rem 0.7rem;
       border-radius: 999px;
       background: rgba(15, 23, 42, 0.95);
@@ -653,12 +679,17 @@
       font-size: 0.8rem;
       color: var(--text-muted);
       gap: 0.6rem;
+      min-width: 140px; /* dedicated width so line doesn't re-center */
     }
 
     .timer-time {
       font-weight: 600;
       color: #e5e7eb;
       font-size: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      min-width: 5ch;       /* mm:ss always same width */
+      text-align: center;
     }
 
     .timer-pause {
@@ -787,7 +818,6 @@
       justify-content: center;
       gap: 0.35rem;
       letter-spacing: 0.08em;
-      /* text-transform: uppercase; */
       transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
       width: 100%;
     }
@@ -1352,11 +1382,6 @@
           </div>
         </div>
 
-        <!-- Completion banner -->
-        <div id="completion-banner" class="completion-banner">
-          🎉 Congratulations! Puzzle solved.
-        </div>
-
         <div class="board-wrapper">
           <div id="board" class="board" aria-label="Sudoku grid"></div>
 
@@ -1367,6 +1392,14 @@
               <button id="btn-resume-big" class="btn btn-primary overlay-resume" type="button">
                 Resume
               </button>
+            </div>
+          </div>
+
+          <!-- Completion overlay -->
+          <div id="completion-overlay" class="completion-overlay" aria-hidden="true">
+            <div class="completion-box">
+              <div class="completion-title">🎉 Congratulations!</div>
+              <div class="completion-text">You solved this puzzle.</div>
             </div>
           </div>
 
@@ -1410,23 +1443,23 @@
           <ul class="feature-list">
             <li>
               <span class="feature-bullet"></span>
-              Warm-up – very gentle introduction to Sudoku.
+              Warm-up – super gentle grids, ideal for first-time solvers or a quick relaxing game.
             </li>
             <li>
               <span class="feature-bullet"></span>
-              Easy – comfortable puzzles that build confidence.
+              Easy – light, comfortable puzzles that build confidence without stress.
             </li>
             <li>
               <span class="feature-bullet"></span>
-              Medium – steady logical challenge.
+              Medium – a steady logical challenge that needs a bit more focus.
             </li>
             <li>
               <span class="feature-bullet"></span>
-              Hard – tougher grids that may need pencil-marks.
+              Hard – tougher grids where pencil marks and careful scanning help.
             </li>
             <li>
               <span class="feature-bullet"></span>
-              Expert – deeper logic and careful scanning.
+              Expert – deeper logic, fewer obvious moves, for experienced solvers.
             </li>
           </ul>
         </div>
@@ -1541,10 +1574,10 @@
   const timerContainer = document.getElementById("timer-container");
   const timerTimeEl = document.getElementById("timer-time");
   const btnTimerPause = document.getElementById("btn-timer-pause");
-  const completionBanner = document.getElementById("completion-banner");
   const boardOverlay = document.getElementById("board-overlay");
   const btnResumeBig = document.getElementById("btn-resume-big");
   const wrongTooltip = document.getElementById("wrong-tooltip");
+  const completionOverlay = document.getElementById("completion-overlay");
   let wrongTooltipTimeout = null;
 
   function showWrongTooltip() {
@@ -1622,18 +1655,15 @@
     const seconds = totalSeconds % 60;
     const mm = String(minutes).padStart(2, "0");
     const ss = String(seconds).padStart(2, "0");
-    return mm + ":" + ss;
-  }
-
-  function updateTimerDisplay() {
-    timerTimeEl.textContent = formatTime(timerElapsedMs);
+    const res = mm + ":" + ss;
+    timerTimeEl.textContent = res;
   }
 
   function tickTimer() {
     if (!timerRunning) return;
     const now = performance.now();
     timerElapsedMs = now - timerStartMs;
-    updateTimerDisplay();
+    formatTime(timerElapsedMs);
   }
 
   function hidePauseOverlay() {
@@ -1660,14 +1690,14 @@
     timerElapsedMs = performance.now() - timerStartMs;
     clearInterval(timerInterval);
     timerInterval = null;
-    updateTimerDisplay();
+    formatTime(timerElapsedMs);
     btnTimerPause.textContent = "Resume";
     if (showOverlay) showPauseOverlay();
   }
 
   function resetTimer() {
     timerElapsedMs = 0;
-    updateTimerDisplay();
+    formatTime(timerElapsedMs);
     if (timerEnabled) {
       startTimer();
     } else {
@@ -1686,7 +1716,7 @@
       timerInterval = null;
       timerRunning = false;
       timerElapsedMs = 0;
-      updateTimerDisplay();
+      formatTime(timerElapsedMs);
       hidePauseOverlay();
     } else {
       resetTimer();
@@ -1696,7 +1726,10 @@
   function showCompletionMessage() {
     if (puzzleCompleted) return;
     puzzleCompleted = true;
-    if (completionBanner) completionBanner.style.display = "block";
+    if (completionOverlay) {
+      completionOverlay.style.display = "flex";
+      completionOverlay.setAttribute("aria-hidden", "false");
+    }
     if (timerEnabled) {
       pauseTimer(false);
     }
@@ -1704,7 +1737,10 @@
 
   function hideCompletionBanner() {
     puzzleCompleted = false;
-    if (completionBanner) completionBanner.style.display = "none";
+    if (completionOverlay) {
+      completionOverlay.style.display = "none";
+      completionOverlay.setAttribute("aria-hidden", "true");
+    }
   }
 
   btnTimerPause.addEventListener("click", () => {
@@ -2012,7 +2048,6 @@
   function checkCompletionAuto() {
     if (!currentPuzzle || puzzleCompleted) return;
     const solution = currentPuzzle.solution;
-    const cells = boardEl.querySelectorAll(".cell");
     for (let r = 0; r < 9; r++) {
       for (let c = 0; c < 9; c++) {
         const idx = r * 9 + c;
@@ -2033,7 +2068,7 @@
     const r = parseInt(cell.dataset.row, 10);
     const c = parseInt(cell.dataset.col, 10);
     const idx = r * 9 + c;
-       const correct = currentPuzzle.solution[idx];
+    const correct = currentPuzzle.solution[idx];
     return value === correct;
   }
 
