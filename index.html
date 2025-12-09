@@ -450,6 +450,19 @@
         height: 32px;
       }
     }
+
+        /* Force Free Printable Puzzles cards to hug the left
+       instead of looking centered in the column */
+    #printables .cards {
+      display: block;           /* no grid/flex – just normal block layout */
+    }
+    
+    #printables .card {
+      max-width: 520px;         /* narrower than the 720px content column */
+      width: 100%;              /* still responsive on mobile */
+      margin: 0 0 1.2rem 0;     /* stack with some space, aligned left */
+    }
+
   </style>
 </head>
 <body id="top" class="theme-light">
