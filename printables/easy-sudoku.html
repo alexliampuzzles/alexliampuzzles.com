@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Easy Sudoku Printable PDF – Free Download</title>
+<title>Easy Sudoku Printable (PDF) – Free Download</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Free easy Sudoku printable PDF with clear grids and solutions. Perfect for beginners.">
+<meta name="description" content="Free Easy Sudoku printable PDF with clean puzzles and full solutions. Perfect for beginners.">
 
 <style>
 :root {
@@ -32,12 +32,7 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(
-        180deg,
-        var(--bg-light-1) 0%,
-        var(--bg-light-2) 45%,
-        var(--bg-light-3) 100%
-    );
+    background: linear-gradient(180deg, var(--bg-light-1), var(--bg-light-2) 45%, var(--bg-light-3));
     color: var(--text-dark);
 }
 
@@ -63,7 +58,6 @@ header {
 
 .logo-img {
     height: 36px;
-    width: auto;
 }
 
 .brand-text {
@@ -86,20 +80,56 @@ header {
     color: var(--muted);
 }
 
+/* NAVIGATION */
 .nav-links {
     display: flex;
     gap: 1.3rem;
-    font-size: 0.95rem;
+    align-items: center;
+    position: relative;
 }
 
-.nav-links a {
-    text-decoration: none;
-    color: var(--accent);
+.nav-link {
     font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
 }
 
-.nav-links a:hover {
+.nav-link:hover {
     opacity: 0.75;
+}
+
+/* DROPDOWN */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 120%;
+    left: 0;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    padding: 0.4rem 0;
+    width: 210px;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.55rem 0.9rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 0.92rem;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(255,143,47,0.12);
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
 }
 
 /* CONTENT */
@@ -109,21 +139,20 @@ h1 {
 }
 
 p {
-    line-height: 1.65;
     font-size: 1.05rem;
+    line-height: 1.65;
 }
 
 a {
     color: var(--link);
     text-decoration: underline;
-    font-weight: 500;
 }
 
 a:hover {
     color: var(--link-hover);
 }
 
-/* CARD BOX */
+/* DOWNLOAD BOX */
 .box {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
@@ -134,7 +163,7 @@ a:hover {
 }
 
 .update-note {
-    margin-top: 10px;
+    margin-top: 12px;
     color: var(--muted);
     font-size: 0.9rem;
 }
@@ -146,9 +175,9 @@ a:hover {
     border-left: 4px solid #1a73e8;
     border-radius: 8px;
     color: var(--muted);
-    font-size: 0.95rem;
 }
 
+/* BACK LINK */
 .back {
     margin-top: 32px;
     display: inline-block;
@@ -172,17 +201,30 @@ a:hover {
         </div>
 
         <nav class="nav-links">
-            <a href="/">Home</a>
-            <a href="/printables/warmup-sudoku.html">Printables</a>
-            <a href="/sudoku/play/index.html">Play Sudoku</a>
-            <a href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a>
+
+            <a class="nav-link" href="/">Home</a>
+
+            <div class="dropdown">
+                <a class="nav-link" href="#">Printables ▾</a>
+                <div class="dropdown-menu">
+                    <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
+                    <a href="/printables/easy-sudoku.html"><strong>Easy Sudoku</strong></a>
+                    <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                    <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                    <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+                </div>
+            </div>
+
+            <a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a>
+            <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a>
+
         </nav>
     </header>
 
     <!-- MAIN CONTENT -->
     <h1>Easy Sudoku Printable (PDF)</h1>
 
-    <p>Download a free set of beginner-friendly Sudoku puzzles. Each puzzle is clean, clear, and includes solutions.</p>
+    <p>Download a free set of beginner-friendly Easy Sudoku puzzles. Clean grids and full solutions included.</p>
 
     <div class="box">
         <h3 style="margin-top:0;">Download PDF</h3>
@@ -193,8 +235,8 @@ a:hover {
 
         <div class="print-note">
             <strong>Printing Info:</strong><br>
-            This PDF is formatted for <strong>8.5″ × 11″ (US Letter)</strong> but also prints perfectly on <strong>A4</strong>.  
-            Select “Fit to Page” for best results.
+            Optimized for <strong>8.5″ × 11″ (US Letter)</strong>.  
+            Also prints perfectly on <strong>A4</strong> using “Fit to Page”.
         </div>
     </div>
 
