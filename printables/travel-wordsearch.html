@@ -1,44 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Travel Word Search Printable (PDF)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Free Travel Word Search printable PDF with solutions.">
+  <meta charset="UTF-8">
+  <title>Travel Word Search Printable (PDF)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+        content="Free Travel Word Search printable PDF with themed puzzles and full solutions. Explore travel destinations through fun word search grids.">
 
-<style>
-/* Same theme, header, nav, dropdown, styling as other printables */
-</style>
+  <style>
+    :root {
+      --bg-light-1: #f5f7fc;
+      --bg-light-2: #eef1f8;
+      --bg-light-3: #e7ebf5;
+
+      --text-dark: #1c1f26;
+      --muted: #6b7280;
+
+      --accent: #ff8f2f;
+
+      --card-bg: #ffffff;
+      --card-border: rgba(15,23,42,0.06);
+      --card-shadow: 0 12px 28px rgba(15,23,42,0.08);
+
+      --link: #1a73e8;
+      --link-hover: #0c56c9;
+
+      --max-width: 900px;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(
+        180deg,
+        var(--bg-light-1),
+        var(--bg-light-2) 45%,
+        var(--bg-light-3)
+      );
+      color: var(--text-dark);
+    }
+
+    .page-shell {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 1.5rem 1.2rem 3rem;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0 2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .logo-img {
+      height: 36px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    /* NAV + DROPDOWN */
+    .nav-links {
+      display: flex;
+      gap: 1.3rem;
+      align-items: center;
+      position: relative;
+    }
+
+    .nav-link {
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 120%;
+      left: 0;
+      width: 230px;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      padding: 0.4rem 0;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 40;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 0.55rem 0.9rem;
+      text-decoration: none;
+      color: var(--text-dark);
+      font-size: 0.92rem;
+    }
+
+    .dropdown-menu a:hover {
+      background: rgba(255,143,47,0.12);
+    }
+
+    .dropdown-separator {
+      margin: 8px 0;
+      border: 0;
+      height: 1px;
+      background: rgba(0,0,0,0.08);
+    }
+
+    /* CONTENT */
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    p {
+      font-size: 1.05rem;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--link);
+    }
+
+    a:hover {
+      color: var(--link-hover);
+    }
+
+    /* CARD */
+    .box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      padding: 22px 24px;
+      border-radius: 16px;
+      margin-top: 24px;
+    }
+
+    .update-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .print-note {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #f0f3fa;
+      border-left: 4px solid #1a73e8;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .back {
+      margin-top: 32px;
+      display: inline-block;
+      font-size: 1rem;
+    }
+  </style>
 </head>
 
 <body>
 <div class="page-shell">
 
-<header> … SAME HEADER + DROPDOWN AS ABOVE … </header>
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <img src="/assets/MyLogo.png" class="logo-img" alt="Alex Liam Puzzles Logo">
+      <div class="brand-text">
+        <div class="brand-title">Alex Liam Puzzles</div>
+        <div class="brand-sub">Relaxing logic puzzles</div>
+      </div>
+    </div>
 
-<h1>Travel Word Search Printable (PDF)</h1>
+    <nav class="nav-links">
+      <a class="nav-link" href="/">Home</a>
 
-<p>Discover hidden travel-themed words in this fun set of printable puzzles with solutions included.</p>
+      <div class="dropdown">
+        <a href="#" class="nav-link" id="printables-toggle">Printables ▾</a>
 
-<div class="box">
+        <div class="dropdown-menu" id="printables-menu">
+          <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
+          <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+          <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+          <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+          <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+
+          <hr class="dropdown-separator">
+
+          <a href="/printables/wordsearch.html"><strong>Word Search Printables</strong></a>
+        </div>
+      </div>
+
+      <a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a>
+      <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <h1>Travel Word Search Printable (PDF)</h1>
+
+  <p>
+    Explore the world through a set of <strong>Travel Word Search</strong> puzzles. Each grid hides travel-related
+    destinations and terms, with a complete solution key included.
+  </p>
+
+  <div class="box">
     <h3 style="margin-top:0;">Download PDF</h3>
 
-    <p><a href="/downloads/travel-wordsearch.pdf">Download Travel Word Search (PDF)</a></p>
+    <p>
+      <a href="/downloads/travel-wordsearch.pdf">
+        Download Travel Word Search Pack (PDF)
+      </a>
+    </p>
 
     <p class="update-note">Updated: January 2026</p>
 
     <div class="print-note">
-        <strong>Printing Info:</strong><br>
-        Designed for US Letter & A4 (“Fit to Page” recommended).
+      <strong>Printing Info:</strong><br>
+      Formatted for <strong>US Letter (8.5″ × 11″)</strong>.  
+      Prints perfectly on <strong>A4</strong> using “Fit to Page”.
     </div>
-</div>
+  </div>
 
-<p class="back"><a href="/printables/wordsearch.html">← Back to Word Search Printables</a></p>
+  <p class="back">
+    <a href="/printables/wordsearch.html">← Back to Word Search Printables</a>
+  </p>
 
 </div>
 
 <script>
-/* Same dropdown script */
+  const printablesToggle = document.getElementById("printables-toggle");
+  const printablesMenu   = document.getElementById("printables-menu");
+
+  if (printablesToggle && printablesMenu) {
+    printablesToggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      printablesMenu.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!printablesToggle.contains(e.target) &&
+          !printablesMenu.contains(e.target)) {
+        printablesMenu.classList.remove("show");
+      }
+    });
+  }
 </script>
 
 </body>
