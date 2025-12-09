@@ -368,21 +368,23 @@
     }
 
     /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: 1fr;
+   .cards {
+      display: flex;
+      flex-direction: column;
       gap: 1.2rem;
-      justify-items: start;
+      align-items: flex-start; /* cards hug the left */
     }
+
 
     .card {
-      background: #ffffff;
-      padding: 1.1rem 1.2rem;
-      border-radius: 18px;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    }
-
+    background: #ffffff;
+    padding: 1.1rem 1.2rem;
+    border-radius: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    max-width: 520px;   /* narrower than the 720px content width */
+    width: 100%;        /* responsive on small screens */
+  }
 
 
     .card-footer {
