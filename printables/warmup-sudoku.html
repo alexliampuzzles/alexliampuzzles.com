@@ -7,6 +7,8 @@
 <meta name="description" content="Free Warm-Up Sudoku printable PDF for beginners. Clear, easy grids with full solutions included.">
 
 <style>
+/* === GLOBAL THEME (same across all printable pages) === */
+
 :root {
     --bg-light-1: #f5f7fc;
     --bg-light-2: #eef1f8;
@@ -27,17 +29,11 @@
     --max-width: 900px;
 }
 
-/* GLOBAL */
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(
-        180deg,
-        var(--bg-light-1),
-        var(--bg-light-2) 45%,
-        var(--bg-light-3)
-    );
+    background: linear-gradient(180deg, var(--bg-light-1), var(--bg-light-2) 45%, var(--bg-light-3));
     color: var(--text-dark);
 }
 
@@ -47,7 +43,8 @@ body {
     padding: 1.5rem 1.2rem 3rem;
 }
 
-/* HEADER */
+/* === HEADER === */
+
 header {
     display: flex;
     justify-content: space-between;
@@ -73,7 +70,6 @@ header {
 
 .brand-title {
     font-weight: 600;
-    letter-spacing: 0.06em;
     text-transform: uppercase;
     font-size: 1.1rem;
 }
@@ -85,7 +81,8 @@ header {
     color: var(--muted);
 }
 
-/* NAV */
+/* === NAVIGATION === */
+
 .nav-links {
     display: flex;
     gap: 1.3rem;
@@ -99,11 +96,8 @@ header {
     text-decoration: none;
 }
 
-.nav-link:hover {
-    opacity: 0.75;
-}
+/* === DROPDOWN (click-to-open) === */
 
-/* DROPDOWN */
 .dropdown {
     position: relative;
 }
@@ -111,15 +105,14 @@ header {
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 120%;
-    left: 0;
+    top: 120%; left: 0;
+    width: 210px;
     background: #ffffff;
     border-radius: 10px;
     border: 1px solid rgba(0,0,0,0.12);
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     padding: 0.4rem 0;
-    width: 210px;
-    z-index: 20;
+    z-index: 30;
 }
 
 .dropdown-menu a {
@@ -130,15 +123,16 @@ header {
     font-size: 0.92rem;
 }
 
+.dropdown-menu.show {
+    display: block;
+}
+
 .dropdown-menu a:hover {
     background: rgba(255,143,47,0.12);
 }
 
-.dropdown:hover .dropdown-menu {
-    display: block;
-}
+/* === CONTENT === */
 
-/* CONTENT */
 h1 {
     font-size: 2rem;
     margin-bottom: 0.8rem;
@@ -150,16 +144,8 @@ p {
     line-height: 1.65;
 }
 
-a {
-    color: var(--link);
-    text-decoration: underline;
-}
+/* === DOWNLOAD CARD === */
 
-a:hover {
-    color: var(--link-hover);
-}
-
-/* CARD */
 .box {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
@@ -169,86 +155,99 @@ a:hover {
     margin-top: 24px;
 }
 
-.update-note {
-    margin-top: 12px;
-    color: var(--muted);
-    font-size: 0.9rem;
-}
-
 .print-note {
     margin-top: 16px;
     padding: 12px 16px;
     background: #f0f3fa;
     border-left: 4px solid #1a73e8;
     border-radius: 8px;
+    font-size: 0.95rem;
     color: var(--muted);
 }
 
-/* BACK LINK */
-.back {
-    margin-top: 32px;
-    display: inline-block;
-    font-size: 1rem;
+.update-note {
+    margin-top: 10px;
+    color: var(--muted);
 }
 
+.back {
+    display: inline-block;
+    margin-top: 32px;
+    font-size: 1rem;
+}
 </style>
 </head>
 
 <body>
 <div class="page-shell">
 
-    <!-- HEADER -->
-    <header>
-        <div class="brand">
-            <img src="/assets/MyLogo.png" class="logo-img" alt="Alex Liam Puzzles Logo">
-            <div class="brand-text">
-                <div class="brand-title">Alex Liam Puzzles</div>
-                <div class="brand-sub">Relaxing logic puzzles</div>
-            </div>
-        </div>
-
-        <nav class="nav-links">
-
-            <a class="nav-link" href="/">Home</a>
-
-            <div class="dropdown">
-                <a class="nav-link" href="#">Printables ▾</a>
-                <div class="dropdown-menu">
-                    <a href="/printables/warmup-sudoku.html"><strong>Warm-Up Sudoku</strong></a>
-                    <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
-                    <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
-                    <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
-                    <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
-                </div>
-            </div>
-
-            <a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a>
-            <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a>
-
-        </nav>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <h1>Warm-Up Sudoku Printable (PDF)</h1>
-
-    <p>This Warm-Up Sudoku pack is designed for beginners and includes simple, friendly grids with clean solutions — perfect for getting started.</p>
-
-    <div class="box">
-        <h3 style="margin-top:0;">Download PDF</h3>
-
-        <p><a href="/downloads/warmup-sudoku.pdf">Download Warm-Up Sudoku Pack (PDF)</a></p>
-
-        <p class="update-note">Updated: January 2026</p>
-
-        <div class="print-note">
-            <strong>Printing Info:</strong><br>
-            Optimized for <strong>8.5″ × 11″ (US Letter)</strong>.  
-            Prints perfectly on <strong>A4</strong> using “Fit to Page”.
+<header>
+    <div class="brand">
+        <img src="/assets/MyLogo.png" class="logo-img" alt="Alex Liam Puzzles">
+        <div class="brand-text">
+            <div class="brand-title">Alex Liam Puzzles</div>
+            <div class="brand-sub">Relaxing logic puzzles</div>
         </div>
     </div>
 
-    <p class="back"><a href="/">← Back to Home</a></p>
+    <nav class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+
+        <div class="dropdown">
+            <a href="#" class="nav-link" id="printables-toggle">Printables ▾</a>
+
+            <div class="dropdown-menu" id="printables-menu">
+                <a href="/printables/warmup-sudoku.html"><strong>Warm-Up Sudoku</strong></a>
+                <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+            </div>
+        </div>
+
+        <a href="/sudoku/play/index.html" class="nav-link">Play Sudoku</a>
+        <a href="https://www.amazon.com/author/alex_liam" target="_blank" class="nav-link">Puzzle Books</a>
+    </nav>
+</header>
+
+<h1>Warm-Up Sudoku Printable (PDF)</h1>
+
+<p>This Warm-Up pack includes simple, friendly puzzles perfect for new solvers. Each grid includes a full solution.</p>
+
+<div class="box">
+    <h3 style="margin-top:0;">Download PDF</h3>
+    <p><a href="/downloads/warmup-sudoku.pdf">Download Warm-Up Sudoku Pack (PDF)</a></p>
+    <p class="update-note">Updated: January 2026</p>
+
+    <div class="print-note">
+        <strong>Printing Info:</strong><br>
+        Optimized for <strong>US Letter (8.5″×11″)</strong>.  
+        Prints perfectly on <strong>A4</strong> using “Fit to Page”.
+    </div>
+</div>
+
+<p class="back"><a href="/">← Back to Home</a></p>
 
 </div>
+
+<script>
+const printablesToggle = document.getElementById("printables-toggle");
+const printablesMenu   = document.getElementById("printables-menu");
+
+if (printablesToggle && printablesMenu) {
+    printablesToggle.addEventListener("click", (e) => {
+        e.preventDefault();
+        printablesMenu.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!printablesToggle.contains(e.target) &&
+            !printablesMenu.contains(e.target)) {
+            printablesMenu.classList.remove("show");
+        }
+    });
+}
+</script>
+
 </body>
 </html>
