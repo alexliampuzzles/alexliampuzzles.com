@@ -223,3 +223,32 @@ p {
 
     <div class="print-note">
         <strong>Printing Info:</strong><br>
+        Designed for <strong>US Letter (8.5×11)</strong>.  
+        Prints perfectly on <strong>A4</strong> when “Fit to Page” is selected.
+    </div>
+</div>
+
+<p class="back"><a href="/">← Back to Home</a></p>
+
+</div>
+
+<!-- DROPDOWN SCRIPT -->
+<script>
+const printablesToggle = document.getElementById("printables-toggle");
+const printablesMenu   = document.getElementById("printables-menu");
+
+printablesToggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    printablesMenu.classList.toggle("show");
+});
+
+document.addEventListener("click", (e) => {
+    if (!printablesToggle.contains(e.target) &&
+        !printablesMenu.contains(e.target)) {
+        printablesMenu.classList.remove("show");
+    }
+});
+</script>
+
+</body>
+</html>
