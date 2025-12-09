@@ -1,97 +1,205 @@
-<!-- ================= HARD SUDOKU PAGE (LIGHT THEME) ================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Hard Sudoku Printable PDF – Free Download</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Free hard Sudoku printable PDF for experienced solvers. Includes clean grids and full solutions.">
+<meta name="description" content="Free Hard Sudoku printable PDF for experienced solvers. Includes clean grids and full solutions.">
 
 <style>
-    :root {
-        --bg1: #f5f7fc;
-        --bg2: #eef1f8;
-        --bg3: #e7ebf5;
+:root {
+    --bg-light-1: #f5f7fc;
+    --bg-light-2: #eef1f8;
+    --bg-light-3: #e7ebf5;
 
-        --text-dark: #1c1f26;
-        --muted: #6b7280;
+    --text-dark: #1c1f26;
+    --muted: #6b7280;
 
-        --card-bg: #ffffff;
-        --card-border: rgba(15,23,42,0.06);
-        --card-shadow: 0 12px 28px rgba(15,23,42,0.08);
+    --accent: #ff8f2f;
 
-        --link: #1a73e8;
-        --link-hover: #0c56c9;
-    }
+    --card-bg: #ffffff;
+    --card-border: rgba(15,23,42,0.06);
+    --card-shadow: 0 12px 28px rgba(15,23,42,0.08);
 
-    body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        margin: 0;
-        padding: 24px;
-        background: linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg3));
-        color: var(--text-dark);
-    }
+    --link: #1a73e8;
+    --link-hover: #0c56c9;
 
-    .container { max-width: 720px; margin: auto; padding: 12px 16px; }
+    --max-width: 900px;
+}
 
-    h1 { font-size: 2rem; margin-bottom: 0.8rem; font-weight: 700; }
+/* GLOBAL */
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(
+        180deg,
+        var(--bg-light-1) 0%,
+        var(--bg-light-2) 45%,
+        var(--bg-light-3) 100%
+    );
+    color: var(--text-dark);
+}
 
-    p { line-height: 1.6; font-size: 1.05rem; }
+.page-shell {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1.5rem 1.2rem 3rem;
+}
 
-    a { color: var(--link); text-decoration: underline; font-weight: 500; }
-    a:hover { color: var(--link-hover); }
+/* HEADER */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0 2rem;
+}
 
-    .box {
-        background: var(--card-bg);
-        border: 1px solid var(--card-border);
-        box-shadow: var(--card-shadow);
-        padding: 20px 24px;
-        border-radius: 14px;
-        margin-top: 24px;
-    }
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
 
-    .print-note {
-        margin-top: 14px;
-        padding: 10px 14px;
-        background: #f0f3fa;
-        border-left: 4px solid #1a73e8;
-        border-radius: 6px;
-        color: var(--muted);
-        font-size: 0.95rem;
-    }
+.logo-img {
+    height: 36px;
+    width: auto;
+}
 
-    .update-note {
-        margin-top: 10px;
-        color: var(--muted);
-        font-size: 0.9rem;
-    }
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
 
-    .back { margin-top: 28px; display: inline-block; font-size: 0.98rem; }
+.brand-title {
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+}
+
+.brand-sub {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.3rem;
+    font-size: 0.95rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    opacity: 0.75;
+}
+
+/* CONTENT */
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+}
+
+p {
+    line-height: 1.65;
+    font-size: 1.05rem;
+}
+
+a {
+    color: var(--link);
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+a:hover {
+    color: var(--link-hover);
+}
+
+/* DOWNLOAD BOX */
+.box {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    padding: 22px 24px;
+    border-radius: 16px;
+    margin-top: 24px;
+}
+
+.update-note {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.print-note {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #f0f3fa;
+    border-left: 4px solid #1a73e8;
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.back {
+    margin-top: 32px;
+    display: inline-block;
+    font-size: 1rem;
+}
+
 </style>
 </head>
 
 <body>
-<div class="container">
+<div class="page-shell">
 
+    <!-- HEADER -->
+    <header>
+        <div class="brand">
+            <img src="/assets/MyLogo.png" class="logo-img" alt="Alex Liam Puzzles Logo">
+            <div class="brand-text">
+                <div class="brand-title">Alex Liam Puzzles</div>
+                <div class="brand-sub">Relaxing logic puzzles</div>
+            </div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/printables/easy-sudoku.html">Printables</a>
+            <a href="/sudoku/play/index.html">Play Sudoku</a>
+            <a href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
     <h1>Hard Sudoku Printable (PDF)</h1>
 
-    <p>This Hard-level Sudoku pack is designed for experienced solvers looking for a logical challenge. Clean layout, sharp grids, and full solutions provided.</p>
+    <p>This Hard-level Sudoku pack is designed for experienced solvers looking for a deeper logical challenge. Enjoy clean, sharp grids and complete solutions.</p>
 
     <div class="box">
         <h3 style="margin-top:0;">Download PDF</h3>
+
         <p><a href="/downloads/hard-sudoku.pdf">Download Hard Sudoku Pack (PDF)</a></p>
-         <p class="update-note">Updated: January 2026</p>
-      
+
+        <p class="update-note">Updated: January 2026</p>
+
         <div class="print-note">
             <strong>Printing Info:</strong><br>
-            Perfect for <strong>8.5″ × 11″ (US Letter)</strong>.  
-            For <strong>A4</strong>, choose “Fit to Page” when printing.
+            Formatted for <strong>8.5″ × 11″ (US Letter)</strong>.  
+            Prints perfectly on <strong>A4</strong> — choose “Fit to Page” in your printer settings.
         </div>
-
-       
     </div>
 
-    <p class="back"><a href="/index.html">← Back to Home</a></p>
+    <p class="back"><a href="/">← Back to Home</a></p>
 
 </div>
 </body>
