@@ -50,6 +50,7 @@
       --bg-light-3: #e7ebf5;
 
       --max-width: 1100px;
+      --content-width: 720px; /* shared width for hero + sections */
     }
 
     * {
@@ -100,7 +101,7 @@
       gap: 1.8rem;
     }
 
-    /* HEADER (shared with play page) */
+    /* HEADER (shared) */
     header {
       display: flex;
       justify-content: space-between;
@@ -174,7 +175,7 @@
       opacity: 0.85;
     }
 
-    /* Dropdown menu (same style as play header) */
+    /* Dropdown menu */
     .dropdown-menu {
       position: absolute;
       top: 110%;
@@ -221,7 +222,7 @@
       background: #f3f4f6;
     }
 
-    /* THEME BUTTON (same as play page) */
+    /* Theme toggle */
     .btn-theme {
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.6);
@@ -253,7 +254,7 @@
       background: #f3f4f6;
     }
 
-    /* MAIN CONTENT LAYOUT FOR HOMEPAGE */
+    /* MAIN LAYOUT */
     main {
       display: flex;
       flex-direction: column;
@@ -261,8 +262,7 @@
       padding-bottom: 3rem;
     }
 
-    /* CONTENT STYLES (adapted from your original main.html) */
-
+    /* LINKS */
     a {
       color: #1a73e8;
       text-decoration: underline;
@@ -274,8 +274,9 @@
       color: #0c56c9;
     }
 
+    /* HERO */
     .hero {
-      max-width: 720px;
+      max-width: var(--content-width);
       margin: 0 auto;
       display: grid;
       gap: 2rem;
@@ -284,6 +285,12 @@
       background: linear-gradient(135deg, #ffffff, #edf2fb);
       border: 1px solid rgba(0, 0, 0, 0.08);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    body.theme-dark .hero {
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.85);
     }
 
     .hero-title {
@@ -335,8 +342,21 @@
       box-shadow: 0 8px 22px rgba(255, 143, 47, 0.22);
     }
 
+    body.theme-dark .btn-primary {
+      background: #020617;
+      color: #ffb677;
+      border-color: #f97316;
+    }
+
+    body.theme-dark .btn-primary:hover {
+      background: #f97316;
+      color: #0b1120;
+      box-shadow: 0 8px 22px rgba(249, 115, 22, 0.4);
+    }
+
+    /* ALL SECTIONS SHARE SAME CONTENT WIDTH → vertical alignment */
     section {
-      max-width: var(--max-width);
+      max-width: var(--content-width);
       margin: 0 auto;
     }
 
@@ -349,9 +369,10 @@
       margin-bottom: 1.2rem;
     }
 
+    /* CARDS */
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: 1fr;
       gap: 1.2rem;
     }
 
@@ -363,11 +384,17 @@
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }
 
+    body.theme-dark .card {
+      background: #020617;
+      border-color: rgba(148, 163, 184, 0.55);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.85);
+    }
+
     .card-footer {
       margin-top: 0.6rem;
     }
 
-    /* FOOTER (aligned style) */
+    /* FOOTER */
     footer {
       margin-top: 0.5rem;
       font-size: 0.78rem;
@@ -591,7 +618,7 @@
         saved = "dark";
       }
     }
-    // For homepage we want to default to light the first time
+    // homepage default first time = light
     if (!localStorage.getItem("sudokuTheme")) {
       saved = "light";
     }
@@ -605,7 +632,7 @@
     localStorage.setItem("sudokuTheme", next);
   });
 
-  // Header "Printables" dropdown (same behavior as play header)
+  // Header "Printables" dropdown
   const headerPrintablesToggle = document.getElementById("header-printables-toggle");
   const headerPrintablesMenu = document.getElementById("header-printables-menu");
 
@@ -618,8 +645,8 @@
 
   document.addEventListener("click", (e) => {
     if (headerPrintablesToggle && headerPrintablesMenu &&
-      !headerPrintablesToggle.contains(e.target) &&
-      !headerPrintablesMenu.contains(e.target)) {
+        !headerPrintablesToggle.contains(e.target) &&
+        !headerPrintablesMenu.contains(e.target)) {
       headerPrintablesMenu.classList.remove("show");
     }
   });
