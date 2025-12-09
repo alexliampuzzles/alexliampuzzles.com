@@ -505,9 +505,9 @@
 
     <div class="header-right">
       <nav class="nav-links">
-        <div class="nav-item">
-          <a class="nav-link" href="/">Home</a>
-        </div>
+   <!--      <div class="nav-item">
+         <a class="nav-link" href="/">Home</a> 
+        </div>-->
 
         <div class="nav-item dropdown">
           <a href="#" class="nav-link" id="header-printables-toggle">
@@ -544,9 +544,9 @@
         </div>
       </nav>
 
-      <button id="theme-toggle" class="btn-theme" type="button">
+   <!--   <button id="theme-toggle" class="btn-theme" type="button">
         ☀ Light
-      </button>
+      </button> -->
     </div>
   </header>
 
@@ -648,6 +648,7 @@
     document.body.classList.remove("theme-dark", "theme-light");
     document.body.classList.add("theme-" + theme);
     themeToggleBtn.textContent = theme === "dark" ? "🌙 Dark" : "☀ Light";
+    themeToggleBtn.textContent = "light"
   }
 
   (function initTheme() {
