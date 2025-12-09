@@ -176,26 +176,6 @@
       opacity: 0.85;
     }
 
-    
-    #header-printables-toggle {
-      color: #ffffff !important;
-    }
-
-    #header-printables-toggle:hover {
-      color: #ffffff !important;
-      opacity: 0.85;
-    }
-
-    /* Light mode – keep Printables white */
-    body.theme-light #header-printables-toggle {
-      color: #ffffff !important;
-    }
-
-    body.theme-light #header-printables-toggle:hover {
-      color: #ffffff !important;
-      opacity: 0.85;
-    }
-
     /* Dropdown menu */
     .dropdown-menu {
       position: absolute;
@@ -514,13 +494,6 @@
 </head>
 <body id="top" class="theme-light">
 <div class="page-shell">
-  
-</head>
-
-<body id="top" class="theme-light">
-<div class="page-shell">
-
-  <!-- HEADER (unchanged except Printables color override above) -->
   <header>
     <div class="brand">
       <img src="/assets/MyLogo.png" alt="Alex Liam Puzzles Logo" class="logo-img">
@@ -532,8 +505,9 @@
 
     <div class="header-right">
       <nav class="nav-links">
-
-        <div class="nav-item"><a class="nav-link" href="/">Home</a></div>
+        <div class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </div>
 
         <div class="nav-item dropdown">
           <a href="#" class="nav-link" id="header-printables-toggle">
@@ -545,18 +519,34 @@
             <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
             <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
             <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+            
             <hr style="border:0; height:1px; background:#e5e7eb; margin:6px 0;">
+        
             <a href="/printables/wordsearch.html"><strong>Word Search Printables</strong></a>
           </div>
         </div>
 
-        <div class="nav-item"><a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a></div>
-        <div class="nav-item"><a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a></div>
-        <div class="nav-item"><a class="nav-link" href="#about">About</a></div>
+        <div class="nav-item">
+          <a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a>
+        </div>
 
+        <div class="nav-item">
+          <a class="nav-link"
+             href="https://www.amazon.com/author/alex_liam"
+             target="_blank"
+             rel="noopener noreferrer">
+            Puzzle Books
+          </a>
+        </div>
+
+        <div class="nav-item">
+          <a class="nav-link" href="#about">About</a>
+        </div>
       </nav>
 
-      <button id="theme-toggle" class="btn-theme">☀ Light</button>
+      <button id="theme-toggle" class="btn-theme" type="button">
+        ☀ Light
+      </button>
     </div>
   </header>
 
