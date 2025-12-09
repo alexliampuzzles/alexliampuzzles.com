@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Hard Sudoku Printable PDF – Free Download</title>
+<title>Hard Sudoku Printable (PDF) – Free Download</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Free Hard Sudoku printable PDF for experienced solvers. Includes clean grids and full solutions.">
 
@@ -34,9 +34,9 @@ body {
     padding: 0;
     background: linear-gradient(
         180deg,
-        var(--bg-light-1) 0%,
+        var(--bg-light-1),
         var(--bg-light-2) 45%,
-        var(--bg-light-3) 100%
+        var(--bg-light-3)
     );
     color: var(--text-dark);
 }
@@ -63,7 +63,6 @@ header {
 
 .logo-img {
     height: 36px;
-    width: auto;
 }
 
 .brand-text {
@@ -81,43 +80,77 @@ header {
 
 .brand-sub {
     font-size: 0.85rem;
-    letter-spacing: 0.12em;
     text-transform: uppercase;
+    letter-spacing: 0.12em;
     color: var(--muted);
 }
 
+/* NAVIGATION */
 .nav-links {
     display: flex;
     gap: 1.3rem;
-    font-size: 0.95rem;
+    align-items: center;
+    position: relative;
 }
 
-.nav-links a {
-    text-decoration: none;
-    color: var(--accent);
+.nav-link {
     font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
 }
 
-.nav-links a:hover {
+.nav-link:hover {
     opacity: 0.75;
+}
+
+/* DROPDOWN */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 120%;
+    left: 0;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    padding: 0.4rem 0;
+    width: 210px;
+    z-index: 20;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.55rem 0.9rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 0.92rem;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(255,143,47,0.12);
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
 }
 
 /* CONTENT */
 h1 {
     font-size: 2rem;
     margin-bottom: 0.8rem;
-    font-weight: 700;
 }
 
 p {
-    line-height: 1.65;
     font-size: 1.05rem;
+    line-height: 1.65;
 }
 
 a {
     color: var(--link);
-    text-decoration: underline;
-    font-weight: 500;
 }
 
 a:hover {
@@ -135,7 +168,7 @@ a:hover {
 }
 
 .update-note {
-    margin-top: 10px;
+    margin-top: 12px;
     color: var(--muted);
     font-size: 0.9rem;
 }
@@ -150,12 +183,12 @@ a:hover {
     font-size: 0.95rem;
 }
 
+/* BACK LINK */
 .back {
     margin-top: 32px;
     display: inline-block;
     font-size: 1rem;
 }
-
 </style>
 </head>
 
@@ -173,17 +206,29 @@ a:hover {
         </div>
 
         <nav class="nav-links">
-            <a href="/">Home</a>
-            <a href="/printables/easy-sudoku.html">Printables</a>
-            <a href="/sudoku/play/index.html">Play Sudoku</a>
-            <a href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a>
+            <a class="nav-link" href="/">Home</a>
+
+            <div class="dropdown">
+                <a class="nav-link" href="#">Printables ▾</a>
+
+                <div class="dropdown-menu">
+                    <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
+                    <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                    <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                    <a href="/printables/hard-sudoku.html"><strong>Hard Sudoku</strong></a>
+                    <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+                </div>
+            </div>
+
+            <a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a>
+            <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">Puzzle Books</a>
         </nav>
     </header>
 
     <!-- MAIN CONTENT -->
     <h1>Hard Sudoku Printable (PDF)</h1>
 
-    <p>This Hard-level Sudoku pack is designed for experienced solvers looking for a deeper logical challenge. Enjoy clean, sharp grids and complete solutions.</p>
+    <p>This Hard-level Sudoku pack is designed for experienced solvers who enjoy deeper logic, tighter deduction, and more challenging grids. Full solutions included.</p>
 
     <div class="box">
         <h3 style="margin-top:0;">Download PDF</h3>
@@ -195,7 +240,7 @@ a:hover {
         <div class="print-note">
             <strong>Printing Info:</strong><br>
             Formatted for <strong>8.5″ × 11″ (US Letter)</strong>.  
-            Prints perfectly on <strong>A4</strong> — choose “Fit to Page” in your printer settings.
+            Prints perfectly on <strong>A4</strong> using “Fit to Page”.
         </div>
     </div>
 
