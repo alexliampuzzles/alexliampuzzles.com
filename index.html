@@ -264,7 +264,7 @@
     }
 
     /* LINKS */
-    a {
+  /*  a {
       color: #1a73e8;
       text-decoration: underline;
       font-weight: 500;
@@ -274,6 +274,24 @@
     a:hover {
       color: #0c56c9;
     }
+*/
+    /* Default (light mode) — keep as is */
+    a {
+      color: #1a73e8;
+    }
+    a:hover {
+      color: #0c56c9;
+    }
+    
+    /* Improve link visibility in dark mode */
+    body.theme-dark a {
+      color: #7cb8ff;        /* Light blue for dark background */
+    }
+    
+    body.theme-dark a:hover {
+      color: #a9d2ff;        /* Even brighter on hover */
+    }
+
 
     /* HERO */
     .hero {
