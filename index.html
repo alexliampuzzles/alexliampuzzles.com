@@ -422,45 +422,47 @@
       margin-top: 0.6rem;
     }
 
-    /* CLICK-TO-ENLARGE MODAL */
-    .modal {
+   /* MODAL BACKDROP */
+    .img-modal {
       display: none;
       position: fixed;
-      z-index: 500;
-      padding-top: 60px;
+      z-index: 9999;  /* high enough to ALWAYS be clickable */
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
       overflow: auto;
       background: rgba(0,0,0,0.75);
+      padding-top: 60px;
     }
     
-    .modal-content {
+    /* MODAL IMAGE */
+    .img-modal-content {
       margin: auto;
       display: block;
       max-width: 90%;
       max-height: 90%;
       border-radius: 12px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
     }
     
-    .modal-close {
-      position: absolute;
-      top: 15px;
-      right: 25px;
+    /* CLOSE BUTTON */
+    .img-modal-close {
+      position: fixed;
+      top: 20px;
+      right: 35px;
       color: #fff;
-      font-size: 36px;
+      font-size: 55px;
       font-weight: bold;
       cursor: pointer;
-      transition: opacity 0.2s;
+      z-index: 10000;  /* ABOVE the modal image */
     }
     
-    .modal-close:hover {
+    .img-modal-close:hover {
       opacity: 0.7;
     }
-
-    /* Add hover cursor to previews */
+    
+    /* Hover feedback for preview images */
     .preview-link img {
       cursor: zoom-in;
     }
@@ -742,26 +744,32 @@
     document.querySelectorAll('.preview-link').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
-        document.getElementById("modal-img").src = this.href;
-        document.getElementById("img-modal").style.display = "block";
+        const modal = document.getElementById("img-modal");
+        const modalImg = document.getElementById("img-modal-content");
+        modalImg.src = this.href;
+        modal.style.display = "block";
       });
     });
     
-    document.querySelector(".modal-close").onclick = function() {
+    // Close button
+    document.getElementById("img-modal-close").addEventListener("click", function() {
       document.getElementById("img-modal").style.display = "none";
-    };
+    });
     
-    document.getElementById("img-modal").onclick = function(e) {
+    // Click outside image closes modal
+    document.getElementById("img-modal").addEventListener("click", function(e) {
       if (e.target === this) {
         this.style.display = "none";
       }
-    };
+    });
     </script>
 
-   <div id="img-modal" class="modal">
-    <span class="modal-close">&times;</span>
-    <img class="modal-content" id="modal-img">
+
+   <div id="img-modal" class="img-modal">
+    <span id="img-modal-close" class="img-modal-close">&times;</span>
+    <img id="img-modal-content" class="img-modal-content">
   </div>
+
 
 </body>
 </html>
