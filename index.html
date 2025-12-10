@@ -382,9 +382,10 @@
       border-radius: 18px;
       border: 1px solid rgba(0, 0, 0, 0.08);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-      max-width: 720px;   /* narrower than the 720px content width */
-      width: 100%;        /* responsive on small screens */
+      width: 100%;        /* fill the full text column */
+      max-width: 100%;    /* align exactly with section width */
     }
+
 
     .card-content {
       display: flex;
@@ -526,18 +527,6 @@
         width: 32px;
         height: 32px;
       }
-    }
-
-        /* Force Free Printable Puzzles cards to hug the left
-       instead of looking centered in the column */
-    #printables .cards {
-      display: block;           /* no grid/flex – just normal block layout */
-    }
-    
-    #printables .card {
-      max-width: 520px;         /* narrower than the 720px content column */
-      width: 100%;              /* still responsive on mobile */
-      margin: 0 0 1.2rem 0;     /* stack with some space, aligned left */
     }
 
   </style>
