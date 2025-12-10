@@ -422,6 +422,50 @@
       margin-top: 0.6rem;
     }
 
+    /* CLICK-TO-ENLARGE MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 500;
+      padding-top: 60px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: rgba(0,0,0,0.75);
+    }
+    
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      color: #fff;
+      font-size: 36px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    
+    .modal-close:hover {
+      opacity: 0.7;
+    }
+
+    /* Add hover cursor to previews */
+    .preview-link img {
+      cursor: zoom-in;
+    }
+
+
     /* FOOTER */
     footer {
       margin-top: 0.5rem;
@@ -591,9 +635,12 @@
               </div>
             </div>
         
-            <img src="/assets/sudoku-preview.PNG"
-                 alt="Sudoku preview"
-                 class="card-preview">
+            <a href="/assets/sudoku-preview.PNG" class="preview-link">
+              <img src="/assets/sudoku-preview.PNG"
+                   alt="Sudoku preview"
+                   class="card-preview">
+            </a>
+
           </div>
         </div>
 
@@ -609,9 +656,12 @@
               </div>
             </div>
         
-            <img src="/assets/wordsearch-preview2.png"
-                 alt="Word search preview"
-                 class="card-preview">
+            <a href="/assets/wordsearch-preview2.png" class="preview-link">
+              <img src="/assets/wordsearch-preview.PNG"
+                   alt="Word search preview"
+                   class="card-preview">
+            </a>
+
           </div>
         </div>
 
@@ -685,6 +735,33 @@
     }
   });
 </script>
+
+
+
+  <script>
+    document.querySelectorAll('.preview-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById("modal-img").src = this.href;
+        document.getElementById("img-modal").style.display = "block";
+      });
+    });
+    
+    document.querySelector(".modal-close").onclick = function() {
+      document.getElementById("img-modal").style.display = "none";
+    };
+    
+    document.getElementById("img-modal").onclick = function(e) {
+      if (e.target === this) {
+        this.style.display = "none";
+      }
+    };
+    </script>
+
+   <div id="img-modal" class="modal">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modal-img">
+  </div>
 
 </body>
 </html>
