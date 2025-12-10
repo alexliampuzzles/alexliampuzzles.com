@@ -377,14 +377,25 @@
 
 
     .card {
-    background: #ffffff;
-    padding: 1.1rem 1.2rem;
-    border-radius: 18px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    max-width: 720px;   /* narrower than the 720px content width */
-    width: 100%;        /* responsive on small screens */
-  }
+      background: #ffffff;
+      padding: 1.1rem 1.2rem;
+      border-radius: 18px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      max-width: 720px;   /* narrower than the 720px content width */
+      width: 100%;        /* responsive on small screens */
+    }
+
+    .card-preview {
+      width: 100%;
+      max-width: 260px;       /* good balanced size */
+      border-radius: 12px;
+      margin: 0 0 0.9rem 0;
+      display: block;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+  
 
 
     .card-footer {
@@ -547,6 +558,7 @@
       <div class="cards">
         <div class="card">
           <h3>Sudoku Printables</h3>
+          <img src="/assets/sudoku-preview.png" alt="Sudoku preview" class="card-preview">
           <p>Sudoku puzzles for all experience levels, complete with solutions.</p>
           <div class="card-footer">
             <a href="/printables/warmup-sudoku.html">Warm-Up</a> ·
@@ -559,6 +571,7 @@
 
         <div class="card">
           <h3>Word Search Printables</h3>
+          <img src="/assets/wordsearch-preview.png" alt="Word search preview" class="card-preview">
           <p>Themed puzzles with answer keys.</p>
           <div class="card-footer">
             <a href="/printables/wordsearch.html">Word Search Printables</a>
