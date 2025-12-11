@@ -1,126 +1,182 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
-<!-- Google Analytics (same as other pages) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LVF4WGKHE0"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-LVF4WGKHE0');
-</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LVF4WGKHE0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LVF4WGKHE0');
+    </script>
 
-<meta charset="UTF-8">
-<title>Free Bonus Puzzle Packs – Alex Liam Puzzles</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Download free bonus Sudoku puzzle packs for Alex Liam Puzzles books. Includes extra puzzles, printables, updates, and online Sudoku.">
+    <meta charset="UTF-8">
+    <title>Free Bonus Puzzle Packs – Alex Liam Puzzles</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="Download free bonus Sudoku puzzle packs for Alex Liam Puzzles books, plus extra printables and links to online Sudoku.">
 
-<style>
-/* === GLOBAL THEME — consistent with your site === */
-:root {
-    --bg-light-1: #f5f7fc;
-    --bg-light-2: #eef1f8;
-    --bg-light-3: #e7ebf5;
+    <style>
+    /* === GLOBAL THEME (same as other pages) === */
+    :root {
+        --bg-light-1: #f5f7fc;
+        --bg-light-2: #eef1f8;
+        --bg-light-3: #e7ebf5;
 
-    --text-dark: #1c1f26;
-    --muted: #6b7280;
+        --text-dark: #1c1f26;
+        --muted: #6b7280;
 
-    --accent: #ff8f2f;
+        --accent: #ff8f2f;
 
-    --card-bg: #ffffff;
-    --card-border: rgba(15,23,42,0.06);
-    --card-shadow: 0 12px 28px rgba(15,23,42,0.08);
+        --card-bg: #ffffff;
+        --card-border: rgba(15,23,42,0.06);
+        --card-shadow: 0 12px 28px rgba(15,23,42,0.08);
 
-    --max-width: 900px;
-    --link: #1a73e8;
-    --link-hover: #0c56c9;
-}
+        --max-width: 900px;
+        --link: #1a73e8;
+        --link-hover: #0c56c9;
+    }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(180deg, var(--bg-light-1), var(--bg-light-2) 45%, var(--bg-light-3));
-    color: var(--text-dark);
-}
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(180deg, var(--bg-light-1), var(--bg-light-2) 45%, var(--bg-light-3));
+        color: var(--text-dark);
+    }
 
-.page-shell {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 1.5rem 1.2rem 3rem;
-}
+    .page-shell {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 1.5rem 1.2rem 3rem;
+    }
 
-/* HEADER (copied from your current theme) */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0 2rem;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-.logo-img {
-    height: 36px;
-}
-
-.brand-title {
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 1.1rem;
-}
-
-.brand-sub {
-    font-size: 0.85rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-}
-
-.nav-links {
-    display: flex;
-    gap: 1.3rem;
-    align-items: center;
-}
-
-.nav-link {
-    font-weight: 600;
-    color: var(--accent);
-    text-decoration: none;
-}
-
-/* CARDS */
-.card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    padding: 22px 24px;
-    border-radius: 16px;
-    margin-top: 20px;
-    box-shadow: var(--card-shadow);
-}
-
-.card h3 {
-    margin-top: 0;
-}
-
-/* RESPONSIVE */
-@media (max-width: 700px) {
+    /* === HEADER === */
     header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0 2rem;
     }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .logo-img {
+        height: 36px;
+    }
+
+    .brand-title {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+    }
+
+    .brand-sub {
+        font-size: 0.85rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    /* NAVIGATION */
     .nav-links {
-        flex-wrap: wrap;
+        display: flex;
+        gap: 1.3rem;
+        align-items: center;
     }
-}
-</style>
+
+    .nav-link {
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    /* === DROPDOWN (click-to-open) === */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 120%; left: 0;
+        width: 210px;
+        background: var(--card-bg);
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,0.12);
+        padding: 0.4rem 0;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        z-index: 30;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-menu a {
+        display: block;
+        padding: 0.55rem 0.9rem;
+        color: var(--text-dark);
+        text-decoration: none;
+    }
+
+    .dropdown-menu a:hover {
+        background: rgba(255,143,47,0.12);
+    }
+
+    .dropdown-separator {
+        margin: 0.3rem 0;
+        border: none;
+        border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* === CARDS === */
+    .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        padding: 22px 24px;
+        border-radius: 16px;
+        margin-top: 20px;
+        box-shadow: var(--card-shadow);
+    }
+
+    .card h3 {
+        margin-top: 0;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+        header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.9rem;
+        }
+        .nav-links {
+            width: auto;
+            justify-content: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 1rem;
+        }
+        .nav-links {
+            font-size: 0.8rem;
+        }
+        .logo-img {
+            width: 32px;
+            height: 32px;
+        }
+    }
+    </style>
 </head>
 
 <body>
@@ -136,47 +192,78 @@ header {
     </div>
 
     <nav class="nav-links">
+
         <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/printables/">Printables</a>
+
+        <div class="dropdown">
+            <a href="#" class="nav-link" id="printables-toggle">Printables ▾</a>
+            <div class="dropdown-menu" id="printables-menu">
+                <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
+                <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+                <hr class="dropdown-separator">
+                <a href="/printables/wordsearch.html"><strong>Word Search Printables</strong></a>
+            </div>
+        </div>
+
         <a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a>
-        <a class="nav-link" href="/books/">My Books</a>
+        <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">My Books</a>
+
     </nav>
 </header>
 
 <h1>Free Bonus Puzzle Packs</h1>
-<p>Thank you for reading! Below you can download exclusive bonus puzzles for your book, along with extra printables and links to online Sudoku.</p>
+<p>Thank you for reading one of my books! Here you can download exclusive bonus Sudoku puzzles, plus explore more printables and online Sudoku.</p>
 
-<!-- 500+ Sudoku book -->
+<!-- 500+ Sudoku – Easy to Hard (new 6×9) -->
 <div class="card">
     <h3>🔸 500+ Sudoku – Easy to Hard (6×9 Edition)</h3>
     <p>Download your <strong>120 extra Sudoku puzzles</strong> that accompany this book.</p>
     <p><a href="/bonus/500plus_sudoku_bonus.pdf">Download Bonus Pack (PDF) ›</a></p>
 </div>
 
-<!-- 1000+ Sudoku book -->
+<!-- 1000+ Sudoku Challenge Series -->
 <div class="card">
     <h3>🔸 1000+ Sudoku Challenge Series</h3>
-    <p>Includes <strong>400 additional puzzles</strong> as a digital bonus pack.</p>
+    <p>Get the <strong>400-puzzle digital bonus pack</strong> for the 1000+ book.</p>
     <p><a href="/bonus/1000plus_sudoku_bonus.pdf">Download Bonus Pack (PDF) ›</a></p>
 </div>
 
-<!-- Word Search bonus (optional extension) -->
+<!-- Optional: Word Search / other extras -->
 <div class="card">
-    <h3>🔸 Word Search Collection</h3>
-    <p>Extra printable word search puzzles you can enjoy anytime.</p>
-    <p><a href="/printables/wordsearch.html">View Word Search Printables ›</a></p>
+    <h3>🔸 Extra Printables & Word Search</h3>
+    <p>Looking for more? Grab additional printable puzzles and themed word searches.</p>
+    <p><a href="/printables/">Browse Free Printables ›</a></p>
 </div>
 
-<!-- Extras / Links -->
 <div class="card">
-    <h3>Explore More</h3>
+    <h3>Explore More Puzzles</h3>
     <ul>
-        <li><a href="/printables/">Free Sudoku Printables</a></li>
         <li><a href="/sudoku/play/index.html">Play Sudoku Online</a></li>
-        <li><a href="/books/">Browse All Books</a></li>
+        <li><a href="/printables/">Free Sudoku & Word Search Printables</a></li>
+        <li><a href="https://www.amazon.com/author/alex_liam" target="_blank">View All Books on Amazon</a></li>
     </ul>
 </div>
 
 </div>
+
+<script>
+const toggle = document.getElementById("printables-toggle");
+const menu   = document.getElementById("printables-menu");
+
+toggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    menu.classList.toggle("show");
+});
+
+document.addEventListener("click", (e) => {
+    if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove("show");
+    }
+});
+</script>
+
 </body>
 </html>
