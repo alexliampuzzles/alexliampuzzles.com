@@ -1137,6 +1137,13 @@
       background: rgba(96, 165, 250, 0.28);
     }
 
+    .cell.same-digit.row-highlight:not(.error),
+    .cell.same-digit.col-highlight:not(.error),
+    .cell.same-digit.box-highlight:not(.error) {
+      background: rgba(250, 204, 21, 0.30); /* your same-digit highlight in dark */
+    }
+
+
     .cell.same-digit:not(.error) {
       background: rgba(250, 204, 21, 0.30);
     }
@@ -1158,6 +1165,14 @@
     body.theme-light .cell.box-highlight:not(.selected):not(.error) {
      background: #e2e8ef; /* ~20% lighter, more neutral grey */
     }
+
+    /* Same-digit should override row/col/box context when both apply */
+    body.theme-light .cell.same-digit.row-highlight:not(.error),
+    body.theme-light .cell.same-digit.col-highlight:not(.error),
+    body.theme-light .cell.same-digit.box-highlight:not(.error) {
+      background: #c7ddf7; /* your same-digit blue */
+    }
+
 
 
     body.theme-light .cell.same-digit:not(.error) {
