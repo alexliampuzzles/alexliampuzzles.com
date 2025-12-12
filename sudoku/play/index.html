@@ -660,6 +660,7 @@
       border: 3px solid rgba(229, 231, 235, 0.95);
       aspect-ratio: 1 / 1;
       background: #0b1220;
+      transform: translateZ(0); -webkit-transform: translateZ(0);
     }
 
     body.theme-light .board {
@@ -1073,25 +1074,44 @@
       background: #ffffff;
     }
 
-    body.theme-light .cell.box-right {
-      border-right: 3px solid rgba(30, 41, 59, 1);
-    }
-
-    body.theme-light .cell.box-bottom {
-      border-bottom: 3px solid rgba(30, 41, 59, 1);
-    }
+  
 
     body.theme-light .board {
       border: 3px solid rgba(30, 41, 59, 1);
     }
 
-    .cell.box-right {
-      border-right: 3px solid rgba(229, 231, 235, 0.85);
+        /* ---- iOS/zoom-safe 3×3 separators (no stacked borders) ---- */
+    :root { --box-line: rgba(229, 231, 235, 0.92); }
+    body.theme-light { --box-line: rgba(30, 41, 59, 1); }
+    
+    /* remove border-based thick lines (we draw them as overlays instead) */
+    .cell.box-right { border-right: none; }
+    .cell.box-bottom { border-bottom: none; }
+    
+    /* draw thick lines as flat overlays (prevents “3D” anti-aliasing) */
+    .cell.box-right::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      bottom: -1px;
+      right: -1px;
+      width: 3px;
+      background: var(--box-line);
+      pointer-events: none;
+    }
+    
+    .cell.box-bottom::before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      height: 3px;
+      background: var(--box-line);
+      pointer-events: none;
     }
 
-    .cell.box-bottom {
-      border-bottom: 3px solid rgba(229, 231, 235, 0.85);
-    }
+  
 
     .cell.given {
       font-weight: 300;
