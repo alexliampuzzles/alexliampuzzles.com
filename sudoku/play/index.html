@@ -1137,18 +1137,18 @@
       background: rgba(96, 165, 250, 0.28);
     }
 
-    .cell.same-digit:not(.selected):not(.error) {
+    .cell.same-digit:not(.error) {
       background: rgba(250, 204, 21, 0.30);
     }
 
    /* Selected cell – background only, no outline (both modes) */
     .cell.selected {
-      background: rgba(248, 250, 252, 0.18);
+      background: rgba(250, 204, 21, 0.30); /* SAME as same-digit */
       z-index: 2;
     }
     
     body.theme-light .cell.selected {
-      background: #e5edf5; /* blue-grey, classic Sudoku */
+      background: #cfdbe7; /* SAME as same-digit */
       z-index: 2;
     }
 
@@ -1159,8 +1159,8 @@
       background: #dbeafe;
     }
 
-    body.theme-light .cell.same-digit:not(.selected):not(.error) {
-      background: #fef3c7;
+    body.theme-light .cell.same-digit:not(.error) {
+      background: #cfdbe7; /* darker blue-grey */
     }
 
     .cell.filled { font-weight: 300; }
