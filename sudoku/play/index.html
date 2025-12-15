@@ -1068,6 +1068,16 @@
       .cell-notes { font-size: 0.55rem; }
     }
 
+    /* iPhone-ish small screens: make notes clearer */
+    @media (max-width: 420px) {
+      .cell-notes {
+        inset: 0.10rem;     /* more usable space inside the cell */
+        font-size: 0.55rem; /* bigger notes */
+        line-height: 1;     /* keep tidy */
+      }
+    }
+
+
     body.theme-light .cell {
       border-color: rgba(100, 116, 139, 0.9);
       color: #111827;
