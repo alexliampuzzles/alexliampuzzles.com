@@ -744,6 +744,48 @@
       display: none;
     }
 
+    .puzzle-selector-area{
+      display:flex;
+      flex-direction:column;
+      gap:0.45rem;
+    }
+    
+    .puzzle-label{
+      font-size:0.9rem;
+      font-weight:600;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+    
+    .puzzle-selector-row{
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    
+    .puzzle-display{
+      font-size:1.35rem; /* larger */
+      font-weight:700;
+    }
+    
+    .puzzle-select{
+      font-size:1rem;
+      padding:0.45rem 1rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      font-weight:600;
+      cursor:pointer;
+    }
+    
+    body.theme-light .puzzle-select{
+      background:#fff;
+      color:#111827;
+    }
+
     /* Timer row: Timer + time + pause, same line */
     .timer-toggle-row {
       margin: 0.4rem 0 1rem;
@@ -1023,6 +1065,55 @@
       text-align:right;
       color: var(--accent);
     }
+
+    .book-action-group{
+      display:flex;
+      gap:0.6rem;
+      align-items:center;
+    }
+
+    .puzzle-selector-area{
+      display:flex;
+      flex-direction:column;
+      gap:0.45rem;
+    }
+    
+    .puzzle-label{
+      font-size:0.9rem;
+      font-weight:600;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+    
+    .puzzle-selector-row{
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    
+    .puzzle-display{
+      font-size:1.35rem; /* larger */
+      font-weight:700;
+    }
+    
+    .puzzle-select{
+      font-size:1rem;
+      padding:0.45rem 1rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      font-weight:600;
+      cursor:pointer;
+    }
+    
+    body.theme-light .puzzle-select{
+      background:#fff;
+      color:#111827;
+    }
+
     
     .book-picker-row{
       display:flex;
@@ -1557,25 +1648,36 @@
           <div class="board-buttons">
             <!-- Left cluster: Puzzle menu + Show mistakes (right) -->
             <div class="left-actions">
-              <div class="book-picker">
-                  <div class="book-picker-title">BOOK EASY</div>
+              <div class="puzzle-selector-area">
+                  <label for="puzzle-select" class="puzzle-label">
+                    Select Puzzle
+                  </label>
                 
-                  <div class="book-picker-row">
-                    <div id="puzzle-display" class="puzzle-display" aria-live="polite">
+                  <div class="puzzle-selector-row">
+                    <div id="puzzle-display" class="puzzle-display">
                       Easy Puzzle <span id="puzzle-display-num">001</span> / 504
                     </div>
                 
-                    <label class="book-picker-select">
-                      <span class="sr-only">Choose puzzle number</span>
-                      <select id="puzzle-select"></select>
-                    </label>
+                    <select id="puzzle-select" class="puzzle-select"></select>
                   </div>
                 </div>
+
+                </div>
          
-              <button id="btn-play" class="btn btn-primary" type="button">Solve Puzzle</button>
-              <button id="btn-show-solution" class="btn btn-outline" type="button">Show solution</button>
-            
-              <button id="btn-mistakes" class="btn btn-outline" type="button">Show mistakes</button>
+              <div class="book-action-group">
+                  <button id="btn-play" class="btn btn-primary" type="button">
+                    Solve Puzzle
+                  </button>
+                
+                  <button id="btn-show-solution" class="btn btn-outline" type="button">
+                    Show Solution
+                  </button>
+                </div>
+                
+                <button id="btn-mistakes" class="btn btn-outline" type="button">
+                  Show mistakes
+                </button>
+
             </div>
           </div>
         </div>
