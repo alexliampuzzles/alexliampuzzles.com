@@ -786,6 +786,57 @@
       color:#111827;
     }
 
+    .book-picker-row{
+      display:flex;
+      align-items:center;
+      gap:0.9rem;
+      flex-wrap:wrap;
+    }
+    
+    /* framed pill like before */
+    .framed-display{
+      padding:0.35rem 0.85rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      font-size:1.15rem;
+      font-weight:700;
+      letter-spacing:0.04em;
+    }
+    
+    body.theme-light .framed-display{
+      background:#ffffff;
+      color:#111827;
+    }
+    
+    /* inline label */
+    .inline-select-label{
+      font-size:0.8rem;
+      text-transform:uppercase;
+      letter-spacing:0.14em;
+      color:var(--accent);
+      font-weight:600;
+    }
+    
+    /* dropdown styling */
+    .book-picker-select select{
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      padding:0.35rem 0.9rem;
+      font-weight:600;
+      cursor:pointer;
+      font-size:0.95rem;
+    }
+    
+    body.theme-light .book-picker-select select{
+      background:#fff;
+      color:#111827;
+    }
+
+
     /* Timer row: Timer + time + pause, same line */
     .timer-toggle-row {
       margin: 0.4rem 0 1rem;
@@ -1649,19 +1700,22 @@
             <!-- Left cluster: Puzzle menu + Show mistakes (right) -->
             <div class="left-actions">
 
-              <div class="puzzle-selector-area">
-                <label for="puzzle-select" class="puzzle-label">
-                  Select Puzzle
-                </label>
-            
-                <div class="puzzle-selector-row">
-                  <div id="puzzle-display" class="puzzle-display">
-                    Easy Puzzle <span id="puzzle-display-num">001</span> / 504
-                  </div>
-            
-                  <select id="puzzle-select" class="puzzle-select"></select>
-                </div>
+             <div class="book-picker-row">
+
+              <div id="puzzle-display" class="puzzle-display framed-display">
+                Easy Puzzle <span id="puzzle-display-num">001</span> / 504
               </div>
+            
+              <label for="puzzle-select" class="inline-select-label">
+                Select Puzzle
+              </label>
+            
+              <div class="book-picker-select">
+                <select id="puzzle-select"></select>
+              </div>
+            
+            </div>
+
             
               <div class="book-action-group">
                 <button id="btn-play" class="btn btn-primary" type="button">
