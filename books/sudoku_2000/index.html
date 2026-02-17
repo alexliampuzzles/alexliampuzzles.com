@@ -1666,6 +1666,20 @@ const BOOK_COUNT = 504;
 
 let BOOK_PUZZLES = []; // [{ puzzle:"81chars", solution:"81chars" }]
 
+function gridToString(grid) {
+  if (!Array.isArray(grid)) return String(grid || "");
+  const flat = [];
+  for (let r = 0; r < grid.length; r++) {
+    const row = grid[r] || [];
+    for (let c = 0; c < row.length; c++) {
+      const v = row[c] == null ? 0 : row[c];
+      flat.push(String(v));
+    }
+  }
+  return flat.join("");
+}
+
+    
 async function ensureBookLoaded() {
   if (BOOK_PUZZLES.length) return;
 
@@ -1877,16 +1891,6 @@ async function ensureBookLoaded() {
     return classes.join(" ");
   }
 
-  async function loadRandomPuzzle(level) {
-    await ensurePuzzlesLoaded(level);
-    const list = PUZZLES[level];
-    if (!list || !list.length) return;
-    const idx = Math.floor(Math.random() * list.length);
-    currentPuzzle = list[idx];
-    hideCompletionBanner();
-    renderBoard();
-    if (timerEnabled) resetTimer();
-  }
 
   function restartCurrentPuzzle() {
     if (!currentPuzzle) return;
