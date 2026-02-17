@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Easy Book Sudoku – Play or View Solution (1–504) | Alex Liam Puzzles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Enter your Easy puzzle number (1–504) to play the Sudoku online or instantly view the solution.">
+
+  <link rel="canonical" href="https://www.alexliampuzzles.com/sudoku/book/easy.html">
+
+  <style>
+    /* === Keep your existing CSS ===
+       I kept only the minimum additional CSS at the end.
+       In your real file, paste your full CSS from the original page unchanged. */
+
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --grid-line: #d1d5db;
+      --grid-box: #9ca3af;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --accent-strong: rgba(249, 115, 22, 0.18);
+      --accent-glow: 0 4px 10px rgba(249, 115, 22, 0.20);
+      --danger: #f97373;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --btn-bg: #111827;
+      --btn-hover: #1f2933;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
+
+      --bg-light-1: #f5f7fc;
+      --bg-light-2: #eef1f8;
+      --bg-light-3: #e7ebf5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 1.25rem 1.25rem 0;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
+      overflow-x: hidden;
+    }
+    body.theme-dark { color: var(--text); }
+    body.theme-light {
+      color: #111827;
+      background: linear-gradient(180deg,var(--bg-light-1) 0%,var(--bg-light-2) 45%,var(--bg-light-3) 100%);
+      --text: #111827;
+      --text-muted: #6b7280;
+      --card: #ffffff;
+      --btn-bg: #ffffff;
+      --btn-hover: #f3f4f6;
+      --shadow-soft: 0 18px 35px rgba(15, 23, 42, 0.12);
+    }
+
+    .page-shell {
+      max-width: 1100px;
+      width: 100%;
+      margin: auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 1.8rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0 1.75rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .brand { display:flex; align-items:center; gap:0.8rem; }
+    .logo-img { height: 36px; width: auto; }
+    .brand-text { display:flex; flex-direction:column; gap:0.1rem; }
+    .brand-title {
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-size: 1.14rem;
+      color: #e5e7eb;
+    }
+    body.theme-light .brand-title { color:#111827; }
+    .brand-sub {
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .header-right { display:flex; align-items:center; gap: 1.2rem; }
+    .nav-links { display:flex; gap: 1.5rem; font-size:0.95rem; align-items:center; }
+    .nav-link { text-decoration:none; color: var(--accent); font-weight: 600; }
+    .nav-link:hover { opacity: 0.85; }
+
+    .btn-theme {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.75rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    body.theme-light .btn-theme { background:#fff; color:#111827; }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 1.8rem;
+      align-items: flex-start;
+    }
+    @media (max-width: 880px) { main { grid-template-columns: minmax(0, 1fr); } }
+
+    .board-card, .side-card {
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border-radius: 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: var(--shadow-soft);
+      padding: 1.4rem 1.5rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    body.theme-light .board-card, body.theme-light .side-card {
+      background: #ffffff;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+    }
+
+    .board-card-inner { position: relative; z-index: 1; }
+    .board-header { display:flex; justify-content: space-between; align-items: baseline; gap:1rem; margin-bottom: 0.8rem; }
+    .board-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .board-title span.badge {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, 0.12);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    body.theme-light .board-title span.badge {
+      background:#f9fafb; border-color: rgba(148,163,184,0.5); color:#6b7280;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    body.theme-light .btn { background:#fff; color:#111827; }
+    .btn-primary {
+      border-color: rgba(248, 250, 252, 0.15);
+      background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 40%, #b91c1c 100%);
+      color: #f9fafb;
+      box-shadow: var(--accent-glow);
+    }
+    body.theme-light .btn-primary {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #111827;
+      border-color: transparent;
+    }
+
+    .board-wrapper {
+      background: radial-gradient(circle at 50% 0, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      position: relative;
+    }
+    body.theme-light .board-wrapper { background:#f9fafb; border-color: rgba(148,163,184,0.35); }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      border-radius: 0.9rem;
+      overflow: hidden;
+      border: 3px solid rgba(229, 231, 235, 0.95);
+      aspect-ratio: 1 / 1;
+      background: #0b1220;
+    }
+    body.theme-light .board { background:#fff; border-color: rgba(148,163,184,0.9); }
+
+    .cell {
+      border: 1px solid rgba(229, 231, 235, 0.35);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; user-select:none;
+      color:#f9fafb;
+      font-size: 2.4rem;
+      position: relative;
+    }
+    body.theme-light .cell { color:#111827; background:#fff; border-color: rgba(100,116,139,0.9); }
+
+    .cell-value { line-height:1; font-family:"Inter", sans-serif !important; }
+    .cell.given { font-weight: 300; }
+    .cell.empty { color: var(--text-muted); }
+    body.theme-light .cell.empty { color:#9ca3af; }
+
+    /* 3x3 separators from your original */
+    :root { --box-line: rgba(229, 231, 235, 0.92); }
+    body.theme-light { --box-line: rgba(30, 41, 59, 1); }
+    .cell.box-right { border-right: none; }
+    .cell.box-bottom { border-bottom: none; }
+    .cell.box-right::after {
+      content:""; position:absolute; top:-1px; bottom:-1px; right:-1px; width:3px;
+      background: var(--box-line); pointer-events:none;
+    }
+    .cell.box-bottom::before {
+      content:""; position:absolute; left:-1px; right:-1px; bottom:-1px; height:3px;
+      background: var(--box-line); pointer-events:none;
+    }
+
+    /* number pad (shortened; keep yours if you want full styling) */
+    .number-pad { margin-top: 0.7rem; display:grid; grid-template-columns: 3fr 1fr; column-gap:0.5rem; }
+    .number-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:0.4rem; }
+    .number-extra { display:flex; flex-direction:column; gap:0.45rem; }
+    .num-key {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 1.4rem;
+      padding: 0.45rem 0;
+      cursor: pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-family: "Inter", sans-serif !important;
+    }
+    body.theme-light .num-key { background:#fff; color:#111827; }
+
+    /* === NEW: top puzzle selector bar === */
+    .book-controls {
+      display:flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      margin: 0.35rem 0 1.0rem;
+    }
+    .book-controls label {
+      font-size: 0.8rem;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .book-select {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.9rem;
+      min-width: 140px;
+      outline: none;
+    }
+    body.theme-light .book-select { background:#fff; color:#111827; }
+    .book-hint {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin: 0.25rem 0 0.0rem;
+    }
+
+    footer {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap:1rem;
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+      padding-top: 0.8rem;
+    }
+    body.theme-light footer { border-top-color: rgba(148,163,184,0.5); }
+  </style>
+</head>
+
+<body class="theme-dark">
+<div class="page-shell">
+  <header>
+    <div class="brand">
+      <img src="/assets/MyLogo.png" alt="Alex Liam Puzzles Logo" class="logo-img">
+      <div class="brand-text">
+        <div class="brand-title">Alex Liam Puzzles</div>
+        <div class="brand-sub">Relaxing logic puzzles</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <nav class="nav-links">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/sudoku/play/index.html">Play</a>
+        <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank" rel="noopener noreferrer">My Books</a>
+      </nav>
+
+      <button id="theme-toggle" class="btn-theme" type="button">🌙 Dark</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="board-card">
+      <div class="board-card-inner">
+        <div class="board-header">
+          <div class="board-title">
+            Easy Book Sudoku
+            <span class="badge">1–504</span>
+          </div>
+        </div>
+
+        <div class="book-hint">
+          Select a puzzle number, then choose <b>Play</b> or <b>Show Solution</b>.
+        </div>
+
+        <!-- NEW: selector -->
+        <div class="book-controls" aria-label="Book puzzle selection">
+          <label for="puzzle-select">Puzzle #</label>
+          <select id="puzzle-select" class="book-select" aria-label="Puzzle number"></select>
+
+          <button id="btn-play" class="btn btn-primary" type="button">Play</button>
+          <button id="btn-show-solution" class="btn" type="button">Show Solution</button>
+        </div>
+
+        <div class="board-wrapper">
+          <div id="board" class="board" aria-label="Sudoku grid"></div>
+        </div>
+
+        <!-- Number pad -->
+        <div class="number-pad" aria-label="Number input">
+          <div class="number-grid">
+            <button class="num-key" data-value="1">1</button>
+            <button class="num-key" data-value="2">2</button>
+            <button class="num-key" data-value="3">3</button>
+            <button class="num-key" data-value="4">4</button>
+            <button class="num-key" data-value="5">5</button>
+            <button class="num-key" data-value="6">6</button>
+            <button class="num-key" data-value="7">7</button>
+            <button class="num-key" data-value="8">8</button>
+            <button class="num-key" data-value="9">9</button>
+          </div>
+          <div class="number-extra">
+            <button class="num-key" data-value="clear">⌫ Erase</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-card-inner">
+        <h2 style="font-size:1.05rem; font-weight:600; margin-bottom:0.4rem; letter-spacing:0.04em;">How to use this page</h2>
+        <p style="font-size:0.98rem; color: var(--text-muted); margin-bottom:1.2rem;">
+          This page is for the <b>Easy</b> section of the book. Choose a puzzle number (1–504) to play online or instantly view the solution.
+        </p>
+
+        <div style="margin-top:0.7rem;">
+          <div style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.14em; color:var(--text-muted); margin-bottom:0.5rem;">Tip</div>
+          <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.45;">
+            You can link directly to a puzzle using:
+            <br><span style="font-family: ui-monospace, Menlo, Consolas, monospace;">?n=123</span>
+            or show solution:
+            <br><span style="font-family: ui-monospace, Menlo, Consolas, monospace;">?n=123&amp;mode=solution</span>
+          </p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> Alex Liam Puzzles</span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // --- Theme toggle (same behavior as your original) ---
+  const themeToggleBtn = document.getElementById("theme-toggle");
+  function applyTheme(theme) {
+    document.body.classList.remove("theme-dark", "theme-light");
+    document.body.classList.add("theme-" + theme);
+    themeToggleBtn.textContent = theme === "dark" ? "🌙 Dark" : "☀ Light";
+  }
+  (function initTheme() {
+    let saved = localStorage.getItem("sudokuTheme");
+    if (!saved) saved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+    applyTheme(saved);
+  })();
+  themeToggleBtn.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("theme-dark");
+    const next = isDark ? "light" : "dark";
+    applyTheme(next);
+    localStorage.setItem("sudokuTheme", next);
+  });
+
+  // === BOOK EASY JSON (single file) ===
+  const BOOK_EASY_JSON = "/books/sudoku_2000/data/book_easy.json"; // <-- adjust path if needed
+
+  let BOOK_PUZZLES = []; // [{puzzle:"...", solution:"..."}]
+  let currentPuzzle = null;
+  let selectedCell = null;
+
+  const boardEl = document.getElementById("board");
+  const selectEl = document.getElementById("puzzle-select");
+  const btnPlay = document.getElementById("btn-play");
+  const btnShowSolution = document.getElementById("btn-show-solution");
+  const numKeys = document.querySelectorAll(".num-key");
+
+  function gridToString(grid) {
+    if (!Array.isArray(grid)) return String(grid || "");
+    const flat = [];
+    for (let r = 0; r < grid.length; r++) {
+      const row = grid[r] || [];
+      for (let c = 0; c < row.length; c++) {
+        const v = row[c] == null ? 0 : row[c];
+        flat.push(String(v));
+      }
+    }
+    return flat.join("");
+  }
+
+  async function ensureBookLoaded() {
+    if (BOOK_PUZZLES.length) return;
+    const resp = await fetch(BOOK_EASY_JSON);
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const data = await resp.json();
+    if (!data || !Array.isArray(data.puzzles)) throw new Error("Invalid JSON format");
+    BOOK_PUZZLES = data.puzzles.map((entry) => ({
+      puzzle: gridToString(entry.puzzle),
+      solution: gridToString(entry.solution),
+    }));
+  }
+
+  function boxClasses(r, c) {
+    const classes = [];
+    if (r === 2 || r === 5) classes.push("box-bottom");
+    if (c === 2 || c === 5) classes.push("box-right");
+    return classes.join(" ");
+  }
+
+  function renderBoardFromPuzzleString(puzzleStr) {
+    boardEl.innerHTML = "";
+    selectedCell = null;
+
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const idx = r * 9 + c;
+        const ch = puzzleStr[idx];
+        const isGiven = ch !== "0";
+
+        const cell = document.createElement("div");
+        cell.className = "cell " + boxClasses(r, c);
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.dataset.value = isGiven ? ch : "";
+
+        const valueEl = document.createElement("div");
+        valueEl.className = "cell-value";
+        valueEl.textContent = isGiven ? ch : "";
+
+        cell.classList.toggle("given", isGiven);
+        cell.classList.toggle("empty", !isGiven);
+
+        cell.appendChild(valueEl);
+        boardEl.appendChild(cell);
+      }
+    }
+  }
+
+  function getCellValue(cell) {
+    return cell ? (cell.dataset.value || "") : "";
+  }
+
+  function selectCell(cell) {
+    boardEl.querySelectorAll(".cell").forEach(c => c.classList.remove("selected"));
+    selectedCell = cell;
+    if (selectedCell) selectedCell.classList.add("selected");
+  }
+
+  boardEl.addEventListener("click", (e) => {
+    const cell = e.target.closest(".cell");
+    if (!cell) return;
+    if (cell.classList.contains("given")) { selectCell(cell); return; }
+    selectCell(cell);
+  });
+
+  function setCellValue(cell, value) {
+    if (!cell || cell.classList.contains("given")) return;
+    const valueEl = cell.querySelector(".cell-value");
+    cell.dataset.value = value || "";
+    valueEl.textContent = value || "";
+    cell.classList.toggle("empty", !value);
+  }
+
+  function handleNumInput(value) {
+    if (!selectedCell) return;
+    if (value === "clear") {
+      setCellValue(selectedCell, "");
+      return;
+    }
+    setCellValue(selectedCell, value);
+  }
+
+  numKeys.forEach((key) => {
+    const val = key.dataset.value;
+    key.addEventListener("click", () => handleNumInput(val));
+  });
+
+  function showSolution() {
+    if (!currentPuzzle) return;
+    const solution = currentPuzzle.solution;
+    const cells = boardEl.querySelectorAll(".cell");
+
+    cells.forEach((cell) => {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+      const idx = r * 9 + c;
+      const val = solution[idx];
+
+      // fill everything
+      const valueEl = cell.querySelector(".cell-value");
+      cell.dataset.value = val;
+      valueEl.textContent = val;
+      cell.classList.remove("empty");
+    });
+  }
+
+  function setQueryParam(n, mode) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("n", String(n));
+    if (mode) url.searchParams.set("mode", mode);
+    else url.searchParams.delete("mode");
+    history.replaceState({}, "", url.toString());
+  }
+
+  async function loadPuzzleByNumber(n, mode) {
+    await ensureBookLoaded();
+    if (n < 1 || n > 504) {
+      alert("Puzzle number must be between 1 and 504.");
+      return;
+    }
+    const idx = n - 1;
+    currentPuzzle = BOOK_PUZZLES[idx];
+    renderBoardFromPuzzleString(currentPuzzle.puzzle);
+    if (mode === "solution") showSolution();
+  }
+
+  function fillSelector() {
+    // 1..504
+    for (let i = 1; i <= 504; i++) {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = String(i);
+      selectEl.appendChild(opt);
+    }
+  }
+
+  function readInitialParams() {
+    const url = new URL(window.location.href);
+    const n = parseInt(url.searchParams.get("n") || "1", 10);
+    const mode = (url.searchParams.get("mode") || "").toLowerCase();
+    return { n: isFinite(n) ? n : 1, mode };
+  }
+
+  // Button actions
+  btnPlay.addEventListener("click", async () => {
+    const n = parseInt(selectEl.value, 10);
+    setQueryParam(n, "play");
+    await loadPuzzleByNumber(n, "play");
+  });
+
+  btnShowSolution.addEventListener("click", async () => {
+    const n = parseInt(selectEl.value, 10);
+    setQueryParam(n, "solution");
+    await loadPuzzleByNumber(n, "solution");
+  });
+
+  // Init
+  (async function init() {
+    fillSelector();
+
+    const { n, mode } = readInitialParams();
+    selectEl.value = String(Math.min(504, Math.max(1, n)));
+
+    // If QR points to ?mode=solution => auto show solution
+    const initialMode = (mode === "solution") ? "solution" : "play";
+    setQueryParam(parseInt(selectEl.value, 10), initialMode);
+    await loadPuzzleByNumber(parseInt(selectEl.value, 10), initialMode);
+  })();
+
+</script>
+</body>
+</html>
