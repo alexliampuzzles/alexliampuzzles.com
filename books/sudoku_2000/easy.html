@@ -1500,6 +1500,39 @@
       margin-bottom: 0.5rem;
     }
 
+    .side-card-compact .side-card-inner{
+      padding: 1.1rem 1.2rem;
+    }
+    
+    .side-card-compact .side-heading{
+      margin-bottom: 0.35rem;
+    }
+    
+    .side-card-compact .side-sub{
+      margin-bottom: 0.9rem;
+    }
+    
+    .pdf-btn{
+      width: 100%;
+      justify-content: center;
+      font-weight: 700;
+    }
+    
+    /* Make it feel like “secondary action”, not a loud CTA */
+    body.theme-dark .pdf-btn{
+      background: rgba(15,23,42,0.35);
+    }
+    body.theme-light .pdf-btn{
+      background: #fff;
+    }
+    
+    .pdf-note{
+      margin-top: 0.7rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+
     .feature-list {
       list-style: none;
       display: grid;
@@ -1878,25 +1911,10 @@
           <div class="side-section-title">Quick steps</div>
           <ul class="feature-list">
             <li><span class="feature-bullet"></span> Select your <b>Puzzle #</b> (matches the book numbering).</li>
-            <li><span class="feature-bullet"></span> Press <b>Solve Puzzle</b> to solve it online.</li>
+            <li><span class="feature-bullet"></span> Press <b>Solve Puzzle</b> to play it online.</li>
             <li><span class="feature-bullet"></span> Press <b>Show solution</b> for the completed grid.</li>
             <li><span class="feature-bullet"></span> Use <b>Notes</b> for pencil marks.</li>
           </ul>
-        </div>
-
-        <div style="margin-top:1.4rem;">
-          <div class="side-section-title">Full PDF Solutions</div>
-        
-          <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:0.8rem;">
-            Prefer a printable solution file? Download the complete Easy level solutions (1–504) in one PDF.
-          </p>
-        
-          <a href="/books/sudoku_2000/solutions/easy_solutions.pdf"
-             target="_blank"
-             class="btn btn-primary"
-             style="text-decoration:none;">
-            Download Easy Solutions PDF
-          </a>
         </div>
 
         <div>
@@ -1911,6 +1929,26 @@
     
       </div>
     </aside>
+
+    <aside class="side-card side-card-compact">
+      <div class="side-card-inner">
+        <h2 class="side-heading">Full PDF Solutions</h2>
+        <p class="side-sub">
+          Download the complete Easy level solutions (1–504) in one printable PDF.
+        </p>
+    
+        <a class="btn btn-outline pdf-btn"
+           href="/books/sudoku_2000/solutions/easy_solutions.pdf"
+           target="_blank" rel="noopener">
+          Download Easy Solutions PDF
+        </a>
+    
+        <div class="pdf-note">
+          Tip: Use this if you prefer a single file instead of instant lookup.
+        </div>
+      </div>
+    </aside>
+    
 
   </main>
 
