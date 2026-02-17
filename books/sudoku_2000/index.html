@@ -1094,6 +1094,20 @@
       }
     }
 
+    .btn-solution-active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: #16a34a;
+      color: #ffffff;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.4);
+    }
+    
+    body.theme-light .btn-solution-active {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #22c55e;
+    }
+
+
     .book-picker{
       display:flex;
       flex-direction:column;
@@ -1720,7 +1734,7 @@
 
             <div id="puzzle-selection" class="puzzle-selection framed-display">
                <label for="puzzle-select" class="inline-select-label">
-                Puzzle #
+                Puzzle No.
               </label>
 
               <select id="puzzle-select"></select>
@@ -2751,19 +2765,29 @@ async function ensureBookLoaded() {
     if (typeof timerEnabled !== "undefined" && timerEnabled) resetTimer();
     }
   
-    btnPlay.addEventListener("click", async () => {
-    const n = parseInt(selectEl.value, 10);
-    currentMode = "play";
-    setQueryParam(n, currentMode);
-    await loadPuzzleByNumber(n, currentMode);
-  });
+btnPlay.addEventListener("click", async () => {
+  const n = parseInt(selectEl.value, 10);
+  currentMode = "play";
+
+  btnPlay.classList.add("btn-solution-active");
+  btnShowSolution.classList.remove("btn-solution-active");
+
+  setQueryParam(n, currentMode);
+  await loadPuzzleByNumber(n, currentMode);
+});
+
   
-  btnShowSolution.addEventListener("click", async () => {
-    const n = parseInt(selectEl.value, 10);
-    currentMode = "solution";
-    setQueryParam(n, currentMode);
-    await loadPuzzleByNumber(n, currentMode);
-  });
+btnShowSolution.addEventListener("click", async () => {
+  const n = parseInt(selectEl.value, 10);
+  currentMode = "solution";
+
+  btnShowSolution.classList.add("btn-solution-active");
+  btnPlay.classList.remove("btn-solution-active");
+
+  setQueryParam(n, currentMode);
+  await loadPuzzleByNumber(n, currentMode);
+});
+
   
   // ✅ auto-refresh when number changes (no button needed)
   selectEl.addEventListener("change", async () => {
@@ -2781,6 +2805,12 @@ async function ensureBookLoaded() {
   updatePuzzleDisplay(parseInt(selectEl.value, 10));
  
   currentMode = (mode === "solution") ? "solution" : "play";
+  if (currentMode === "solution") {
+      btnShowSolution.classList.add("btn-solution-active");
+    } else {
+      btnPlay.classList.add("btn-solution-active");
+    }
+
   setQueryParam(parseInt(selectEl.value, 10), currentMode);
   
   updateMistakesDefault("easy"); // keep your default behavior (mistakes ON for easy)
