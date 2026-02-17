@@ -989,6 +989,74 @@
       }
     }
 
+    .book-picker{
+      display:flex;
+      flex-direction:column;
+      gap:0.35rem;
+      padding:0.55rem 0.75rem;
+      border-radius:1rem;
+      border:1px solid rgba(148,163,184,0.55);
+      background: rgba(15,23,42,0.75);
+    }
+    body.theme-light .book-picker{
+      background:#f9fafb;
+      border-color: rgba(148,163,184,0.7);
+    }
+    .book-picker-title{
+      font-size:0.72rem;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: var(--text-muted);
+    }
+    .puzzle-display{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:1.15rem;
+      font-weight:700;
+      letter-spacing:0.04em;
+      color:#e5e7eb;
+    }
+    body.theme-light .puzzle-display{ color:#111827; }
+    
+    #puzzle-display-num{
+      display:inline-block;
+      min-width: 3ch;
+      text-align:right;
+      color: var(--accent);
+    }
+    
+    .book-picker-row{
+      display:flex;
+      align-items:center;
+      gap:0.6rem;
+      flex-wrap:wrap;
+    }
+    
+    .book-picker-select select{
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      padding:0.35rem 0.75rem;
+      font-weight:600;
+      cursor:pointer;
+    }
+    body.theme-light .book-picker-select select{
+      background:#fff;
+      color:#111827;
+    }
+    
+    /* accessible helper */
+    .sr-only{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+
     .helper-pill {
       cursor: pointer;
       display: inline-flex;
@@ -1489,12 +1557,21 @@
           <div class="board-buttons">
             <!-- Left cluster: Puzzle menu + Show mistakes (right) -->
             <div class="left-actions">
-              <label class="helper-pill" style="gap:0.55rem;">
-                <span>Puzzle #</span>
-                <select id="puzzle-select" style="border:0; background:transparent; color:inherit; font-weight:600; cursor:pointer;">
-                </select>
-              </label>
-            
+              <div class="book-picker">
+                  <div class="book-picker-title">BOOK EASY</div>
+                
+                  <div class="book-picker-row">
+                    <div id="puzzle-display" class="puzzle-display" aria-live="polite">
+                      Puzzle <span id="puzzle-display-num">001</span> / 504
+                    </div>
+                
+                    <label class="book-picker-select">
+                      <span class="sr-only">Choose puzzle number</span>
+                      <select id="puzzle-select"></select>
+                    </label>
+                  </div>
+                </div>
+         
               <button id="btn-play" class="btn btn-primary" type="button">Play</button>
               <button id="btn-show-solution" class="btn btn-outline" type="button">Show solution</button>
             
@@ -2457,7 +2534,13 @@ async function ensureBookLoaded() {
   const selectEl = document.getElementById("puzzle-select");
   const btnPlay = document.getElementById("btn-play");
   const btnShowSolution = document.getElementById("btn-show-solution");
-  
+  const puzzleDisplayNumEl = document.getElementById("puzzle-display-num");
+
+    function updatePuzzleDisplay(n) {
+      if (!puzzleDisplayNumEl) return;
+      puzzleDisplayNumEl.textContent = String(n).padStart(3, "0");
+    }
+
   function fillSelector() {
     if (!selectEl) return;
     selectEl.innerHTML = "";
@@ -2489,6 +2572,8 @@ async function ensureBookLoaded() {
   
     n = Math.min(BOOK_COUNT, Math.max(1, n));
     currentPuzzleNumber = n;
+    updatePuzzleDisplay(n);
+
   
     currentPuzzle = BOOK_PUZZLES[n - 1];
     hideCompletionBanner();
@@ -2530,7 +2615,8 @@ async function ensureBookLoaded() {
 
   const { n, mode } = readInitialParams();
   selectEl.value = String(Math.min(BOOK_COUNT, Math.max(1, n)));
-  
+  updatePuzzleDisplay(parseInt(selectEl.value, 10));
+ 
   currentMode = (mode === "solution") ? "solution" : "play";
   setQueryParam(parseInt(selectEl.value, 10), currentMode);
   
