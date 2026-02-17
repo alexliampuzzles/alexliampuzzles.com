@@ -1517,6 +1517,22 @@
       justify-content: center;
       font-weight: 700;
     }
+      
+    .side-card-compact .side-card-inner{
+      padding: 1.1rem 1.2rem;
+    }
+    
+    .pdf-btn{
+      width:100%;
+      justify-content:center;
+      font-weight:700;
+    }
+    
+    .pdf-note{
+      margin-top:0.65rem;
+      font-size:0.9rem;
+      color: var(--text-muted);
+    }
     
     /* Make it feel like “secondary action”, not a loud CTA */
     body.theme-dark .pdf-btn{
@@ -1932,8 +1948,8 @@
 
     <aside class="side-card side-card-compact">
       <div class="side-card-inner">
-        <h2 class="side-heading">Full PDF Solutions</h2>
-        <p class="side-sub">
+        <div class="side-section-title">Full PDF Solutions</div>
+        <p class="side-sub" style="margin-top:0.5rem;">
           Download the complete Easy level solutions (1–504) in one printable PDF.
         </p>
     
@@ -1943,12 +1959,10 @@
           Download Easy Solutions PDF
         </a>
     
-        <div class="pdf-note">
-          Tip: Use this if you prefer a single file instead of instant lookup.
-        </div>
+        <div class="pdf-note">Optional: best for printing or scrolling many solutions at once.</div>
       </div>
     </aside>
-    
+
 
   </main>
 
