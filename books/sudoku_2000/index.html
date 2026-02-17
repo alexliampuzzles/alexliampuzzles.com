@@ -129,6 +129,9 @@
     }
     @media (max-width: 880px) { main { grid-template-columns: minmax(0, 1fr); } }
 
+    let currentMode = "play"; // "play" or "solution"
+
+
     .board-card, .side-card {
       background: radial-gradient(circle at top left, #111827 0, #020617 55%);
       border-radius: 1.4rem;
@@ -586,6 +589,7 @@
     }
   }
 
+
   function readInitialParams() {
     const url = new URL(window.location.href);
     const n = parseInt(url.searchParams.get("n") || "1", 10);
@@ -594,30 +598,38 @@
   }
 
   // Button actions
-  btnPlay.addEventListener("click", async () => {
-    const n = parseInt(selectEl.value, 10);
-    setQueryParam(n, "play");
-    await loadPuzzleByNumber(n, "play");
-  });
+ btnPlay.addEventListener("click", async () => {
+  const n = parseInt(selectEl.value, 10);
+  currentMode = "play";
+  setQueryParam(n, currentMode);
+  await loadPuzzleByNumber(n, currentMode);
+});
 
-  btnShowSolution.addEventListener("click", async () => {
-    const n = parseInt(selectEl.value, 10);
-    setQueryParam(n, "solution");
-    await loadPuzzleByNumber(n, "solution");
-  });
+btnShowSolution.addEventListener("click", async () => {
+  const n = parseInt(selectEl.value, 10);
+  currentMode = "solution";
+  setQueryParam(n, currentMode);
+  await loadPuzzleByNumber(n, currentMode);
+});
 
-  // Init
-  (async function init() {
-    fillSelector();
+ (async function init() {
+  fillSelector();
 
-    const { n, mode } = readInitialParams();
-    selectEl.value = String(Math.min(504, Math.max(1, n)));
+  const { n, mode } = readInitialParams();
+  selectEl.value = String(Math.min(504, Math.max(1, n)));
 
-    // If QR points to ?mode=solution => auto show solution
-    const initialMode = (mode === "solution") ? "solution" : "play";
-    setQueryParam(parseInt(selectEl.value, 10), initialMode);
-    await loadPuzzleByNumber(parseInt(selectEl.value, 10), initialMode);
-  })();
+  currentMode = (mode === "solution") ? "solution" : "play";   // ✅ remember mode
+  setQueryParam(parseInt(selectEl.value, 10), currentMode);
+  await loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
+})();
+
+  selectEl.addEventListener("change", async () => {
+  const n = parseInt(selectEl.value, 10);
+  setQueryParam(n, currentMode);
+  await loadPuzzleByNumber(n, currentMode);
+});
+
+
 
 </script>
 </body>
