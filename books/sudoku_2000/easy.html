@@ -1817,11 +1817,18 @@
           </div>
         
           <div class="nav-item dropdown">
-            <a href="#" class="nav-link" id="header-printables-toggle">
-              Printables ▾
-            </a>
-            ...
-          </div>
+              <a href="#" class="nav-link" id="header-printables-toggle" aria-haspopup="true" aria-expanded="false">
+                Printables ▾
+              </a>
+            
+              <div class="dropdown-menu" id="header-printables-menu" role="menu" aria-label="Printables">
+                <a href="/printables/sudoku/" role="menuitem">Sudoku Printables</a>
+                <a href="/printables/word-search/" role="menuitem">Word Search Printables</a>
+                <hr>
+                <a href="/bonus/" role="menuitem">Bonus Puzzles</a>
+              </div>
+            </div>
+
         
           <div class="nav-item">
             <a class="nav-link" href="/sudoku/play/">
@@ -2811,11 +2818,13 @@ async function ensureBookLoaded() {
   }
   
  if (headerPrintablesToggle && headerPrintablesMenu) {
-    headerPrintablesToggle.addEventListener("click", (e) => {
-      e.preventDefault();
-      headerPrintablesMenu.classList.toggle("show");
-    });
-  }
+  headerPrintablesToggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    const isOpen = headerPrintablesMenu.classList.toggle("show");
+    headerPrintablesToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+}
+
 
   
   // Close any open dropdown when clicking outside
