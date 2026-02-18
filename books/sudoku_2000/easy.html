@@ -1469,6 +1469,11 @@
       color: #b91c1c;
     }
 
+    body.theme-dark .side-card {
+      background: linear-gradient(145deg,#0f172a 0%,#0b1220 100%);
+    }
+
+
     body.theme-light .cell.filled:not(.given):not(.error) {
       color: #1d4ed8;
     }
@@ -1551,7 +1556,14 @@
       /* Light mode: improve readability inside side cards */
     body.theme-light .side-card{
       border-color: rgba(148,163,184,0.55);
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     }
+
+    body.theme-light .pdf-btn {
+      border: 1.5px solid #94a3b8;
+    }
+
     
     body.theme-light .side-card .side-sub,
     body.theme-light .side-card .pdf-note,
