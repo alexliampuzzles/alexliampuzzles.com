@@ -1547,7 +1547,25 @@
     body.theme-light .pdf-btn{
       background: #fff;
     }
+
+      /* Light mode: improve readability inside side cards */
+    body.theme-light .side-card{
+      border-color: rgba(148,163,184,0.55);
+    }
     
+    body.theme-light .side-card .side-sub,
+    body.theme-light .side-card .pdf-note,
+    body.theme-light .side-card .legend,
+    body.theme-light .side-card .feature-list li{
+      color: #334155; /* slate-700: clear but still soft */
+    }
+    
+    body.theme-light .side-card .side-section-title{
+      color: #475569; /* slate-600 */
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+
     .pdf-note{
       margin-top: 0.7rem;
       font-size: 0.9rem;
