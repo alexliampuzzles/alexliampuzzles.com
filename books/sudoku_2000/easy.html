@@ -1126,6 +1126,36 @@
       color: #ffffff;
       box-shadow: 0 0 0 1px rgba(34,197,94,0.4);
     }
+
+    /* Keep the “active/selected” green even on mobile sticky-hover */
+    .btn.btn-solution-active,
+    .btn.btn-solution-active:hover,
+    .btn.btn-solution-active:active,
+    .btn.btn-solution-active:focus,
+    .btn.btn-solution-active:focus-visible {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: #16a34a;
+      color: #ffffff;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.4);
+    }
+    
+    /* Light theme variant */
+    body.theme-light .btn.btn-solution-active,
+    body.theme-light .btn.btn-solution-active:hover,
+    body.theme-light .btn.btn-solution-active:active,
+    body.theme-light .btn.btn-solution-active:focus,
+    body.theme-light .btn.btn-solution-active:focus-visible {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.35);
+    }
+    
+    /* Optional: nicer tap feel on iOS */
+    .btn {
+      -webkit-tap-highlight-color: transparent;
+    }
+
     
     body.theme-light .btn-solution-active {
       background: #dcfce7;
