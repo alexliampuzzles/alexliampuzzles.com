@@ -36,6 +36,38 @@ h1 {
 .button:hover {
     background-color: #16306b;
 }
+
+/* === BUTTONS === */
+.btn-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:14px;
+}
+.btn{
+  display:inline-block;
+  padding:12px 16px;
+  border-radius:12px;
+  background: var(--accent);
+  color:#111827;
+  text-decoration:none;
+  font-weight:700;
+  border:1px solid rgba(0,0,0,0.08);
+}
+.btn:hover{
+  filter: brightness(0.97);
+}
+.small-note{
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-top: 10px;
+}
+hr.soft{
+  border:0;
+  border-top:1px solid rgba(0,0,0,0.08);
+  margin:18px 0;
+}
+
 .footer {
     margin-top: 60px;
     font-size: 14px;
@@ -47,33 +79,82 @@ h1 {
 
 <div class="container">
 
-<h1>🧩 Welcome to the Alex Liam Puzzles Bonus Library</h1>
-<p>Thank you for purchasing one of our books. Your bonus digital content is available below.</p>
-
-<div class="section">
-<h2>What You Get</h2>
+<h1>Bonus Content</h1>
 <p>
-Additional Sudoku puzzle collections<br>
-Regularly updated bonus releases<br>
-Interactive online solver<br>
-Instant solution lookup<br>
-Future digital puzzle access
+  Thank you for purchasing one of my books! This page is the home of the
+  <strong>Alex Liam Puzzles Bonus Library</strong>.
 </p>
+
+<!-- GENERIC BONUS ACCESS (no numbers) -->
+<div class="card">
+  <h3>🎁 Your Bonus Library (Always Free)</h3>
+  <p>Included with your book:</p>
+  <ul>
+    <li>Additional Sudoku puzzle collections</li>
+    <li>Periodically updated bonus releases</li>
+    <li>Interactive online solver with instant solution lookup</li>
+  </ul>
+
+  <hr class="soft">
+
+  <h3 style="margin-bottom:8px;">Download Bonus Collections</h3>
+  <p class="small-note">Choose a level to download (PDF). Solutions are included.</p>
+
+  <div class="btn-row">
+    <a class="btn" href="/bonus/easy_bonus.pdf">Download Easy</a>
+    <a class="btn" href="/bonus/medium_bonus.pdf">Download Medium</a>
+    <a class="btn" href="/bonus/hard_bonus.pdf">Download Hard</a>
+    <a class="btn" href="/bonus/expert_bonus.pdf">Download Expert</a>
+  </div>
+
+  <p class="small-note">
+    Tip: If your book points to specific filenames, use those links below in “Book-Specific Downloads”.
+  </p>
 </div>
 
-<div class="section">
-<h2>Download Your Bonus Collections</h2>
-<a href="easy.pdf" class="button">Download Easy Collection</a>
-<a href="medium.pdf" class="button">Download Medium Collection</a>
-<a href="hard.pdf" class="button">Download Hard Collection</a>
-<a href="expert.pdf" class="button">Download Expert Collection</a>
+<!-- OPTIONAL: BOOK-SPECIFIC LINKS (still no puzzle counts) -->
+<div class="card">
+  <h3>📚 Book-Specific Downloads</h3>
+  <p class="small-note">
+    If your book references a specific bonus pack link, use the matching download below.
+    (No puzzle counts are shown here.)
+  </p>
+
+  <ul>
+    <li><a href="/bonus/120_sudoku_easy_lp_bonus.pdf">120 Easy Sudoku – Large Print (Bonus Pack)</a></li>
+    <li><a href="/bonus/180_sudoku_bonus.pdf">180 Sudoku – 6×9 Edition (Bonus Pack)</a></li>
+    <li><a href="/bonus/500plus_sudoku_bonus.pdf">500+ Sudoku – 6×9 Edition (Bonus Pack)</a></li>
+    <li><a href="/bonus/1000plus_sudoku_bonus_easy_medium.pdf">1000+ Sudoku – Sudoku Challenge Series (Bonus Pack)</a></li>
+    <li><a href="/bonus/1200plus_sudoku_bonus.pdf">1200+/1000+ Sudoku – Sudoku Challenge Series (Bonus Pack)</a></li>
+
+    <!-- NEW: 2000+ book (your new structure: 1 PDF per level) -->
+    <li>
+      2000+ Sudoku (Bonus Library):
+      <a href="/bonus/2000plus_easy.pdf">Easy</a>,
+      <a href="/bonus/2000plus_medium.pdf">Medium</a>,
+      <a href="/bonus/2000plus_hard.pdf">Hard</a>,
+      <a href="/bonus/2000plus_expert.pdf">Expert</a>
+    </li>
+  </ul>
 </div>
 
-<div class="section">
-<h2>Interactive Online Solver</h2>
-<p>Solve puzzles directly online using our interactive Sudoku solver.</p>
-<a href="https://alexliampuzzles.com/solver" class="button">Open Online Solver</a>
+<!-- SOLVER -->
+<div class="card">
+  <h3>🧠 Interactive Sudoku Solver</h3>
+  <p>Solve online and check solutions instantly.</p>
+  <p><a class="btn" href="/sudoku/play/index.html">Open Online Sudoku</a></p>
 </div>
+
+<!-- KEEP YOUR EXISTING “Explore More...” CARD (unchanged if you want) -->
+<div class="card">
+    <h3>Explore More...</h3>
+    <ul>
+        <li><a href="https://www.alexliampuzzles.com">Free Sudoku & Word Search Printables</a></li>
+        <li><a href="/sudoku/play/index.html">Play Sudoku Online</a></li>
+        <li><a href="https://www.amazon.com/author/alex_liam" target="_blank">View All Books on Amazon</a></li>
+    </ul>
+</div>
+
 
 <div class="footer">
 © Alex Liam Puzzles – All rights reserved.
