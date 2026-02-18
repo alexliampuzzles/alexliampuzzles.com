@@ -1,151 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bonus Content – Alex Liam Puzzles</title>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-}
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 40px 20px;
-}
-h1 {
-    color: #1f3c88;
-}
-.section {
-    margin: 40px 0;
-}
-.button {
-    display: inline-block;
-    margin: 10px;
-    padding: 14px 28px;
-    background-color: #1f3c88;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
-}
-.button:hover {
-    background-color: #16306b;
-}
 
-/* === BUTTONS === */
-.btn-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-top:14px;
-}
-.btn{
-  display:inline-block;
-  padding:12px 16px;
-  border-radius:12px;
-  background: var(--accent);
-  color:#111827;
-  text-decoration:none;
-  font-weight:700;
-  border:1px solid rgba(0,0,0,0.08);
-}
-.btn:hover{
-  filter: brightness(0.97);
-}
-.small-note{
-  color: var(--muted);
-  font-size: 0.92rem;
-  margin-top: 10px;
-}
-hr.soft{
-  border:0;
-  border-top:1px solid rgba(0,0,0,0.08);
-  margin:18px 0;
-}
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LVF4WGKHE0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LVF4WGKHE0');
+    </script>
 
-.footer {
-    margin-top: 60px;
-    font-size: 14px;
-    color: #555;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Bonus Content – Alex Liam Puzzles</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="Access bonus Sudoku puzzle collections, updated bonus packs, and the interactive online solver for Alex Liam Puzzles books.">
+
+    <style>
+    /* === GLOBAL THEME (same as other pages) === */
+    :root {
+        --bg-light-1: #f5f7fc;
+        --bg-light-2: #eef1f8;
+        --bg-light-3: #e7ebf5;
+
+        --text-dark: #1c1f26;
+        --muted: #6b7280;
+
+        --accent: #ff8f2f;
+
+        --card-bg: #ffffff;
+        --card-border: rgba(15,23,42,0.06);
+        --card-shadow: 0 12px 28px rgba(15,23,42,0.08);
+
+        --max-width: 900px;
+        --link: #1a73e8;
+        --link-hover: #0c56c9;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(180deg, var(--bg-light-1), var(--bg-light-2) 45%, var(--bg-light-3));
+        color: var(--text-dark);
+    }
+
+    .page-shell {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        padding: 1.5rem 1.2rem 3rem;
+    }
+
+    /* === HEADER === */
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0 2rem;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .logo-img {
+        height: 36px;
+    }
+
+    .brand-title {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+    }
+
+    .brand-sub {
+        font-size: 0.85rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    /* NAVIGATION */
+    .nav-links {
+        display: flex;
+        gap: 1.3rem;
+        align-items: center;
+    }
+
+    .nav-link {
+        font-weight: 600;
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    /* === DROPDOWN (click-to-open) === */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 120%; left: 0;
+        width: 210px;
+        background: var(--card-bg);
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,0.12);
+        padding: 0.4rem 0;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        z-index: 30;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-menu a {
+        display: block;
+        padding: 0.55rem 0.9rem;
+        color: var(--text-dark);
+        text-decoration: none;
+    }
+
+    .dropdown-menu a:hover {
+        background: rgba(255,143,47,0.12);
+    }
+
+    .dropdown-separator {
+        margin: 0.3rem 0;
+        border: none;
+        border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* === CARDS === */
+    .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        padding: 22px 24px;
+        border-radius: 16px;
+        margin-top: 20px;
+        box-shadow: var(--card-shadow);
+    }
+
+    .card h3 {
+        margin-top: 0;
+    }
+
+    a {
+        color: var(--link);
+    }
+
+    a:hover {
+        color: var(--link-hover);
+    }
+
+    /* === BONUS BUTTONS (same theme, accent-based) === */
+    .level-grid{
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+    }
+
+    .level-btn{
+        display:block;
+        text-align:center;
+        padding: 12px 10px;
+        border-radius: 12px;
+        background: rgba(255,143,47,0.14);
+        border: 1px solid rgba(255,143,47,0.35);
+        color: var(--text-dark);
+        text-decoration:none;
+        font-weight: 700;
+    }
+
+    .level-btn:hover{
+        background: rgba(255,143,47,0.22);
+    }
+
+    .mini-note{
+        color: var(--muted);
+        margin-top: 10px;
+        font-size: 0.92rem;
+        line-height: 1.45;
+    }
+
+    .inline-links a{
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+        header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.9rem;
+        }
+        .nav-links {
+            width: auto;
+            justify-content: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .level-grid{
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 1rem;
+        }
+        .nav-links {
+            font-size: 0.8rem;
+        }
+        .logo-img {
+            width: 32px;
+            height: 32px;
+        }
+        .level-grid{
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
 </head>
-<body>
 
-<div class="container">
+<body>
+<div class="page-shell">
+
+<header>
+    <div class="brand">
+        <img src="/assets/MyLogo.png" class="logo-img" alt="Alex Liam Puzzles">
+        <div>
+            <div class="brand-title">Alex Liam Puzzles</div>
+            <div class="brand-sub">Relaxing logic puzzles</div>
+        </div>
+    </div>
+
+    <nav class="nav-links">
+
+        <a class="nav-link" href="/">Home</a>
+
+        <div class="dropdown">
+            <a href="#" class="nav-link" id="printables-toggle">Printables ▾</a>
+            <div class="dropdown-menu" id="printables-menu">
+                <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
+                <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+                <hr class="dropdown-separator">
+                <a href="/printables/wordsearch.html"><strong>Word Search Printables</strong></a>
+            </div>
+        </div>
+
+        <a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a>
+        <a class="nav-link" href="https://www.amazon.com/author/alex_liam" target="_blank">My Books</a>
+
+    </nav>
+</header>
 
 <h1>Bonus Content</h1>
 <p>
-  Thank you for purchasing one of my books! This page is the home of the
-  <strong>Alex Liam Puzzles Bonus Library</strong>.
+    Thank you for purchasing one of my books! This page gives you access to bonus Sudoku content,
+    updated collections, and the interactive online solver.
 </p>
 
-<!-- GENERIC BONUS ACCESS (no numbers) -->
+<!-- GENERIC BONUS CONTENT -->
 <div class="card">
-  <h3>🎁 Your Bonus Library (Always Free)</h3>
-  <p>Included with your book:</p>
-  <ul>
-    <li>Additional Sudoku puzzle collections</li>
-    <li>Periodically updated bonus releases</li>
-    <li>Interactive online solver with instant solution lookup</li>
-  </ul>
+    <h3>🎁 Bonus Content for Readers</h3>
+    <p>As a thank you for purchasing this book, you get free access to:</p>
+    <ul>
+        <li>Additional bonus Sudoku puzzle collections</li>
+        <li>Periodically updated collections</li>
+        <li>Interactive online solver with instant solution lookup</li>
+    </ul>
 
-  <hr class="soft">
+    <p class="mini-note">
+        If your book mentions “Bonus Content” and points to this page, you can use the downloads below.
+        (Solutions are included in each PDF.)
+    </p>
 
-  <h3 style="margin-bottom:8px;">Download Bonus Collections</h3>
-  <p class="small-note">Choose a level to download (PDF). Solutions are included.</p>
+    <h3 style="margin-top:18px;">Download Bonus Collections</h3>
+    <div class="level-grid">
+        <!-- Change filenames to your real PDFs -->
+        <a class="level-btn" href="/bonus/bonus_easy.pdf">Easy</a>
+        <a class="level-btn" href="/bonus/bonus_medium.pdf">Medium</a>
+        <a class="level-btn" href="/bonus/bonus_hard.pdf">Hard</a>
+        <a class="level-btn" href="/bonus/bonus_expert.pdf">Expert</a>
+    </div>
 
-  <div class="btn-row">
-    <a class="btn" href="/bonus/easy_bonus.pdf">Download Easy</a>
-    <a class="btn" href="/bonus/medium_bonus.pdf">Download Medium</a>
-    <a class="btn" href="/bonus/hard_bonus.pdf">Download Hard</a>
-    <a class="btn" href="/bonus/expert_bonus.pdf">Download Expert</a>
-  </div>
-
-  <p class="small-note">
-    Tip: If your book points to specific filenames, use those links below in “Book-Specific Downloads”.
-  </p>
+    <p class="mini-note">
+        Tip: You can keep these filenames stable forever, and simply update the PDFs over time without changing your books.
+    </p>
 </div>
 
-<!-- OPTIONAL: BOOK-SPECIFIC LINKS (still no puzzle counts) -->
+<!-- ONLINE SOLVER -->
 <div class="card">
-  <h3>📚 Book-Specific Downloads</h3>
-  <p class="small-note">
-    If your book references a specific bonus pack link, use the matching download below.
-    (No puzzle counts are shown here.)
-  </p>
-
-  <ul>
-    <li><a href="/bonus/120_sudoku_easy_lp_bonus.pdf">120 Easy Sudoku – Large Print (Bonus Pack)</a></li>
-    <li><a href="/bonus/180_sudoku_bonus.pdf">180 Sudoku – 6×9 Edition (Bonus Pack)</a></li>
-    <li><a href="/bonus/500plus_sudoku_bonus.pdf">500+ Sudoku – 6×9 Edition (Bonus Pack)</a></li>
-    <li><a href="/bonus/1000plus_sudoku_bonus_easy_medium.pdf">1000+ Sudoku – Sudoku Challenge Series (Bonus Pack)</a></li>
-    <li><a href="/bonus/1200plus_sudoku_bonus.pdf">1200+/1000+ Sudoku – Sudoku Challenge Series (Bonus Pack)</a></li>
-
-    <!-- NEW: 2000+ book (your new structure: 1 PDF per level) -->
-    <li>
-      2000+ Sudoku (Bonus Library):
-      <a href="/bonus/2000plus_easy.pdf">Easy</a>,
-      <a href="/bonus/2000plus_medium.pdf">Medium</a>,
-      <a href="/bonus/2000plus_hard.pdf">Hard</a>,
-      <a href="/bonus/2000plus_expert.pdf">Expert</a>
-    </li>
-  </ul>
+    <h3>🧠 Interactive Online Solver</h3>
+    <p>
+        Prefer solving on your phone or computer? Use the online Sudoku player/solver:
+    </p>
+    <p class="inline-links">
+        <a href="/sudoku/play/index.html">Open Online Sudoku ›</a>
+    </p>
 </div>
 
-<!-- SOLVER -->
+<!-- OPTIONAL: legacy book-specific links (still no puzzle numbers) -->
 <div class="card">
-  <h3>🧠 Interactive Sudoku Solver</h3>
-  <p>Solve online and check solutions instantly.</p>
-  <p><a class="btn" href="/sudoku/play/index.html">Open Online Sudoku</a></p>
+    <h3>📚 Older Bonus Packs (if your book links to a specific file)</h3>
+    <p class="mini-note">
+        Some earlier books may reference a specific bonus pack filename. Use the matching download below.
+    </p>
+    <ul>
+        <li><a href="/bonus/120_sudoku_easy_lp_bonus.pdf">120 Easy Sudoku – Large Print (Bonus Pack) ›</a></li>
+        <li><a href="/bonus/180_sudoku_bonus.pdf">180 Sudoku – 6×9 Edition (Bonus Pack) ›</a></li>
+        <li><a href="/bonus/500plus_sudoku_bonus.pdf">500+ Sudoku – 6×9 Edition (Bonus Pack) ›</a></li>
+        <li><a href="/bonus/1000plus_sudoku_bonus_easy_medium.pdf">1000+ Sudoku – Sudoku Challenge Series (Bonus Pack) ›</a></li>
+        <li><a href="/bonus/1200plus_sudoku_bonus.pdf">1200+/1000+ Sudoku – Sudoku Challenge Series (Bonus Pack) ›</a></li>
+    </ul>
 </div>
 
-<!-- KEEP YOUR EXISTING “Explore More...” CARD (unchanged if you want) -->
+<!-- EXPLORE MORE -->
 <div class="card">
     <h3>Explore More...</h3>
     <ul>
@@ -155,12 +335,23 @@ hr.soft{
     </ul>
 </div>
 
-
-<div class="footer">
-© Alex Liam Puzzles – All rights reserved.
 </div>
 
-</div>
+<script>
+const toggle = document.getElementById("printables-toggle");
+const menu   = document.getElementById("printables-menu");
+
+toggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    menu.classList.toggle("show");
+});
+
+document.addEventListener("click", (e) => {
+    if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove("show");
+    }
+});
+</script>
 
 </body>
 </html>
