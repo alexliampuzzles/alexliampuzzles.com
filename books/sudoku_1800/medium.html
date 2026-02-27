@@ -1,0 +1,2988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LVF4WGKHE0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-LVF4WGKHE0');
+  </script>
+    
+  <meta charset="UTF-8">
+ <title>1800 Sudoku Book – Medium Puzzles (1–450) | Official Companion Page</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="description" content="Official companion page for the 1800 Sudoku Puzzles for Adults book. Access Medium puzzles (1–450), play online, or instantly view solutions by puzzle number.">
+
+
+ <meta property="og:title" content="1800 Sudoku Book – Medium Puzzles (1–450)">
+ <meta property="og:description" content="Play or view solutions for Medium puzzles (1–450) from the 1800 Sudoku Puzzles for Adults book. Official companion page.">
+ <meta property="og:type" content="website">
+ <meta property="og:url" content="https://www.alexliampuzzles.com/books/sudoku_1800/medium">
+
+  <meta property="og:image" content="https://www.alexliampuzzles.com/assets/social-onlineplay-preview.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Play Free Sudoku Online – Alex Liam Puzzles">
+  <meta name="twitter:description" content="Free online Sudoku with 5 difficulty levels and clean interface. No ads.">
+  <meta name="twitter:image" content="https://www.alexliampuzzles.com/assets/social-onlineplay-preview.png">
+
+ <link rel="canonical" href="https://www.alexliampuzzles.com/books/sudoku_1800/medium">
+
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Game",
+      "name": "Play Free Sudoku Online",
+      "description": "Free online Sudoku game with five difficulty levels and a clean, mobile-friendly interface. Every puzzle has a single valid solution.",
+      "genre": "Puzzle",
+      "applicationCategory": "Game",
+      "operatingSystem": "All",
+      "url": "https://www.alexliampuzzles.com/books/sudoku_1800/medium.html"
+    }
+    </script>
+
+
+  <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+      
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --grid-line: #d1d5db;
+      --grid-box: #9ca3af;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.12);
+      --accent-strong: rgba(249, 115, 22, 0.18);
+      --accent-glow: 0 4px 10px rgba(249, 115, 22, 0.20);
+      --danger: #f97373;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --btn-bg: #111827;
+      --btn-hover: #1f2933;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
+
+      --bg-light-1: #f5f7fc;
+      --bg-light-2: #eef1f8;
+      --bg-light-3: #e7ebf5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      margin: 0;
+     /* min-height: 100vh;*/
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 1.25rem 1.25rem 0;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
+      overflow-x: hidden;
+    }
+
+    body.theme-dark {
+      color: var(--text);
+      background: radial-gradient(circle at top left, #111827 0, #020617 38%, #020617 100%);
+    }
+
+    body.theme-light {
+      color: #111827;
+      background: linear-gradient(
+        180deg,
+        var(--bg-light-1) 0%,
+        var(--bg-light-2) 45%,
+        var(--bg-light-3) 100%
+      );
+      --text: #111827;
+      --text-muted: #6b7280;
+      --card: #ffffff;
+      --btn-bg: #ffffff;
+      --btn-hover: #f3f4f6;
+      --shadow-soft: 0 18px 35px rgba(15, 23, 42, 0.12);
+    }
+
+    .page-shell {
+      max-width: 1100px;
+      width: 100%;
+      margin: auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 1.8rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0 1.75rem;
+   /*   margin-bottom: 0.2rem;*/
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .brand { display: flex; align-items: center; gap: 0.8rem; }
+
+    .logo-img {
+    height: 36px;
+    width: auto;
+    }
+
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      border: 2px solid var(--accent);
+      display: grid;
+      place-items: center;
+      font-size: 0.85rem;
+      background: radial-gradient(circle at 30% 0, #1f2937 0, #020617 55%);
+      color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 25px rgba(15, 23, 42, 0.8);
+    }
+
+    body.theme-light .logo-mark {
+      background: radial-gradient(circle at 30% 0, #fef3c7 0, #fed7aa 45%, #f97316 100%);
+      color: #111827;
+    }
+
+    .brand-text { display: flex; flex-direction: column; gap: 0.1rem; }
+
+    .brand-title {
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      font-size: 1.14rem;
+      color: #e5e7eb;
+    }
+
+    body.theme-light .brand-title { color: #111827; }
+
+    .brand-sub {
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    
+    /* Nav styled like main_index.html (orange links) */
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.95rem;
+      align-items: center;
+    }
+    
+    .nav-item {
+      position: relative;
+    }
+    
+    .nav-link {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .nav-link:hover {
+      opacity: 0.85;
+    }
+
+      
+      body.theme-light .nav-links .nav-button:hover {
+        color: #111827;
+      }
+      
+      .nav-links .nav-button:hover::after {
+        width: 100%;
+      }
+      
+      /* Allow dropdown menu items to be links as well as buttons */
+      .dropdown-menu a {
+        display: block;
+        text-decoration: none;
+        background: transparent;
+        padding: 0.55rem 0.9rem;
+        font-size: 0.85rem;
+        color: #e5e7eb;
+      }
+      
+      .dropdown-menu a:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+      }
+      
+      body.theme-light .dropdown-menu a {
+        color: #111827;
+      }
+      
+      body.theme-light .dropdown-menu a:hover {
+        background: #f3f4f6;
+      }
+
+
+    .btn-theme {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.75rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease, color 0.15s ease;
+    }
+
+    .btn-theme:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+    }
+
+    body.theme-light .btn-theme {
+      background: #ffffff;
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    body.theme-light .btn-theme:hover {
+      background: #f3f4f6;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 1.8rem;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 880px) {
+      body { padding: 1.25rem; }
+      main { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .board-card, .side-card {
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border-radius: 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: var(--shadow-soft);
+      padding: 1.4rem 1.5rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .board-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.16), transparent 60%),
+        radial-gradient(circle at 70% 0%, rgba(94, 234, 212, 0.12), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    body.theme-light .board-card,
+    body.theme-light .side-card {
+      background: #ffffff;
+      border-radius: 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+    }
+    body.theme-light .board-card::before { display: none; }
+
+    .board-card-inner { position: relative; z-index: 1; }
+
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .board-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .board-title span.badge {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, 0.12);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    body.theme-light .board-title span.badge {
+      background: #f9fafb;
+      border-color: rgba(148, 163, 184, 0.5);
+      color: #6b7280;
+    }
+
+    /* top control bar: actions */
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .board-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .left-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    /* Show mistakes: align right, green when on */
+    #btn-mistakes {
+      margin-left: auto;
+    }
+
+    #btn-mistakes.mistakes-on {
+      background: rgba(22, 163, 74, 0.18);
+      border-color: #22c55e;
+      color: #bbf7d0;
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.3);
+    }
+
+    body.theme-light #btn-mistakes.mistakes-on {
+      background: #ecfdf3;
+      border-color: #22c55e;
+      color: #166534;
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.4);
+    }
+
+    /* difficulty group WITHOUT outer pill outline */
+    .difficulty-group {
+      display: flex;
+      gap: 0.35rem;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+    }
+
+    body.theme-light .difficulty-group {
+      background: transparent;
+      border: none;
+    }
+
+    .btn-difficulty {
+      border: 1px solid transparent;
+      background: transparent;
+      padding: 0.22rem 0.75rem;
+      border-radius: 999px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      cursor: pointer;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    /* Colored outlines per level */
+    .btn-difficulty[data-level="warmup"] {
+      border-color: rgba(34, 197, 94, 0.7);
+      color: #bbf7d0;
+    }
+    .btn-difficulty[data-level="easy"] {
+      border-color: rgba(59, 130, 246, 0.7);
+      color: #bfdbfe;
+    }
+    .btn-difficulty[data-level="medium"] {
+      border-color: rgba(234, 179, 8, 0.8);
+      color: #facc15;
+    }
+    .btn-difficulty[data-level="hard"] {
+      border-color: rgba(249, 115, 22, 0.9);
+      color: #fed7aa;
+    }
+    .btn-difficulty[data-level="expert"] {
+      border-color: rgba(239, 68, 68, 0.9);
+      color: #fecaca;
+    }
+
+    body.theme-light .btn-difficulty[data-level="warmup"] {
+      color: #166534;
+    }
+    body.theme-light .btn-difficulty[data-level="easy"] {
+      color: #1d4ed8;
+    }
+    body.theme-light .btn-difficulty[data-level="medium"] {
+      color: #a16207;
+    }
+    body.theme-light .btn-difficulty[data-level="hard"] {
+      color: #c2410c;
+    }
+    body.theme-light .btn-difficulty[data-level="expert"] {
+      color: #b91c1c;
+    }
+
+    .difficulty-line {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.2rem 0 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .difficulty-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .btn-difficulty.active {
+      background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 40%, #b91c1c 100%);
+      color: #f9fafb;
+      box-shadow: 0 0 0 1px rgba(248, 250, 252, 0.08), var(--accent-glow);
+    }
+
+    body.theme-light .btn-difficulty.active {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #111827;
+      box-shadow: 0 0 0 1px rgba(248, 113, 22, 0.35), var(--accent-glow);
+    }
+
+    .btn-difficulty:not(.active):hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+    }
+
+    body.theme-light .btn-difficulty:not(.active):hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    }
+
+    .btn:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+    }
+
+    body.theme-light .btn {
+      background: #ffffff;
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    body.theme-light .btn:hover {
+      background: #f3f4f6;
+      border-color: rgba(55, 65, 81, 0.7);
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      border-color: rgba(248, 250, 252, 0.15);
+      background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 40%, #b91c1c 100%);
+      color: #f9fafb;
+      box-shadow: var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      border-color: rgba(248, 250, 252, 0.25);
+      background: radial-gradient(circle at 20% 0, #fb923c 0, #ea580c 45%, #b91c1c 100%);
+    }
+
+    body.theme-light .btn-primary {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #111827;
+      border-color: transparent;
+      box-shadow: var(--accent-glow);
+    }
+
+    .btn-outline { background: rgba(15, 23, 42, 0.95); }
+
+    .btn-outline-danger {
+      border-color: rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+    }
+
+    .btn-outline-danger:hover {
+      background: rgba(127, 29, 29, 0.75);
+      border-color: rgba(252, 165, 165, 0.95);
+    }
+
+    body.theme-light .btn-outline {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    body.theme-light .btn-outline-danger {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    body.theme-light .btn-outline-danger:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
+    /* Dropdown container */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      min-width: 190px;
+      background: rgba(15, 23, 42, 0.97);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      border-radius: 0.75rem;
+      padding: 0.4rem 0;
+      display: none;
+      flex-direction: column;
+      z-index: 50;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .dropdown-menu.show {
+      display: flex;
+    }
+
+    .dropdown-menu button {
+      background: transparent;
+      border: none;
+      color: #e5e7eb;
+      text-align: left;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      width: 100%;
+      letter-spacing: 0.05em;
+    }
+
+    .dropdown-menu button:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .dropdown-menu hr {
+      border: none;
+      margin: 0.4rem 0;
+      height: 1px;
+      background: rgba(148, 163, 184, 0.3);
+    }
+
+    body.theme-light .dropdown-menu {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+
+    body.theme-light .dropdown-menu button {
+      color: #111827;
+    }
+
+    body.theme-light .dropdown-menu button:hover {
+      background: #f3f4f6;
+    }
+
+    .board-wrapper {
+      background: radial-gradient(circle at 50% 0, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      position: relative;
+    }
+
+    body.theme-light .board-wrapper {
+      background: #f9fafb;
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(9, 1fr);
+      gap: 0;
+      border-radius: 0.9rem;
+      overflow: hidden;
+      border: 3px solid rgba(229, 231, 235, 0.95);
+      aspect-ratio: 1 / 1;
+      background: #0b1220;
+      transform: translateZ(0); -webkit-transform: translateZ(0);
+    }
+
+    body.theme-light .board {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    .board-overlay {
+      position: absolute;
+      inset: 0.4rem;
+      border-radius: 0.9rem;
+      background: rgba(15, 23, 42, 0.96);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    body.theme-light .board-overlay {
+      background: rgba(249, 250, 251, 0.97);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    /* Completion overlay in center of board */
+    .completion-overlay {
+      position: absolute;
+      inset: 0.4rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 11;
+    }
+
+    .completion-box {
+      padding: 0.9rem 1.4rem;
+      border-radius: 1rem;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(248, 250, 252, 0.25);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      text-align: center;
+      max-width: 260px;
+    }
+
+    .completion-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .completion-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    body.theme-light .completion-box {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.7);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.18);
+      color: #111827;
+    }
+
+    .overlay-content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .overlay-title {
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .overlay-resume { align-self: center; }
+
+    .completion-banner {
+      display: none;
+    }
+
+    .puzzle-selector-area{
+      display:flex;
+      flex-direction:column;
+      gap:0.45rem;
+    }
+    
+    .puzzle-label{
+      font-size:0.9rem;
+      font-weight:600;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+    
+    .puzzle-selector-row{
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    
+    .puzzle-display{
+      font-size:1.35rem; /* larger */
+      font-weight:700;
+    }
+    
+    .puzzle-select{
+      font-size:1rem;
+      padding:0.45rem 1rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      font-weight:600;
+      cursor:pointer;
+    }
+      
+    
+    body.theme-light .puzzle-select{
+      background:#fff;
+      color:#111827;
+    }
+
+    .book-picker-row{
+      display:flex;
+      align-items:center;
+      gap:0.9rem;
+      flex-wrap:wrap;
+    }
+    
+    /* framed pill like before */
+    .framed-display{
+      padding:0.35rem 0.85rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+      font-size:1.15rem;
+      font-weight:700;
+      letter-spacing:0.04em;
+    }
+    
+    body.theme-light .framed-display{
+      background:#ffffff;
+      color:#111827;
+    }
+
+      /* Dark mode dropdown */
+    body.theme-dark #puzzle-selection select {
+      background-color: #0f172a;   /* dark background */
+      color: #e5e7eb;              /* light text */
+    }
+    
+    /* Dropdown options (works in most Chromium browsers) */
+    body.theme-dark #puzzle-selection select option {
+      background-color: #0f172a;
+      color: #e5e7eb;
+    }
+
+   body.theme-dark #puzzle-select {
+      background-color: #0f172a;
+      color: #e5e7eb;
+    }
+    
+    body.theme-dark #puzzle-select option {
+      background-color: #0f172a;
+      color: #e5e7eb;
+    }
+
+    
+    /* inline label */
+    .inline-select-label{
+      font-size:1.2rem;
+      text-transform:uppercase;
+      letter-spacing:0.14em;
+      color:var(--accent);
+      font-weight:600;
+    }
+    
+    /* dropdown styling */
+    .book-picker-select select{
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      padding:0.35rem 0.9rem;
+      font-weight:600;
+      cursor:pointer;
+      font-size:0.95rem;
+    }
+    
+    body.theme-light .book-picker-select select{
+      background:#fff;
+      color:#111827;
+    }
+
+
+    #puzzle-selection select {
+      font-size: 1.15rem;   /* bigger value */
+      font-weight: 700;     /* stronger */
+      background: transparent;
+      border: none;
+      color: inherit;
+      outline: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    /* Timer row: Timer + time + pause, same line */
+    .timer-toggle-row {
+      margin: 0.4rem 0 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .timer-container {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.18rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      gap: 0.6rem;
+      min-width: 140px; /* dedicated width so line doesn't re-center */
+    }
+
+    .timer-time {
+      font-weight: 600;
+      color: #e5e7eb;
+      font-size: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      min-width: 5ch;       /* mm:ss always same width */
+      text-align: center;
+    }
+
+    .timer-pause {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.6rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .timer-pause:hover {
+      background: #111827;
+    }
+
+    body.theme-light .timer-container {
+      background: #f9fafb;
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #4b5563;
+    }
+
+    body.theme-light .timer-time {
+      color: #111827;
+    }
+
+    body.theme-light .timer-pause {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    /* Number pad */
+    .number-pad {
+      margin-top: 0.7rem;
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      column-gap: 0.5rem;
+      align-items: stretch;
+    }
+
+    .number-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+
+    .number-extra {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .num-key {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 1.4rem;
+      padding: 0.45rem 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease, opacity 0.15s ease;
+      position: relative;
+      font-family: "Inter", sans-serif !important;
+    }
+
+    .num-key:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+    }
+
+    .num-key:active { transform: translateY(1px); }
+
+    .num-key-erase {
+      border-color: rgba(248, 113, 113, 0.75);
+      color: #fecaca;
+      font-size: 1.1rem;
+      border-radius: 0.6rem;
+      padding: 0.55rem 0.4rem; /* taller */
+      width: 100%;
+      height: auto;
+      justify-content: center;
+      font-family: "Inter", sans-serif !important;
+    }
+
+    .num-key-erase:hover {
+      background: rgba(127, 29, 29, 0.85);
+      border-color: rgba(252, 165, 165, 1);
+    }
+
+    .num-key.completed {
+      opacity: 0.35;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .num-key.completed::after {
+      content: "✓";
+      position: absolute;
+      right: 8px;
+      bottom: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #22c55e;
+      opacity: 0.95;
+    }
+
+    body.theme-light .num-key.completed::after {
+      color: #16a34a;
+    }
+
+    .btn-notes,
+    .btn-check-inline {
+      border-radius: 0.6rem;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      font-size: 1rem;
+      padding: 0.5rem 0.4rem; /* taller */
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      letter-spacing: 0.08em;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+      width: 100%;
+      font-family: "Inter", sans-serif !important;
+    }
+
+    .btn-notes span.icon { font-size: 1.1rem; }
+
+    .btn-notes:hover,
+    .btn-check-inline:hover {
+      background: #111827;
+      border-color: #e5e7eb;
+      color: #e5e7eb;
+    }
+
+    .btn-notes.active {
+      background: rgba(34, 197, 94, 0.16);
+      border-color: #22c55e;
+      color: #bbf7d0;
+    }
+
+    body.theme-light .num-key {
+      background: #ffffff;
+      color: #111827;
+      border-color: rgba(148, 163, 184, 0.7);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.07);
+    }
+
+    body.theme-light .num-key:hover {
+      background: #f3f4f6;
+      border-color: rgba(55, 65, 81, 0.7);
+    }
+
+    body.theme-light .num-key-erase {
+      color: #b91c1c;
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    body.theme-light .num-key-erase:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
+    body.theme-light .btn-notes,
+    body.theme-light .btn-check-inline {
+      background: #f9fafb;
+      color: #4b5563;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    body.theme-light .btn-notes:hover,
+    body.theme-light .btn-check-inline:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    body.theme-light .btn-notes.active {
+      background: #ecfdf3;
+      border-color: #22c55e;
+      color: #15803d;
+    }
+
+    @media (max-width: 480px) {
+      .number-pad {
+        grid-template-columns: 3fr 1.2fr;
+        column-gap: 0.35rem;
+      }
+      .number-grid { gap: 0.35rem; }
+      .number-extra { gap: 0.4rem; }
+      .num-key { font-size: 1rem; padding: 0.35rem 0; }
+    }
+
+    @media (min-width: 880px) {
+      .num-key { font-size: 1.56rem; }
+      .num-key-erase { font-size: 1.05rem; }
+
+      .btn-notes,
+      .btn-check-inline {
+        font-size: 1.05rem; /* match Erase on desktop */
+        padding: 0.6rem 0.5rem;
+      }
+    }
+
+    .btn-solution-active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: #16a34a;
+      color: #ffffff;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.4);
+    }
+
+    /* Keep the “active/selected” green even on mobile sticky-hover */
+    .btn.btn-solution-active,
+    .btn.btn-solution-active:hover,
+    .btn.btn-solution-active:active,
+    .btn.btn-solution-active:focus,
+    .btn.btn-solution-active:focus-visible {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: #16a34a;
+      color: #ffffff;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.4);
+    }
+    
+    /* Light theme variant */
+    body.theme-light .btn.btn-solution-active,
+    body.theme-light .btn.btn-solution-active:hover,
+    body.theme-light .btn.btn-solution-active:active,
+    body.theme-light .btn.btn-solution-active:focus,
+    body.theme-light .btn.btn-solution-active:focus-visible {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.35);
+    }
+    
+    /* Optional: nicer tap feel on iOS */
+    .btn {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    
+    body.theme-light .btn-solution-active {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #22c55e;
+    }
+
+
+    .book-picker{
+      display:flex;
+      flex-direction:column;
+      gap:0.35rem;
+      padding:0.55rem 0.75rem;
+      border-radius:1rem;
+      border:1px solid rgba(148,163,184,0.55);
+      background: rgba(15,23,42,0.75);
+    }
+    body.theme-light .book-picker{
+      background:#f9fafb;
+      border-color: rgba(148,163,184,0.7);
+    }
+    .book-picker-title{
+      font-size:0.72rem;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color: var(--text-muted);
+    }
+    .puzzle-display{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:1.15rem;
+      font-weight:700;
+      letter-spacing:0.04em;
+      color:#e5e7eb;
+    }
+    body.theme-light .puzzle-display{ color:#111827; }
+    
+    #puzzle-display-num{
+      display:inline-block;
+      min-width: 3ch;
+      text-align:right;
+      color: var(--accent);
+    }
+
+    .book-action-group{
+      display:flex;
+      gap:0.6rem;
+      align-items:center;
+    }
+
+    .puzzle-selector-area{
+      display:flex;
+      flex-direction:column;
+      gap:0.45rem;
+    }
+    
+    .puzzle-label{
+      font-size:0.9rem;
+      font-weight:600;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+    
+    .puzzle-selector-row{
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+    
+    .puzzle-display{
+      font-size:1.35rem; /* larger */
+      font-weight:700;
+    }
+    
+    .puzzle-select{
+      font-size:1rem;
+      padding:0.45rem 1rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      font-weight:600;
+      cursor:pointer;
+    }
+    
+    body.theme-light .puzzle-select{
+      background:#fff;
+      color:#111827;
+    }
+
+    
+    .book-picker-row{
+      display:flex;
+      align-items:center;
+      gap:0.6rem;
+      flex-wrap:wrap;
+    }
+    
+    .book-picker-select select{
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color:#e5e7eb;
+      padding:0.35rem 0.75rem;
+      font-weight:600;
+      cursor:pointer;
+    }
+    body.theme-light .book-picker-select select{
+      background:#fff;
+      color:#111827;
+    }
+    
+    /* accessible helper */
+    .sr-only{
+      position:absolute;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+
+    .helper-pill {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      padding: 0.18rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .helper-pill input {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      position: relative;
+    }
+
+    .helper-pill input:checked::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f97316, #facc15);
+    }
+
+    body.theme-light .helper-pill {
+      background: #f9fafb;
+      color: #4b5563;
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    .cell {
+      width: 100%;
+      height: 100%;
+      border: 1px solid rgba(229, 231, 235, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
+      color: #f9fafb;
+      font-size: 2.4rem;
+      position: relative;
+    }
+
+    .cell-value { line-height: 1; font-family: "Inter", sans-serif !important; }
+
+    .cell-notes {
+      position: absolute;
+      inset: 0.18rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      font-size: 0.8rem;
+      line-height: 1;
+      color: var(--text-muted);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .cell-notes span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.theme-light .cell-notes { color: #6b7280; }
+
+    @media (max-width: 700px) {
+      .cell { font-size: 1.3rem; }
+      .cell-notes { font-size: 0.55rem;  inset: 0.12rem;}
+    }
+
+    /* iPhone-ish small screens: make notes clearer */
+    @media (max-width: 420px) {
+      .cell-notes {
+        inset: 0.10rem;     /* more usable space inside the cell */
+        font-size: 0.55rem; /* bigger notes */
+        line-height: 1;     /* keep tidy */
+      }
+    }
+
+
+    body.theme-light .cell {
+      border-color: rgba(100, 116, 139, 0.9);
+      color: #111827;
+      background: #ffffff;
+    }
+
+  
+
+    body.theme-light .board {
+      border: 3px solid rgba(30, 41, 59, 1);
+    }
+
+        /* ---- iOS/zoom-safe 3×3 separators (no stacked borders) ---- */
+    :root { --box-line: rgba(229, 231, 235, 0.92); }
+    body.theme-light { --box-line: rgba(30, 41, 59, 1); }
+    
+    /* remove border-based thick lines (we draw them as overlays instead) */
+    .cell.box-right { border-right: none; }
+    .cell.box-bottom { border-bottom: none; }
+    
+    /* draw thick lines as flat overlays (prevents “3D” anti-aliasing) */
+    .cell.box-right::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      bottom: -1px;
+      right: -1px;
+      width: 3px;
+      background: var(--box-line);
+      pointer-events: none;
+    }
+    
+    .cell.box-bottom::before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      height: 3px;
+      background: var(--box-line);
+      pointer-events: none;
+    }
+
+  
+
+    .cell.given {
+      font-weight: 300;
+      color: #f9fafb;
+    }
+
+    .cell.empty {
+      color: var(--text-muted);
+    }
+
+    body.theme-light .cell.given {
+      font-weight: 300;
+      color: #111827;
+    }
+
+    body.theme-light .cell.empty {
+      color: #9ca3af;
+    }
+
+    .cell.row-highlight:not(.selected):not(.error),
+    .cell.col-highlight:not(.selected):not(.error),
+    .cell.box-highlight:not(.selected):not(.error) {
+      background: rgba(96, 165, 250, 0.28);
+    }
+
+    .cell.same-digit.row-highlight:not(.error),
+    .cell.same-digit.col-highlight:not(.error),
+    .cell.same-digit.box-highlight:not(.error) {
+      background: rgba(250, 204, 21, 0.30); /* your same-digit highlight in dark */
+    }
+
+
+    .cell.same-digit:not(.error) {
+      background: rgba(250, 204, 21, 0.30);
+    }
+
+   /* Selected cell – background only, no outline (both modes) */
+    .cell.selected {
+      background: rgba(250, 204, 21, 0.30); /* SAME as same-digit */
+      z-index: 2;
+    }
+    
+    body.theme-light .cell.selected {
+        background: #c7ddf7; /* same as same-digit */
+        z-index: 2;
+    }
+
+
+    body.theme-light .cell.row-highlight:not(.selected):not(.error),
+    body.theme-light .cell.col-highlight:not(.selected):not(.error),
+    body.theme-light .cell.box-highlight:not(.selected):not(.error) {
+     background: #e2e8ef; /* ~20% lighter, more neutral grey */
+    }
+
+    /* Same-digit should override row/col/box context when both apply */
+    body.theme-light .cell.same-digit.row-highlight:not(.error),
+    body.theme-light .cell.same-digit.col-highlight:not(.error),
+    body.theme-light .cell.same-digit.box-highlight:not(.error) {
+      background: #c7ddf7; /* your same-digit blue */
+    }
+
+
+
+    body.theme-light .cell.same-digit:not(.error) {
+            background: #c7ddf7; /* same as same-digit */
+    }
+
+    .cell.filled { font-weight: 300; }
+
+    .cell.filled:not(.given):not(.error) {
+      color: #7dd3fc;
+    }
+
+    .cell.error {
+      background: rgba(239, 68, 68, 0.28);
+      box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.12);
+      color: #fecaca;
+    }
+
+    body.theme-light .cell.error {
+      background: #fee2e2;
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.3);
+      color: #b91c1c;
+    }
+
+    body.theme-dark .side-card {
+      background: linear-gradient(145deg,#0f172a 0%,#0b1220 100%);
+    }
+
+
+    body.theme-light .cell.filled:not(.given):not(.error) {
+      color: #1d4ed8;
+    }
+
+    .side-column{
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;  /* spacing between helper and PDF card */
+    }
+
+    .side-card {
+      min-height: unset;
+    }
+
+    .side-card-inner { position: relative; z-index: 1; }
+
+    .side-heading {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    .side-sub {
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .side-section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .side-card-compact .side-card-inner{
+      padding: 1.1rem 1.2rem;
+    }
+    
+    .side-card-compact .side-heading{
+      margin-bottom: 0.35rem;
+    }
+    
+    .side-card-compact .side-sub{
+      margin-bottom: 0.9rem;
+    }
+    
+    .pdf-btn{
+      width: 100%;
+      justify-content: center;
+      font-weight: 700;
+    }
+      
+    .side-card-compact .side-card-inner{
+      padding: 1.1rem 1.2rem;
+    }
+    
+    .pdf-btn{
+      width:100%;
+      justify-content:center;
+      font-weight:700;
+    }
+    
+    .pdf-note{
+      margin-top:0.65rem;
+      font-size:0.9rem;
+      color: var(--text-muted);
+    }
+    
+    /* Make it feel like “secondary action”, not a loud CTA */
+    body.theme-dark .pdf-btn{
+      background: rgba(15,23,42,0.35);
+    }
+    body.theme-light .pdf-btn{
+      background: #fff;
+    }
+
+      /* Light mode: improve readability inside side cards */
+    body.theme-light .side-card{
+      border-color: rgba(148,163,184,0.55);
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    body.theme-light .pdf-btn {
+      border: 1.5px solid #94a3b8;
+    }
+
+    
+    body.theme-light .side-card .side-sub,
+    body.theme-light .side-card .pdf-note,
+    body.theme-light .side-card .legend,
+    body.theme-light .side-card .feature-list li{
+      color: #334155; /* slate-700: clear but still soft */
+    }
+    
+    body.theme-light .side-card .side-section-title{
+      color: #475569; /* slate-600 */
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+
+    .pdf-note{
+      margin-top: 0.7rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+
+    .feature-list {
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      line-height: 1.4;
+    }
+
+    .feature-bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f97316, #facc15);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.85), 0 0 0 4px rgba(249, 115, 22, 0.18);
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.45rem 1rem;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .legend span.key {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+    body.theme-light .legend span.key { color: #111827; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    body.theme-light .pill {
+      background: #f9fafb;
+      color: #4b5563;
+    }
+
+    footer {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+      padding-top: 0.8rem;
+    }
+
+    footer a { color: #60a5fa; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    body.theme-light footer {
+      border-top-color: rgba(148, 163, 184, 0.5);
+    }
+
+    @media (max-width: 700px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.9rem;
+      }
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .nav-links {
+        width: auto;
+        justify-content: flex-start;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .board-card, .side-card {
+        padding: 1.2rem 1.1rem 1.3rem;
+      }
+      .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .board-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .left-actions {
+        justify-content: flex-start;
+      }
+      .timer-toggle-row {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 1rem; }
+      .board-card, .side-card { border-radius: 1rem; }
+      .board-wrapper { padding: 0.9rem; }
+      .board-title { font-size: 1.05rem; }
+      .nav-links { font-size: 0.8rem; }
+      .logo-mark { width: 26px; height: 26px; }
+      .logo-img { width: 32px; height: 32px; }
+
+      .difficulty-line {
+        align-items: flex-start;
+        gap: 0.35rem;
+      }
+
+      .difficulty-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+      }
+
+      .difficulty-group {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        row-gap: 0.25rem;
+      }
+
+      .btn-difficulty {
+        font-size: 0.7rem;
+        padding: 0.18rem 0.55rem;
+      }
+    }
+
+    body.theme-light .cell.error {
+      background: #fee2e2 !important;
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.4) !important;
+      color: #b91c1c !important;
+    }
+
+    .wrong-tooltip {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 70%;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(220, 38, 38, 0.95);
+      color: #fff;
+      font-size: 0.85rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 20;
+    }
+
+    body.theme-light .wrong-tooltip {
+      background: rgba(220, 38, 38, 0.96);
+      color: #fff;
+    }
+
+    .wrong-tooltip.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.02);
+    }
+
+  </style>
+</head>
+<body class="theme-dark">
+<div class="page-shell">
+  <header>
+    <div class="brand">
+      <img src="/assets/MyLogo.png" alt="Alex Liam Puzzles Logo" class="logo-img">
+      <div class="brand-text">
+        <div class="brand-title">Alex Liam Puzzles</div>
+        <div class="brand-sub">Relaxing logic puzzles</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <nav class="nav-links">
+          <div class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </div>
+        
+          <div class="nav-item dropdown">
+              <a href="#" class="nav-link" id="header-printables-toggle" aria-haspopup="true" aria-expanded="false">
+                Printables ▾
+              </a>
+            
+              <div class="dropdown-menu" id="header-printables-menu" role="menu" aria-label="Printables">
+                <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
+                <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+                <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+                <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+                <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+                <hr>
+                <a href="/bonus/" role="menuitem">Bonus Puzzles</a>
+              </div>
+            </div>
+
+        
+          <div class="nav-item">
+            <a class="nav-link" href="/sudoku/play/">
+              Play Sudoku
+            </a>
+          </div>
+        
+          <div class="nav-item">
+            <a class="nav-link"
+               href="https://www.amazon.com/author/alex_liam"
+               target="_blank"
+               rel="noopener noreferrer">
+              My Books
+            </a>
+          </div>
+        </nav>
+
+  
+      <button id="theme-toggle" class="btn-theme" type="button">
+        🌙 Dark
+      </button>
+    </div>
+  </header>
+
+
+
+  <main>
+    <section class="board-card">
+      <div class="board-card-inner">
+        <div class="board-header">
+         <div class="board-title"> 
+            1800 Sudoku Book – Medium Level (1–450)
+       <!--     <span class="badge">Beta</span>--></div> 
+        
+        </div>
+
+        <!-- top bar: main actions -->
+        <div class="controls-row">
+          <div class="board-buttons">
+            <!-- Left cluster: Puzzle menu + Show mistakes (right) -->
+            <div class="left-actions">
+
+             <div class="book-picker-row">
+
+              <div id="puzzle-display" class="puzzle-display framed-display">
+                Medium Puzzle <span id="puzzle-display-num">001</span> / 450
+              </div>
+
+            <div id="puzzle-selection" class="puzzle-selection framed-display">
+               <label for="puzzle-select" class="inline-select-label">
+                Puzzle #
+              </label>
+
+              <select id="puzzle-select"></select>
+            
+         <!--       <div class="book-picker-select">
+                <select id="puzzle-select"></select>
+              </div>
+ -->
+             </div>
+            
+            </div>
+
+            
+              <div class="book-action-group">
+                <button id="btn-play" class="btn btn-outline" type="button">
+                  Solve Puzzle
+                </button>
+            
+                <button id="btn-show-solution" class="btn btn-outline" type="button">
+                  Show Solution
+                </button>
+              </div>
+            
+              <button id="btn-mistakes" class="btn btn-outline" type="button">
+                Show mistakes
+              </button>
+            
+            </div>
+
+          </div>
+        </div>
+
+        <!-- difficulty line under the buttons
+        <div class="difficulty-line">
+          <span class="difficulty-label">Difficulty:</span>
+          <div class="difficulty-group" aria-label="Difficulty selection">
+            <button class="btn-difficulty" data-level="warmup">Warm-up</button>
+            <button class="btn-difficulty active" data-level="easy">Easy</button>
+            <button class="btn-difficulty" data-level="medium">Medium</button>
+            <button class="btn-difficulty" data-level="hard">Hard</button>
+            <button class="btn-difficulty" data-level="expert">Expert</button>
+          </div>
+        </div> -->
+
+        <!-- Timer row: Timer + time + pause on the same line -->
+        <div class="timer-toggle-row">
+          <label class="helper-pill">
+            <input type="checkbox" id="toggle-timer">
+            <span>Timer</span>
+          </label>
+
+          <div id="timer-container" class="timer-container">
+            <span id="timer-time" class="timer-time">00:00</span>
+            <button id="btn-timer-pause" class="timer-pause">Pause</button>
+          </div>
+        </div>
+
+        <div class="board-wrapper">
+          <div id="board" class="board" aria-label="Sudoku grid"></div>
+
+          <!-- Overlay when paused -->
+          <div id="board-overlay" class="board-overlay" aria-hidden="true">
+            <div class="overlay-content">
+              <div class="overlay-title">Paused</div>
+              <button id="btn-resume-big" class="btn btn-primary overlay-resume" type="button">
+                Resume
+              </button>
+            </div>
+          </div>
+
+          <!-- Completion overlay 
+          <div id="completion-overlay" class="completion-overlay" aria-hidden="true">
+            <div class="completion-box">
+              <div class="completion-title">🎉 Congratulations!</div>
+              <div class="completion-text">You solved this puzzle.</div>
+            </div>
+          </div>-->
+
+          <!-- Wrong digit tooltip -->
+          <div id="wrong-tooltip" class="wrong-tooltip">This number doesn’t belong here</div>
+        </div>
+
+        <!-- Number pad -->
+        <div class="number-pad" aria-label="Number input">
+          <div class="number-grid">
+            <button class="num-key" data-value="1">1</button>
+            <button class="num-key" data-value="2">2</button>
+            <button class="num-key" data-value="3">3</button>
+            <button class="num-key" data-value="4">4</button>
+            <button class="num-key" data-value="5">5</button>
+            <button class="num-key" data-value="6">6</button>
+            <button class="num-key" data-value="7">7</button>
+            <button class="num-key" data-value="8">8</button>
+            <button class="num-key" data-value="9">9</button>
+          </div>
+          <div class="number-extra">
+            <button class="num-key num-key-erase" data-value="clear">⌫ Erase</button>
+            <button id="btn-notes" class="btn-notes" type="button" aria-pressed="false">
+              <span class="icon">✏</span>
+              <span class="label">Notes</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="side-column">
+       <aside class="side-card">
+          <div class="side-card-inner">
+            <h2 class="side-heading">Book Puzzle Helper</h2>
+            <p class="side-sub">
+              Choose a puzzle number (1–450) from the book. Then either <b>Solve</b> it here or tap <b>Show solution</b>.
+            </p>
+        
+            <div>
+              <div class="side-section-title">Quick steps</div>
+              <ul class="feature-list">
+                <li><span class="feature-bullet"></span> Select your <b>Puzzle #</b> (matches the book numbering).</li>
+                <li><span class="feature-bullet"></span> Press <b>Solve Puzzle</b> to play it online.</li>
+                <li><span class="feature-bullet"></span> Press <b>Show solution</b> for the completed grid.</li>
+                <li><span class="feature-bullet"></span> Use <b>Notes</b> for pencil marks.</li>
+              </ul>
+            </div>
+    
+            <div>
+              <div class="side-section-title">Keyboard tips</div>
+              <div class="legend">
+                <div><span class="key">1–9</span> – fill a number</div>
+                <div><span class="key">Backspace</span> – erase</div>
+                <div><span class="key">Click</span> – select a cell</div>
+                <div><span class="key">Notes</span> – pencil marks</div>
+              </div>
+            </div>
+        
+          </div>
+        </aside>
+    
+        <aside class="side-card side-card-compact">
+          <div class="side-card-inner">
+            <div class="side-section-title">Full PDF Solutions</div>
+            <p class="side-sub" style="margin-top:0.5rem;">
+              Download the complete Medium level solutions (1–450) in one printable PDF.
+            </p>
+        
+            <a class="btn btn-outline pdf-btn"
+               href="/books/sudoku_1800/data/solutions_medium.pdf"
+               target="_blank" rel="noopener">
+              Download Medium Solutions PDF
+            </a>
+        
+            <div class="pdf-note">Optional: best for printing or scrolling many solutions at once. All 450 Medium puzzles in one PDF.</div>
+          </div>
+        </aside>
+
+     </div>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> Alex Liam Puzzles</span>
+  </footer>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // --- Theme toggle ---
+  const themeToggleBtn = document.getElementById("theme-toggle");
+
+  function applyTheme(theme) {
+    document.body.classList.remove("theme-dark", "theme-light");
+    document.body.classList.add("theme-" + theme);
+    themeToggleBtn.textContent = theme === "dark" ? "🌙 Dark" : "☀ Light";
+  }
+
+  (function initTheme() {
+    let saved = localStorage.getItem("sudokuTheme");
+    if (!saved) {
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+        saved = "light";
+      } else {
+        saved = "dark";
+      }
+    }
+    applyTheme(saved);
+  })();
+
+  themeToggleBtn.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("theme-dark");
+    const next = isDark ? "light" : "dark";
+    applyTheme(next);
+    localStorage.setItem("sudokuTheme", next);
+  });
+
+
+  // --- BOOK data ---
+const BOOK_JSON = "data/classic_medium.json"; // or your book medium json path
+const BOOK_COUNT = 450;
+
+let BOOK_PUZZLES = []; // [{ puzzle:"81chars", solution:"81chars" }]
+
+function gridToString(grid) {
+  if (!Array.isArray(grid)) return String(grid || "");
+  const flat = [];
+  for (let r = 0; r < grid.length; r++) {
+    const row = grid[r] || [];
+    for (let c = 0; c < row.length; c++) {
+      const v = row[c] == null ? 0 : row[c];
+      flat.push(String(v));
+    }
+  }
+  return flat.join("");
+}
+
+    
+async function ensureBookLoaded() {
+  if (BOOK_PUZZLES.length) return;
+
+  const resp = await fetch(BOOK_JSON, { cache: "no-store" });
+  if (!resp.ok) throw new Error("HTTP " + resp.status);
+
+  const data = await resp.json();
+
+  // ✅ support BOTH formats:
+  // 1) array root: [ {...}, {...} ]
+  // 2) object: { puzzles: [...] }
+  const arr = Array.isArray(data) ? data : data?.puzzles;
+  if (!Array.isArray(arr)) throw new Error("Invalid JSON format");
+
+  BOOK_PUZZLES = arr.slice(0, BOOK_COUNT).map((entry) => ({
+    puzzle: gridToString(entry.puzzle),
+    solution: gridToString(entry.solution),
+  }));
+}
+
+
+  const boardEl = document.getElementById("board");
+  const btnMistakes = document.getElementById("btn-mistakes");
+  const numKeys = document.querySelectorAll(".num-key");
+  const btnNotes = document.getElementById("btn-notes");
+  const timerToggle = document.getElementById("toggle-timer");
+  const timerContainer = document.getElementById("timer-container");
+  const timerTimeEl = document.getElementById("timer-time");
+  const btnTimerPause = document.getElementById("btn-timer-pause");
+  const boardOverlay = document.getElementById("board-overlay");
+  const btnResumeBig = document.getElementById("btn-resume-big");
+  const wrongTooltip = document.getElementById("wrong-tooltip");
+  const completionOverlay = document.getElementById("completion-overlay");
+  let wrongTooltipTimeout = null;
+
+  function showWrongTooltip() {
+    if (!wrongTooltip) return;
+    wrongTooltip.classList.add("show");
+    clearTimeout(wrongTooltipTimeout);
+    wrongTooltipTimeout = setTimeout(() => {
+      wrongTooltip.classList.remove("show");
+    }, 1200);
+  }
+
+  const digitKeyMap = {};
+  Array.from(numKeys).forEach(key => {
+    const v = key.dataset.value;
+    if (v && v !== "clear") digitKeyMap[v] = key;
+  });
+
+  boardEl.addEventListener("click", (e) => {
+    const cell = e.target.closest(".cell");
+    if (!cell) return;
+    selectCell(cell);
+  });
+
+  boardEl.addEventListener(
+    "touchend",
+    (e) => {
+      const touch = e.changedTouches && e.changedTouches[0];
+      if (!touch) return;
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!target) return;
+      const cell = target.closest(".cell");
+      if (!cell) return;
+      e.preventDefault();
+      selectCell(cell);
+    },
+    { passive: false }
+  );
+
+  const buttonsDifficulty = document.querySelectorAll(".btn-difficulty");
+
+  let currentMode = "play"; // "play" | "solution"
+  let currentPuzzleNumber = 1;
+  let currentPuzzle = null;
+
+  let selectedCell = null;
+  let notesMode = false;
+  let showMistakes = true;
+  let puzzleCompleted = false;
+
+  let timerEnabled = false;
+  let timerRunning = false;
+  let timerStartMs = 0;
+  let timerElapsedMs = 0;
+  let timerInterval = null;
+  let ignoreNextPauseClick = false;
+
+
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const mm = String(minutes).padStart(2, "0");
+    const ss = String(seconds).padStart(2, "0");
+    const res = mm + ":" + ss;
+    timerTimeEl.textContent = res;
+  }
+
+  function tickTimer() {
+    if (!timerRunning) return;
+    const now = performance.now();
+    timerElapsedMs = now - timerStartMs;
+    formatTime(timerElapsedMs);
+  }
+
+  function hidePauseOverlay() {
+    if (boardOverlay) boardOverlay.style.display = "none";
+  }
+
+  function showPauseOverlay() {
+    if (boardOverlay) boardOverlay.style.display = "flex";
+  }
+
+  function startTimer() {
+    if (!timerEnabled) return;
+    timerRunning = true;
+    timerStartMs = performance.now() - timerElapsedMs;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(tickTimer, 1000);
+    btnTimerPause.textContent = "Pause";
+    hidePauseOverlay();
+  }
+
+  function pauseTimer(showOverlay = true) {
+    if (!timerRunning) return;
+    timerRunning = false;
+    timerElapsedMs = performance.now() - timerStartMs;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    formatTime(timerElapsedMs);
+    btnTimerPause.textContent = "Resume";
+    if (showOverlay) showPauseOverlay();
+  }
+
+  function resetTimer() {
+    timerElapsedMs = 0;
+    formatTime(timerElapsedMs);
+    if (timerEnabled) {
+      startTimer();
+    } else {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRunning = false;
+    }
+  }
+
+  function setTimerEnabled(on) {
+    timerEnabled = !!on;
+    timerToggle.checked = timerEnabled;
+    timerContainer.style.display = timerEnabled ? "flex" : "none";
+    if (!timerEnabled) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerRunning = false;
+      timerElapsedMs = 0;
+      formatTime(timerElapsedMs);
+      hidePauseOverlay();
+    } else {
+      resetTimer();
+    }
+  }
+
+  function showCompletionMessage() {
+    if (puzzleCompleted) return;
+    puzzleCompleted = true;
+    if (completionOverlay) {
+      completionOverlay.style.display = "flex";
+      completionOverlay.setAttribute("aria-hidden", "false");
+    }
+    if (timerEnabled) {
+      pauseTimer(false);
+    }
+  }
+
+  function hideCompletionBanner() {
+    puzzleCompleted = false;
+    if (completionOverlay) {
+      completionOverlay.style.display = "none";
+      completionOverlay.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  btnTimerPause.addEventListener("click", () => {
+    if (ignoreNextPauseClick) {
+      ignoreNextPauseClick = false;
+      return;
+    }
+    if (!timerEnabled) return;
+    if (timerRunning) {
+      pauseTimer(true);
+    } else {
+      startTimer();
+    }
+  });
+
+  if (btnResumeBig) {
+    btnResumeBig.addEventListener("click", () => {
+      hidePauseOverlay();
+      if (timerEnabled) startTimer();
+    });
+  }
+
+  function boxClasses(r, c) {
+    const classes = [];
+    if (r === 2 || r === 5) classes.push("box-bottom");
+    if (c === 2 || c === 5) classes.push("box-right");
+    return classes.join(" ");
+  }
+
+
+  function restartCurrentPuzzle() {
+    if (!currentPuzzle) return;
+    hideCompletionBanner();
+    renderBoard();
+    if (timerEnabled) {
+      resetTimer();
+    }
+  }
+
+  function renderBoard() {
+    boardEl.innerHTML = "";
+    selectedCell = null;
+    if (!currentPuzzle) return;
+
+    const p = currentPuzzle.puzzle;
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const idx = r * 9 + c;
+        const ch = p[idx];
+        const isGiven = ch !== "0";
+
+        const cell = document.createElement("div");
+        cell.className = "cell " + boxClasses(r, c);
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.dataset.value = isGiven ? ch : "";
+        cell.dataset.notes = "";
+
+        const valueEl = document.createElement("div");
+        valueEl.className = "cell-value";
+
+        if (isGiven) {
+          valueEl.textContent = ch;
+          cell.classList.add("given");
+        } else {
+          valueEl.textContent = "";
+          cell.classList.add("empty");
+        }
+
+        cell.appendChild(valueEl);
+        boardEl.appendChild(cell);
+      }
+    }
+
+    recomputeConflicts();
+    updateNumberKeyStatus();
+  }
+
+  function clearSelection() {
+    const cells = boardEl.querySelectorAll(".cell");
+    cells.forEach((cell) => {
+      cell.classList.remove("selected", "row-highlight", "col-highlight", "same-digit", "box-highlight");
+    });
+  }
+
+  function getCellValue(cell) {
+    return cell ? (cell.dataset.value || "") : "";
+  }
+
+  function updateHighlights() {
+    const cells = boardEl.querySelectorAll(".cell");
+    cells.forEach(cell => {
+      cell.classList.remove("row-highlight", "col-highlight", "same-digit", "box-highlight");
+    });
+
+    if (!selectedCell) return;
+
+    const row = parseInt(selectedCell.dataset.row, 10);
+    const col = parseInt(selectedCell.dataset.col, 10);
+    const value = getCellValue(selectedCell);
+
+    const boxRow = Math.floor(row / 3);
+    const boxCol = Math.floor(col / 3);
+
+    cells.forEach(cell => {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+
+      if (r === row) cell.classList.add("row-highlight");
+      if (c === col) cell.classList.add("col-highlight");
+
+      const br = Math.floor(r / 3);
+      const bc = Math.floor(c / 3);
+      if (br === boxRow && bc === boxCol) cell.classList.add("box-highlight");
+
+      if (value && getCellValue(cell) === value) {
+        cell.classList.add("same-digit");
+      }
+    });
+
+    selectedCell.classList.add("selected");
+  }
+
+  function selectCell(cell) {
+    clearSelection();
+    selectedCell = cell;
+    selectedCell.classList.add("selected");
+    updateHighlights();
+  }
+
+  function clearNotes(cell) {
+    if (!cell) return;
+    cell.dataset.notes = "";
+    const notesEl = cell.querySelector(".cell-notes");
+    if (notesEl) notesEl.remove();
+  }
+
+  function ensureNotesElement(cell) {
+    let notesEl = cell.querySelector(".cell-notes");
+    if (!notesEl) {
+      notesEl = document.createElement("div");
+      notesEl.className = "cell-notes";
+      for (let d = 1; d <= 9; d++) {
+        const span = document.createElement("span");
+        span.dataset.digit = String(d);
+        span.textContent = "";
+        notesEl.appendChild(span);
+      }
+      cell.appendChild(notesEl);
+    }
+    return notesEl;
+  }
+
+  function syncNotesView(cell, notes) {
+    const notesSet = new Set(notes);
+    const notesEl = ensureNotesElement(cell);
+    notesEl.querySelectorAll("span").forEach(span => {
+      const d = span.dataset.digit;
+      span.textContent = notesSet.has(d) ? d : "";
+    });
+    if (notesSet.size) {
+      cell.classList.remove("empty");
+    } else if (!cell.dataset.value) {
+      cell.classList.add("empty");
+    }
+  }
+
+  function removeNoteFromCell(cell, value) {
+    if (!cell) return;
+    let notes = (cell.dataset.notes || "").split("").filter(Boolean);
+    const idx = notes.indexOf(value);
+    if (idx === -1) return;
+
+    notes.splice(idx, 1);
+    cell.dataset.notes = notes.join("");
+    if (notes.length) {
+      syncNotesView(cell, notes);
+    } else {
+      clearNotes(cell);
+      if (!cell.dataset.value) cell.classList.add("empty");
+    }
+  }
+
+  function clearDigitFromPeers(row, col, value) {
+    const cells = boardEl.querySelectorAll(".cell");
+    const boxRow = Math.floor(row / 3);
+    const boxCol = Math.floor(col / 3);
+
+    cells.forEach(cell => {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+      if (r === row && c === col) return;
+
+      const sameRow = r === row;
+      const sameCol = c === col;
+      const sameBox = Math.floor(r / 3) === boxRow && Math.floor(c / 3) === boxCol;
+
+      if (sameRow || sameCol || sameBox) {
+        removeNoteFromCell(cell, value);
+      }
+    });
+  }
+
+  function toggleNote(cell, value) {
+    if (!cell || cell.classList.contains("given")) return;
+    if (!value || value < "1" || value > "9") return;
+
+    if (cell.dataset.value) {
+      setCellValue(cell, "");
+    }
+
+    let notes = (cell.dataset.notes || "").split("").filter(Boolean);
+    const idx = notes.indexOf(value);
+    if (idx >= 0) {
+      notes.splice(idx, 1);
+    } else {
+      notes.push(value);
+    }
+    notes.sort();
+    cell.dataset.notes = notes.join("");
+
+    if (notes.length) {
+      syncNotesView(cell, notes);
+    } else {
+      clearNotes(cell);
+      if (!cell.dataset.value) cell.classList.add("empty");
+    }
+
+    if (cell === selectedCell) updateHighlights();
+  }
+
+  function recomputeConflicts() {
+    if (!showMistakes) return;
+    const cells = Array.from(boardEl.querySelectorAll(".cell"));
+    cells.forEach(cell => cell.classList.remove("error"));
+
+    cells.forEach(cell => {
+      const v = getCellValue(cell);
+      if (!v) return;
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+
+      for (let cc = 0; cc < 9; cc++) {
+        if (cc === c) continue;
+        const other = boardEl.querySelector(`.cell[data-row="${r}"][data-col="${cc}"]`);
+        if (other && getCellValue(other) === v) {
+          cell.classList.add("error");
+          other.classList.add("error");
+        }
+      }
+      for (let rr = 0; rr < 9; rr++) {
+        if (rr === r) continue;
+        const other = boardEl.querySelector(`.cell[data-row="${rr}"][data-col="${c}"]`);
+        if (other && getCellValue(other) === v) {
+          cell.classList.add("error");
+          other.classList.add("error");
+        }
+      }
+      const br = Math.floor(r / 3) * 3;
+      const bc = Math.floor(c / 3) * 3;
+      for (let rr = br; rr < br + 3; rr++) {
+        for (let cc = bc; cc < bc + 3; cc++) {
+          if (rr === r && cc === c) continue;
+          const other = boardEl.querySelector(`.cell[data-row="${rr}"][data-col="${cc}"]`);
+          if (other && getCellValue(other) === v) {
+            cell.classList.add("error");
+            other.classList.add("error");
+          }
+        }
+      }
+    });
+  }
+
+  function updateNumberKeyStatus() {
+    const counts = { "1":0,"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0 };
+    const cells = boardEl.querySelectorAll(".cell");
+    cells.forEach(cell => {
+      const v = getCellValue(cell);
+      if (v >= "1" && v <= "9") {
+        counts[v] = (counts[v] || 0) + 1;
+      }
+    });
+
+    for (let d = 1; d <= 9; d++) {
+      const key = digitKeyMap[String(d)];
+      if (!key) continue;
+      if ((counts[String(d)] || 0) >= 9) {
+        key.classList.add("completed");
+      } else {
+        key.classList.remove("completed");
+      }
+    }
+  }
+
+  function checkCompletionAuto() {
+    if (!currentPuzzle || puzzleCompleted) return;
+    const solution = currentPuzzle.solution;
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const idx = r * 9 + c;
+        const cell = boardEl.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
+        if (!cell) return;
+        const val = getCellValue(cell);
+        const correct = solution[idx];
+        if (val !== correct) {
+          return;
+        }
+      }
+    }
+    showCompletionMessage();
+  }
+
+  function isCorrectDigitForCell(cell, value) {
+    if (!currentPuzzle || !currentPuzzle.solution || !cell) return true;
+    const r = parseInt(cell.dataset.row, 10);
+    const c = parseInt(cell.dataset.col, 10);
+    const idx = r * 9 + c;
+    const correct = currentPuzzle.solution[idx];
+    return value === correct;
+  }
+
+  function flashWrongDigit(cell) {
+    if (!cell) return;
+    cell.classList.add("error");
+    setTimeout(() => {
+      if (showMistakes) {
+        recomputeConflicts();
+      } else {
+        cell.classList.remove("error");
+      }
+    }, 220);
+  }
+
+  function trySetCellValue(cell, value) {
+    if (!cell || cell.classList.contains("given")) return;
+
+    if (!value) {
+      setCellValue(cell, "");
+      return;
+    }
+
+    if (showMistakes && !isCorrectDigitForCell(cell, value)) {
+      flashWrongDigit(cell);
+      showWrongTooltip();
+      return;
+    }
+
+    setCellValue(cell, value);
+  }
+
+  function setCellValue(cell, value) {
+    if (!cell || cell.classList.contains("given")) return;
+    const valueEl = cell.querySelector(".cell-value");
+    cell.dataset.value = value || "";
+
+    if (value) {
+      clearNotes(cell);
+      valueEl.textContent = value;
+      cell.classList.add("filled");
+      cell.classList.remove("empty");
+    } else {
+      valueEl.textContent = "";
+      cell.classList.remove("filled");
+      if (!cell.dataset.notes) cell.classList.add("empty");
+    }
+
+    cell.classList.remove("error");
+
+    if (value && currentPuzzle && currentPuzzle.solution) {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+      const idx = r * 9 + c;
+      const correct = currentPuzzle.solution[idx];
+      if (value === correct) {
+        clearDigitFromPeers(r, c, value);
+      }
+    }
+
+    recomputeConflicts();
+    updateNumberKeyStatus();
+    checkCompletionAuto();
+
+    if (cell === selectedCell) updateHighlights();
+  }
+
+  function handleNumInput(value) {
+    if (!selectedCell) return;
+
+    if (value === "clear") {
+      setCellValue(selectedCell, "");
+      clearNotes(selectedCell);
+      selectedCell.classList.add("empty");
+      return;
+    }
+
+    if (notesMode) {
+      toggleNote(selectedCell, value);
+    } else {
+      trySetCellValue(selectedCell, value);
+    }
+  }
+
+  function handleKeyDown(e) {
+    if (!selectedCell) return;
+
+    if (e.key >= "1" && e.key <= "9") {
+      if (notesMode) {
+        toggleNote(selectedCell, e.key);
+      } else {
+        trySetCellValue(selectedCell, e.key);
+      }
+    } else if (e.key === "Backspace" || e.key === "Delete" || e.key === "0") {
+      setCellValue(selectedCell, "");
+      clearNotes(selectedCell);
+      selectedCell.classList.add("empty");
+    }
+  }
+
+  function checkBoard() {
+    if (!currentPuzzle) return;
+    const solution = currentPuzzle.solution;
+    const cells = boardEl.querySelectorAll(".cell");
+    let complete = true;
+
+    cells.forEach((cell) => {
+      cell.classList.remove("error");
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+      const idx = r * 9 + c;
+      const correct = solution[idx];
+      const val = getCellValue(cell) || "0";
+
+      if (cell.classList.contains("given")) return;
+
+      if (val === "0" || val === "") {
+        complete = false;
+        return;
+      }
+      if (val !== correct) {
+        cell.classList.add("error");
+        complete = false;
+      }
+    });
+
+    if (complete) {
+      showCompletionMessage();
+    } else {
+      alert("Some entries are incorrect or missing. Incorrect cells are highlighted.");
+    }
+  }
+
+  function showSolution() {
+    if (!currentPuzzle) return;
+    const solution = currentPuzzle.solution;
+    const cells = boardEl.querySelectorAll(".cell");
+
+    cells.forEach((cell) => {
+      const r = parseInt(cell.dataset.row, 10);
+      const c = parseInt(cell.dataset.col, 10);
+      const idx = r * 9 + c;
+      const val = solution[idx];
+
+      cell.classList.remove("error", "empty");
+      if (!cell.classList.contains("given")) {
+        setCellValue(cell, val);
+      } else {
+        const valueEl = cell.querySelector(".cell-value");
+        if (valueEl) valueEl.textContent = val;
+      }
+      clearNotes(cell);
+    });
+
+    updateNumberKeyStatus();
+    showCompletionMessage();
+  }
+
+  function setMistakesMode(on) {
+    showMistakes = !!on;
+
+    if (btnMistakes) {
+      btnMistakes.classList.toggle("mistakes-on", showMistakes);
+    }
+
+    if (!showMistakes) {
+      boardEl.querySelectorAll(".cell").forEach(c => c.classList.remove("error"));
+    } else {
+      recomputeConflicts();
+    }
+  }
+
+  function updateMistakesDefault(level) {
+    setMistakesMode(level === "warmup" || level === "easy");
+  }
+
+  window.addEventListener("keydown", handleKeyDown);
+
+  numKeys.forEach((key) => {
+    const val = key.dataset.value;
+    key.addEventListener("click", () => handleNumInput(val));
+    key.addEventListener(
+      "touchend",
+      (e) => {
+        e.preventDefault();
+        handleNumInput(val);
+      },
+      { passive: false }
+    );
+  });
+
+  btnNotes.addEventListener("click", () => {
+    notesMode = !notesMode;
+    btnNotes.classList.toggle("active", notesMode);
+    btnNotes.setAttribute("aria-pressed", notesMode ? "true" : "false");
+    const label = btnNotes.querySelector(".label");
+    if (label) label.textContent = notesMode ? "Notes on" : "Notes";
+  });
+
+  btnMistakes.addEventListener("click", () => {
+    setMistakesMode(!showMistakes);
+  });
+
+  timerToggle.addEventListener("change", () => {
+    setTimerEnabled(timerToggle.checked);
+    
+  });
+
+   // --- Dropdown menu logic ---
+  // Puzzle dropdown (inside the board)
+  const dropdownToggle = document.getElementById("dropdown-toggle");
+  const dropdownMenu = document.getElementById("dropdown-menu");
+  
+  // Header "Printables" dropdown
+  const headerPrintablesToggle = document.getElementById("header-printables-toggle");
+  const headerPrintablesMenu = document.getElementById("header-printables-menu");
+  
+  if (dropdownToggle && dropdownMenu) {
+    dropdownToggle.addEventListener("click", () => {
+      dropdownMenu.classList.toggle("show");
+    });
+  }
+  
+ if (headerPrintablesToggle && headerPrintablesMenu) {
+  headerPrintablesToggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    const isOpen = headerPrintablesMenu.classList.toggle("show");
+    headerPrintablesToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+}
+
+
+  
+  // Close any open dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (dropdownToggle && dropdownMenu &&
+        !dropdownToggle.contains(e.target) &&
+        !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.remove("show");
+    }
+  
+    if (headerPrintablesToggle && headerPrintablesMenu &&
+        !headerPrintablesToggle.contains(e.target) &&
+        !headerPrintablesMenu.contains(e.target)) {
+      headerPrintablesMenu.classList.remove("show");
+    }
+  });
+  
+  // Existing handler for Puzzle dropdown items
+  if (dropdownMenu) {
+    dropdownMenu.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+  
+      const level = btn.dataset.level;
+      const action = btn.dataset.action;
+  
+      dropdownMenu.classList.remove("show");
+  
+      if (level) {
+        currentDifficulty = level;
+        updateMistakesDefault(level);
+        loadRandomPuzzle(level);
+        syncDifficultyButtons();
+      }
+  
+      if (action === "check") {
+        checkBoard();
+      } else if (action === "solution") {
+        showSolution();
+      } else if (action === "restart") {
+        restartCurrentPuzzle();
+      }
+    });
+  }
+
+  const selectEl = document.getElementById("puzzle-select");
+  const btnPlay = document.getElementById("btn-play");
+  const btnShowSolution = document.getElementById("btn-show-solution");
+  const puzzleDisplayNumEl = document.getElementById("puzzle-display-num");
+
+    function updatePuzzleDisplay(n) {
+      if (!puzzleDisplayNumEl) return;
+      puzzleDisplayNumEl.textContent = String(n).padStart(3, "0");
+    }
+
+  function fillSelector() {
+    if (!selectEl) return;
+    selectEl.innerHTML = "";
+    for (let i = 1; i <= BOOK_COUNT; i++) {
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = String(i);
+      selectEl.appendChild(opt);
+    }
+  }
+  
+  function setQueryParam(n, mode) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("n", String(n));
+    if (mode) url.searchParams.set("mode", mode);
+    else url.searchParams.delete("mode");
+    history.replaceState({}, "", url.toString());
+  }
+  
+  function readInitialParams() {
+    const url = new URL(window.location.href);
+    const n = parseInt(url.searchParams.get("n") || "1", 10);
+    const mode = (url.searchParams.get("mode") || "").toLowerCase();
+    return { n: isFinite(n) ? n : 1, mode };
+  }
+  
+  async function loadPuzzleByNumber(n, mode) {
+    await ensureBookLoaded();
+  
+    n = Math.min(BOOK_COUNT, Math.max(1, n));
+    currentPuzzleNumber = n;
+    updatePuzzleDisplay(n);
+
+  
+    currentPuzzle = BOOK_PUZZLES[n - 1];
+    hideCompletionBanner();
+    renderBoard();
+  
+    // If solution mode, fill instantly
+    if (mode === "solution") {
+      showSolution();
+    }
+  
+    // If timer is still enabled in your page and you keep it, reset it
+    if (typeof timerEnabled !== "undefined" && timerEnabled) resetTimer();
+    }
+  
+btnPlay.addEventListener("click", async () => {
+  const n = parseInt(selectEl.value, 10);
+  currentMode = "play";
+
+  btnPlay.classList.add("btn-solution-active");
+  btnShowSolution.classList.remove("btn-solution-active");
+
+  setQueryParam(n, currentMode);
+  await loadPuzzleByNumber(n, currentMode);
+});
+
+  
+btnShowSolution.addEventListener("click", async () => {
+  const n = parseInt(selectEl.value, 10);
+  currentMode = "solution";
+
+  btnShowSolution.classList.add("btn-solution-active");
+  btnPlay.classList.remove("btn-solution-active");
+
+  setQueryParam(n, currentMode);
+  await loadPuzzleByNumber(n, currentMode);
+});
+
+  
+  // ✅ auto-refresh when number changes (no button needed)
+  selectEl.addEventListener("change", async () => {
+    const n = parseInt(selectEl.value, 10);
+    setQueryParam(n, currentMode);
+    await loadPuzzleByNumber(n, currentMode);
+  });
+
+
+
+  fillSelector();
+
+  const { n, mode } = readInitialParams();
+  selectEl.value = String(Math.min(BOOK_COUNT, Math.max(1, n)));
+  updatePuzzleDisplay(parseInt(selectEl.value, 10));
+ 
+  currentMode = (mode === "solution") ? "solution" : "play";
+  if (currentMode === "solution") {
+      btnShowSolution.classList.add("btn-solution-active");
+    } else {
+      btnPlay.classList.add("btn-solution-active");
+    }
+
+  setQueryParam(parseInt(selectEl.value, 10), currentMode);
+  
+  updateMistakesDefault("easy"); // keep your default behavior (mistakes ON for easy)
+  setTimerEnabled(false);        // optional if you keep timer UI
+  loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
+
+</script>
+
+</body>
+</html>
