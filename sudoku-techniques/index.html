@@ -30,6 +30,22 @@
     header .brand { font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; margin-bottom: 12px; }
     header h1 { margin: 0 auto 16px; max-width: 960px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.12; }
     header p { max-width: 800px; margin: 0 auto; font-size: 1.08rem; opacity: 0.95; }
+    .header-nav { max-width: 1120px; margin: 0 auto 22px; text-align: left; }
+    .header-nav a {
+      display: inline-block;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      padding: 7px 14px;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .header-nav a:hover {
+      background: rgba(255, 255, 255, 0.24);
+      transform: translateY(-1px);
+    }
     main { width: min(1120px, calc(100% - 32px)); margin: 32px auto 56px; }
     .intro, .technique, .note, .toc { background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 8px 24px rgba(23, 63, 138, 0.08); }
     .intro { padding: 28px; margin-bottom: 24px; }
@@ -83,6 +99,7 @@
     }
 
     @media (max-width: 880px) {
+      .header-nav { text-align: center; margin-bottom: 18px; }
       .toc ul { columns: 1; }
       .level-strip { grid-template-columns: 1fr; }
       .example-layout { grid-template-columns: 1fr; }
@@ -95,7 +112,9 @@
 </head>
 <body>
 <header>
-<div class="brand"> <a href="https://www.alexliampuzzles.com/">Home</a></div>
+<div class="header-nav">
+  <a href="https://www.alexliampuzzles.com/" aria-label="Back to Alex Liam Puzzles home page">← Home</a>
+</div>
 <div class="brand">Alex Liam Puzzles</div>
 <h1>Common Sudoku Techniques Explained</h1>
 <p>A simple guide to logic-based Sudoku solving steps, with verified full-grid examples for singles, pairs, triples, locked candidates, X-Wing, XY-Wing and Swordfish.</p>
