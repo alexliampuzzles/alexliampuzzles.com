@@ -2300,8 +2300,16 @@ const HintEngine = (function () {
   function realElims(cand, g, list) {
     return list.filter(e => !g[e.i] && (cand[e.i] & bit(e.d)));
   }
-  const elimText = el =>
-    el.map(e => '<code>' + e.d + '</code> from ' + rc(e.i)).join(', ');
+  function elimText(el) {
+    const byDigit = {};
+    el.forEach(e => { (byDigit[e.d] = byDigit[e.d] || []).push(e.i); });
+    return Object.keys(byDigit).sort().map(d => {
+      const cells = byDigit[d].map(rc);
+      const last = cells.pop();
+      const list = cells.length ? cells.join(', ') + ' or ' + last : last;
+      return '<code>' + d + '</code> cannot go in ' + list;
+    }).join('; ');
+  }
 
   /* ---------------- singles ---------------- */
   function nakedSingle(g, cand) {
@@ -2362,7 +2370,7 @@ const HintEngine = (function () {
             l1: 'Compare ' + un(b) + ' with row ' + (r + 1) + '.',
             l2: 'Inside ' + un(b) + ', one digit is confined to a single row.',
             l3: 'In ' + un(b) + ', <code>' + d + '</code> can only sit in row ' + (r + 1) +
-                ' (' + ls(spots) + '), so remove ' + elimText(real) + '.',
+                ' (' + ls(spots) + '), so ' + elimText(real) + '.',
             elims: real
           };
         }
@@ -2375,7 +2383,7 @@ const HintEngine = (function () {
             l1: 'Compare ' + un(b) + ' with column ' + (c + 1) + '.',
             l2: 'Inside ' + un(b) + ', one digit is confined to a single column.',
             l3: 'In ' + un(b) + ', <code>' + d + '</code> can only sit in column ' + (c + 1) +
-                ' (' + ls(spots) + '), so remove ' + elimText(real) + '.',
+                ' (' + ls(spots) + '), so ' + elimText(real) + '.',
             elims: real
           };
         }
@@ -2396,7 +2404,7 @@ const HintEngine = (function () {
           l1: 'Compare ' + un(ui) + ' with ' + un(18 + b) + '.',
           l2: 'In ' + un(ui) + ', one digit only fits inside a single box.',
           l3: 'In ' + un(ui) + ', <code>' + d + '</code> is restricted to ' + un(18 + b) +
-              ' (' + ls(spots) + '), so remove ' + elimText(real) + '.',
+              ' (' + ls(spots) + '), so ' + elimText(real) + '.',
           elims: real
         };
       }
@@ -2421,7 +2429,7 @@ const HintEngine = (function () {
           l1: 'Something is locked up in ' + un(ui) + '.',
           l2: size + ' cells in ' + un(ui) + ' share only ' + size + ' candidates between them.',
           l3: ls(combo) + ' hold nothing but <code>' + digs.join('</code> <code>') +
-              '</code>, so those digits belong to them. Remove ' + elimText(real) + '.',
+              '</code>, so those digits belong to them \u2014 ' + elimText(real) + '.',
           elims: real
         };
       }
@@ -2452,7 +2460,7 @@ const HintEngine = (function () {
           l1: 'Count where each digit can go in ' + un(ui) + '.',
           l2: size + ' digits in ' + un(ui) + ' are confined to the same ' + size + ' cells.',
           l3: 'In ' + un(ui) + ', <code>' + combo.join('</code> <code>') + '</code> only fit in ' +
-              ls(cells) + '. Those cells can hold nothing else, so remove ' + elimText(real) + '.',
+              ls(cells) + '. Those cells can hold nothing else, so ' + elimText(real) + '.',
           elims: real
         };
       }
@@ -2495,7 +2503,7 @@ const HintEngine = (function () {
                 (byRow ? 'rows' : 'columns') + '.',
             l3: '<code>' + d + '</code> is confined to ' + ls(foc) + '. Whichever way it resolves, ' +
                 'it occupies all ' + size + ' ' + (byRow ? 'columns' : 'rows') +
-                ', so remove ' + elimText(real) + '.',
+                ', so ' + elimText(real) + '.',
             elims: real
           };
         }
@@ -2525,7 +2533,7 @@ const HintEngine = (function () {
               'give the puzzle two solutions if the fourth corner matched.',
           l3: ls(bi) + ' all hold exactly <code>' + bitsOf(p).join('</code> <code>') + '</code>. ' +
               'If ' + rc(fourth) + ' held only those two as well, the four could swap and the puzzle ' +
-              'would have two answers. Since it has one, remove ' + elimText(real) + '.',
+              'would have two answers. Since it has one, ' + elimText(real) + '.',
           elims: real
         };
       }
@@ -2559,7 +2567,7 @@ const HintEngine = (function () {
           l2: rc(p) + ' is a pivot; ' + rc(w1) + ' and ' + rc(w2) + ' are its wings.',
           l3: rc(p) + ' holds <code>' + x + '</code><code>' + y + '</code>. Whichever it turns out to be, ' +
               'one of the wings becomes <code>' + z + '</code>. So any cell seeing both wings loses ' + z +
-              ': remove ' + elimText(real) + '.',
+              ': ' + elimText(real) + '.',
           elims: real
         };
       }
@@ -2592,7 +2600,7 @@ const HintEngine = (function () {
           l1: 'Look at ' + rc(p) + ' and the two-candidate cells it sees.',
           l2: rc(p) + ' has three candidates; ' + rc(w1) + ' and ' + rc(w2) + ' each hold two of them.',
           l3: 'Between ' + rc(p) + ', ' + rc(w1) + ' and ' + rc(w2) + ', one of them must be <code>' + z +
-              '</code>. Any cell seeing all three loses it: remove ' + elimText(real) + '.',
+              '</code>. Any cell seeing all three loses it: ' + elimText(real) + '.',
           elims: real
         };
       }
@@ -2625,7 +2633,7 @@ const HintEngine = (function () {
             l2: 'They are joined by a strong link on <code>' + link + '</code> in ' + un(ui) + '.',
             l3: 'In ' + un(ui) + ', <code>' + link + '</code> sits in only ' + ls(spots) +
                 ', so one of them is ' + link + '. That forces one of ' + rc(w1) + '/' + rc(w2) +
-                ' to be <code>' + kill + '</code>. Remove ' + elimText(real) + '.',
+                ' to be <code>' + kill + '</code>, so ' + elimText(real) + '.',
             elims: real
           };
         }
@@ -3284,11 +3292,15 @@ const HintEngine = (function () {
       if (h.place)
         html += '<div class="hint-note">That settles ' + SudokuCore.rc(h.place.i) +
                 ". Write it in yourself \u2014 the hint stops here.</div>";
-      else if (h.unlock)
-        html += '<div class="hint-note">Carry on from there and the next digit you can place is <b>' +
-                SudokuCore.rc(h.unlock.i) + " = " + h.unlock.d + "</b>." +
-                (h.unlockVia && h.unlockVia.length
-                  ? " (via " + h.unlockVia.join(", ").toLowerCase() + ")" : "") + "</div>";
+      else if (h.elims) {
+        html += '<div class="hint-note">Those cells are empty \u2014 this rules out possibilities, ' +
+                "it doesn't erase anything you have written. Turn on <b>Notes</b> to keep track of it.</div>";
+        if (h.unlock)
+          html += '<div class="hint-note">Carry on from there and the next digit you can place is <b>' +
+                  SudokuCore.rc(h.unlock.i) + " = " + h.unlock.d + "</b>." +
+                  (h.unlockVia && h.unlockVia.length
+                    ? " (via " + h.unlockVia.join(", ").toLowerCase() + ")" : "") + "</div>";
+      }
     }
     hintBodyEl.innerHTML = html;
     btnHintMore.style.display = hintLevel >= 3 ? "none" : "";
