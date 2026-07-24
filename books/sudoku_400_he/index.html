@@ -3202,6 +3202,19 @@ const HintEngine = (function () {
       const br = Math.floor(r / 3) * 3, bc = Math.floor(c / 3) * 3;
       for (let rr = br; rr < br + 3; rr++) for (let cc = bc; cc < bc + 3; cc++)
         if (rr !== r || cc !== c) bump(cellAt(rr * 9 + cc));
+
+
+       if (showMistakes && Checker.has()) {
+        cells.forEach((cell, idx) => {
+          const value = getCellValue(cell);
+    
+          if (
+            value &&
+            !cell.classList.contains("given") &&
+            !Checker.isCorrect(idx, value)
+          ) {
+            cell.classList.add("error");
+          }
     });
   }
   function updateNumberKeyStatus() {
