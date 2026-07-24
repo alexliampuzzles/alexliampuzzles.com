@@ -3180,7 +3180,7 @@ const HintEngine = (function () {
     if (l) l.textContent = notesMode ? "Notes on" : "Notes";
   });
 
-  /* ---------- Conflicts / completion ---------- */
+ /* ---------- Conflicts / completion ---------- */
   /* Always on. A digit repeated in a row, column or box breaks the rules of
      the game and the reader can see it for themselves — flagging it gives
      nothing away. The "Show mistakes" toggle governs the answer-key check
@@ -3203,6 +3203,31 @@ const HintEngine = (function () {
       for (let rr = br; rr < br + 3; rr++) for (let cc = bc; cc < bc + 3; cc++)
         if (rr !== r || cc !== c) bump(cellAt(rr * 9 + cc));
     });
+
+    /* With the toggle on, audit everything already on the board against the
+       answer key — not just the digit being typed. Turning it on part-way
+       through a solve should surface mistakes made while it was off. */
+    if (showMistakes && Checker.has()) {
+      for (let i = 0; i < 81; i++) {
+        const cell = cellAt(i);
+        if (!cell || cell.classList.contains("given")) continue;
+        const v = getCellValue(cell);
+        if (v && !Checker.isCorrect(i, v)) cell.classList.add("error");
+      }
+    }
+  }
+
+  /* How many placed digits currently disagree with the answer key. */
+  function countWrongEntries() {
+    if (!Checker.has()) return 0;
+    let n = 0;
+    for (let i = 0; i < 81; i++) {
+      const cell = cellAt(i);
+      if (!cell || cell.classList.contains("given")) continue;
+      const v = getCellValue(cell);
+      if (v && !Checker.isCorrect(i, v)) n++;
+    }
+    return n;
   }
   function updateNumberKeyStatus() {
     const counts = {};
