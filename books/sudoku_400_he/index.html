@@ -2169,6 +2169,7 @@
       </aside>
 
       <!--
+      <aside class="side-card side-card-compact">
         <div class="side-card-inner">
           <div class="side-section-title">Full PDF Solutions</div>
           <p class="side-sub" style="margin-top:0.5rem;">
@@ -2185,7 +2186,6 @@
         </div>
       </aside>
       -->
-      
     </div>
   </main>
 
@@ -2705,7 +2705,9 @@ const HintEngine = (function () {
       let moved = false;
       for (let i = 0; i < 81; i++) {
         if (g[i]) continue;
-        if (cand[i] === 0) return { dead: true, trail: trail, bad: i };
+        if (cand[i] === 0)
+          return { dead: true, trail: trail,
+                   contradiction: { kind: 'empty-cell', cell: i } };
         if (cnt(cand[i]) === 1) { place(i, bitsOf(cand[i])[0], 'forced'); moved = true; }
       }
       for (let ui = 0; ui < 27 && !moved; ui++) {
@@ -2717,13 +2719,25 @@ const HintEngine = (function () {
             if (g[i] === d) { done = true; break; }
             if (!g[i] && (cand[i] & bit(d))) { n++; spot = i; }
           }
-          if (!done && n === 0) return { dead: true, trail: trail, bad: u[0] };
+          /* A digit with nowhere left to go in this unit. The old code named
+             UNITS[ui][0] as "the bad cell", which is a different cell that
+             usually still has candidates of its own. */
+          if (!done && n === 0)
+            return { dead: true, trail: trail,
+                     contradiction: { kind: 'missing-digit', unit: ui, digit: d } };
           if (!done && n === 1) { place(spot, d, 'forced'); moved = true; break; }
         }
       }
       if (!moved) return { dead: false, trail: trail };
     }
     return { dead: false, trail: trail };
+  }
+
+  function contradictionText(c) {
+    if (!c) return 'the position becomes impossible — contradiction';
+    if (c.kind === 'empty-cell')
+      return '<b>' + rc(c.cell) + '</b> is left with no candidate at all — contradiction';
+    return '<b>' + c.digit + '</b> has nowhere left to go in ' + un(c.unit) + ' — contradiction';
   }
 
   function forcingChain(g, cand) {
@@ -2734,7 +2748,8 @@ const HintEngine = (function () {
       for (const d of ds) {
         const r = propagate(g, cand, i, d);
         if (r.dead && (!best || r.trail.length < best.trail.length)) {
-          best = { i: i, d: d, other: ds.find(x => x !== d), trail: r.trail, bad: r.bad };
+          best = { i: i, d: d, other: ds.find(x => x !== d),
+                   trail: r.trail, contradiction: r.contradiction };
         }
       }
     }
@@ -2743,7 +2758,7 @@ const HintEngine = (function () {
     const short = best.trail.length <= 9;
     const steps = best.trail.map(s =>
       '<b>' + rc(s.i) + ' = ' + s.d + '</b>' + (s.how === 'assumed' ? ' (assumed)' : ''));
-    steps.push('<b>' + rc(best.bad) + '</b> now has nothing left — contradiction');
+    steps.push(contradictionText(best.contradiction));
 
     return {
       tech: 'Forcing chain', focus: [best.i], chain: short ? steps : null,
@@ -3180,7 +3195,7 @@ const HintEngine = (function () {
     if (l) l.textContent = notesMode ? "Notes on" : "Notes";
   });
 
- /* ---------- Conflicts / completion ---------- */
+  /* ---------- Conflicts / completion ---------- */
   /* Always on. A digit repeated in a row, column or box breaks the rules of
      the game and the reader can see it for themselves — flagging it gives
      nothing away. The "Show mistakes" toggle governs the answer-key check
@@ -3316,12 +3331,22 @@ const HintEngine = (function () {
     }
   });
 
-  function setMistakesMode(on) {
+  function setMistakesMode(on, announce) {
     showMistakes = !!on;
     if (btnMistakes) btnMistakes.classList.toggle("mistakes-on", showMistakes);
     recomputeConflicts();
+    if (!announce) return;
+    if (showMistakes) {
+      const n = countWrongEntries();
+      setStatus(n
+        ? n + (n === 1 ? " entry disagrees" : " entries disagree") +
+          " with the solution \u2014 shown in red."
+        : "Nothing on the board disagrees with the solution.", n ? "bad" : "good");
+    } else {
+      setStatus("");
+    }
   }
-  btnMistakes.addEventListener("click", () => setMistakesMode(!showMistakes));
+  btnMistakes.addEventListener("click", () => setMistakesMode(!showMistakes, true));
 
   function showSolution() {
     if (!currentPuzzle || !Checker.has()) return;
