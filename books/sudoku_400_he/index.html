@@ -2167,8 +2167,7 @@
           </div>
         </div>
       </aside>
-
-      <!--
+<!--
       <aside class="side-card side-card-compact">
         <div class="side-card-inner">
           <div class="side-section-title">Full PDF Solutions</div>
@@ -3052,6 +3051,7 @@ const HintEngine = (function () {
   function renderBoard() {
     boardEl.innerHTML = "";
     selectedCell = null;
+    autoCleared.clear();
     clearHint();
     if (!currentPuzzle) return;
     const p = currentPuzzle.puzzle;
@@ -3156,22 +3156,60 @@ const HintEngine = (function () {
     else if (!cell.dataset.value) cell.classList.add("empty");
   }
   function removeNoteFromCell(cell, value) {
-    if (!cell) return;
+    if (!cell) return false;
     let notes = (cell.dataset.notes || "").split("").filter(Boolean);
     const i = notes.indexOf(value);
-    if (i === -1) return;
+    if (i === -1) return false;
     notes.splice(i, 1);
     cell.dataset.notes = notes.join("");
     if (notes.length) syncNotesView(cell, notes);
     else { clearNotes(cell); if (!cell.dataset.value) cell.classList.add("empty"); }
+    return true;
   }
+
+  function addNoteToCell(cell, value) {
+    if (!cell || cell.dataset.value || cell.classList.contains("given")) return;
+    let notes = (cell.dataset.notes || "").split("").filter(Boolean);
+    if (notes.indexOf(value) >= 0) return;
+    notes.push(value); notes.sort();
+    cell.dataset.notes = notes.join("");
+    syncNotesView(cell, notes);
+  }
+
+  /* Which pencil marks were auto-cleared by which placement, so erasing a
+     digit can put them back. Keyed by cell index. */
+  const autoCleared = new Map();
+
+  /* Notes follow the reader's own grid. Clearing peers only when the digit
+     matched the answer key leaked correctness: you could tell a right answer
+     from a wrong one just by watching whether pencil marks vanished, even
+     with "Show mistakes" off. */
   function clearDigitFromPeers(row, col, value) {
     const bR = Math.floor(row / 3), bC = Math.floor(col / 3);
+    const removed = [];
     boardEl.querySelectorAll(".cell").forEach(cell => {
       const r = +cell.dataset.row, c = +cell.dataset.col;
       if (r === row && c === col) return;
-      if (r === row || c === col || (Math.floor(r / 3) === bR && Math.floor(c / 3) === bC))
-        removeNoteFromCell(cell, value);
+      if (r === row || c === col || (Math.floor(r / 3) === bR && Math.floor(c / 3) === bC)) {
+        if (removeNoteFromCell(cell, value)) removed.push(r * 9 + c);
+      }
+    });
+    if (removed.length) autoCleared.set(row * 9 + col, { digit: value, cells: removed });
+  }
+
+  /* Put back marks this cell's digit removed, but only where the digit is
+     still a legal candidate on the board as it now stands. */
+  function restoreAutoCleared(idx) {
+    const rec = autoCleared.get(idx);
+    if (!rec) return;
+    autoCleared.delete(idx);
+    const grid = readGrid();
+    grid[idx] = 0;
+    const cand = SudokuCore.buildCandidates(grid);
+    const d = parseInt(rec.digit, 10);
+    rec.cells.forEach(i => {
+      if (grid[i]) return;
+      if (cand[i] & SudokuCore.bit(d)) addNoteToCell(cellAt(i), rec.digit);
     });
   }
   function toggleNote(cell, value) {
@@ -3295,10 +3333,9 @@ const HintEngine = (function () {
       if (!cell.dataset.notes) cell.classList.add("empty");
     }
     cell.classList.remove("error");
-    if (value && Checker.has()) {
-      const r = +cell.dataset.row, c = +cell.dataset.col;
-      if (Checker.isCorrect(r * 9 + c, value)) clearDigitFromPeers(r, c, value);
-    }
+    const r0 = +cell.dataset.row, c0 = +cell.dataset.col, idx0 = r0 * 9 + c0;
+    restoreAutoCleared(idx0);
+    if (value) clearDigitFromPeers(r0, c0, value);
     clearHint();
     recomputeConflicts();
     updateNumberKeyStatus();
