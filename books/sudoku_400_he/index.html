@@ -1350,9 +1350,50 @@
 
     body.theme-light .cell-notes { color: #6b7280; }
 
+    /* Auto-candidates: a computed overlay, drawn only when the toggle is on.
+       Kept visually distinct from the reader's own pencil marks (.cell-notes)
+       so the two never get confused — auto marks are lighter and italic. A
+       cell showing manual notes hides its auto layer to avoid double digits. */
+    .cell-auto {
+      position: absolute;
+      inset: 0.18rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      font-size: 0.62rem;
+      line-height: 1;
+      font-style: italic;
+      color: var(--text-muted);
+      opacity: 0.75;
+      text-align: center;
+      pointer-events: none;
+    }
+    .cell-auto span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* When the hint highlights a candidate, tint the matching auto marks so
+       the reader can see exactly which digits the hint is talking about. */
+    .cell-auto span.cand-focus {
+      color: var(--accent);
+      font-weight: 700;
+      font-style: normal;
+      opacity: 1;
+    }
+    .cell-auto span.cand-elim {
+      color: var(--danger);
+      font-weight: 700;
+      font-style: normal;
+      opacity: 1;
+      text-decoration: line-through;
+    }
+    body.theme-light .cell-auto { color: #7c8698; }
+
     @media (max-width: 700px) {
       .cell { font-size: 1.3rem; }
       .cell-notes { font-size: 0.55rem;  inset: 0.12rem;}
+      .cell-auto { font-size: 0.5rem; inset: 0.12rem; }
     }
 
     /* iPhone-ish small screens: make notes clearer */
@@ -2135,8 +2176,13 @@
 
           <div class="hint-actions">
             <button id="btn-hint" class="btn btn-outline" type="button">Give me a hint</button>
+            <button id="btn-auto-cand" class="btn btn-outline" type="button" aria-pressed="false">Show candidates</button>
             <button id="btn-check-grid" class="btn btn-outline" type="button">Check my grid</button>
           </div>
+          <p class="side-sub" style="margin-top:0.5rem;font-size:0.82rem;">
+            <b>Show candidates</b> pencils in every possible digit for each empty cell automatically, so you can
+            see the pattern a hint describes. It updates as you play and never counts as one of your own notes.
+          </p>
 
           <div id="status-line" class="status-line"></div>
 
@@ -2820,7 +2866,7 @@ const HintEngine = (function () {
         const h = fn(g, cand);
         if (h && h.elims && h.elims.length) {
           h.elims.forEach(e => { cand[e.i] &= ~bit(e.d); });
-          steps.push({ tech: h.tech, text: h.l3, focus: h.focus, elimCells: h.elimCells });
+          steps.push({ tech: h.tech, text: h.l3, focus: h.focus, elimCells: h.elimCells, elims: h.elims });
           moved = true;
           break;
         }
@@ -2870,7 +2916,7 @@ const HintEngine = (function () {
       hit.unlock = res.place;
       /* The full route, headline deduction first, so the reader can follow
          why each step is needed rather than being told to "carry on". */
-      hit.path = [{ tech: hit.tech, text: hit.l3, focus: hit.focus, elimCells: hit.elimCells }]
+      hit.path = [{ tech: hit.tech, text: hit.l3, focus: hit.focus, elimCells: hit.elimCells, elims: hit.elims }]
         .concat(res.steps);
     }
     return hit;
@@ -2967,6 +3013,7 @@ const HintEngine = (function () {
   const wrongTooltip = document.getElementById("wrong-tooltip");
 
   const btnHint = document.getElementById("btn-hint");
+  const btnAutoCand = document.getElementById("btn-auto-cand");
   const btnHintMore = document.getElementById("btn-hint-more");
   const btnHintClose = document.getElementById("btn-hint-close");
   const btnCheckGrid = document.getElementById("btn-check-grid");
@@ -3087,6 +3134,7 @@ const HintEngine = (function () {
     }
     recomputeConflicts();
     updateNumberKeyStatus();
+    refreshAutoCandidates();
   }
 
   /* Read the reader's current grid. This is what the hint engine sees. */
@@ -3228,6 +3276,71 @@ const HintEngine = (function () {
       if (cand[i] & SudokuCore.bit(d)) addNoteToCell(cellAt(i), rec.digit);
     });
   }
+  /* ---------- Auto-candidates (computed overlay) ----------
+     A display-only layer: it never writes into cell.dataset.notes, so it can
+     never clash with the reader's own pencil marks or the auto-clear/restore
+     logic. When on, it recomputes from the live grid and paints every empty
+     cell's legal digits. A cell that already carries manual notes is left to
+     those, so the two systems never render on top of each other. */
+  let autoCandOn = false;
+
+  function clearAutoCell(cell) {
+    const a = cell.querySelector(".cell-auto");
+    if (a) a.remove();
+  }
+  function clearAllAuto() {
+    boardEl.querySelectorAll(".cell-auto").forEach(a => a.remove());
+  }
+  function paintAutoCell(cell, digits) {
+    let a = cell.querySelector(".cell-auto");
+    if (!a) {
+      a = document.createElement("div");
+      a.className = "cell-auto";
+      for (let d = 1; d <= 9; d++) {
+        const s = document.createElement("span");
+        s.dataset.digit = String(d);
+        a.appendChild(s);
+      }
+      cell.appendChild(a);
+    }
+    const set = new Set(digits.map(String));
+    a.querySelectorAll("span").forEach(s => {
+      s.textContent = set.has(s.dataset.digit) ? s.dataset.digit : "";
+      s.classList.remove("cand-focus", "cand-elim");
+    });
+    cell.classList.remove("empty");
+  }
+
+  /* Rebuild the whole overlay from the current grid. Cheap enough (81 cells)
+     to just redo wholesale whenever the board changes. */
+  function refreshAutoCandidates() {
+    if (!autoCandOn) { clearAllAuto(); return; }
+    const grid = readGrid();
+    const cand = SudokuCore.buildCandidates(grid);
+    for (let i = 0; i < 81; i++) {
+      const cell = cellAt(i);
+      // Filled cells and cells the reader has pencilled themselves are skipped.
+      if (grid[i] || (cell.dataset.notes && cell.dataset.notes.length)) {
+        clearAutoCell(cell);
+        if (!grid[i] && !(cell.dataset.notes && cell.dataset.notes.length))
+          cell.classList.add("empty");
+        continue;
+      }
+      paintAutoCell(cell, SudokuCore.bitsOf(cand[i]));
+    }
+  }
+
+  function setAutoCandidates(on) {
+    autoCandOn = !!on;
+    btnAutoCand.classList.toggle("active", autoCandOn);
+    btnAutoCand.setAttribute("aria-pressed", autoCandOn ? "true" : "false");
+    btnAutoCand.textContent = autoCandOn ? "Hide candidates" : "Show candidates";
+    refreshAutoCandidates();
+    // If a hint is on screen, re-tint its candidates against the fresh overlay.
+    if (currentHint) paintHint(currentHint, hintLevel);
+  }
+  btnAutoCand.addEventListener("click", () => setAutoCandidates(!autoCandOn));
+
   function toggleNote(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     if (!value || value < "1" || value > "9") return;
@@ -3239,6 +3352,7 @@ const HintEngine = (function () {
     cell.dataset.notes = notes.join("");
     if (notes.length) syncNotesView(cell, notes);
     else { clearNotes(cell); if (!cell.dataset.value) cell.classList.add("empty"); }
+    refreshAutoCandidates();
     if (cell === selectedCell) updateHighlights();
   }
   btnNotes.addEventListener("click", () => {
@@ -3356,6 +3470,7 @@ const HintEngine = (function () {
     recomputeConflicts();
     updateNumberKeyStatus();
     checkCompletionAuto();
+    refreshAutoCandidates();
     if (cell === selectedCell) updateHighlights();
   }
   function handleNumInput(value) {
@@ -3410,6 +3525,7 @@ const HintEngine = (function () {
       if (!cell.classList.contains("given")) setCellValue(cell, val);
       else cell.querySelector(".cell-value").textContent = val;
       clearNotes(cell);
+      clearAutoCell(cell);
     }
     updateNumberKeyStatus();
     showCompletionMessage();
@@ -3426,6 +3542,8 @@ const HintEngine = (function () {
   function clearHintHighlights() {
     boardEl.querySelectorAll(".cell").forEach(c =>
       c.classList.remove("hint-primary", "hint-secondary", "hint-eliminate"));
+    boardEl.querySelectorAll(".cell-auto span.cand-focus, .cell-auto span.cand-elim")
+      .forEach(s => s.classList.remove("cand-focus", "cand-elim"));
   }
   function clearHint() {
     currentHint = null; hintLevel = 0;
@@ -3453,6 +3571,24 @@ const HintEngine = (function () {
         if (st.elimCells) st.elimCells.forEach(i => cellAt(i).classList.add("hint-eliminate"));
       });
     }
+    // When the candidate overlay is on, tint the exact digits the hint acts on.
+    if (autoCandOn) tintHintCandidates(h, level);
+  }
+
+  /* Colour individual candidate digits inside the auto overlay: the digits a
+     hint would eliminate are struck through in red, so "remove 3 and 6 from
+     these cells" becomes literally visible. Elimination data lives on h.elims
+     (headline step) and each path step's own elims. */
+  function tintHintCandidates(h, level) {
+    const markElim = (i, d) => {
+      const a = cellAt(i).querySelector(".cell-auto");
+      if (!a) return;
+      const s = a.querySelector('span[data-digit="' + d + '"]');
+      if (s && s.textContent) s.classList.add("cand-elim");
+    };
+    if (level >= 2 && h.elims) h.elims.forEach(e => markElim(e.i, e.d));
+    if (level >= 4 && h.path)
+      h.path.forEach(st => { if (st.elims) st.elims.forEach(e => markElim(e.i, e.d)); });
   }
 
   /* Select the cell the hint is pointing at so the reader can type straight
