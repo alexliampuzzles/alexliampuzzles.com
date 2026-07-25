@@ -1360,11 +1360,10 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
-      font-size: 0.62rem;
+      font-size: 0.71rem;
       line-height: 1;
-      font-style: italic;
-      color: var(--text-muted);
-      opacity: 0.75;
+      color: #000;
+      opacity: 1;
       text-align: center;
       pointer-events: none;
     }
@@ -1388,12 +1387,16 @@
       opacity: 1;
       text-decoration: line-through;
     }
-    body.theme-light .cell-auto { color: #7c8698; }
+    /* Auto-candidates are drawn at full strength for clear reading.
+       "Totally black" on the light (white) grid; solid white on the dark grid,
+       which is the same maximum-contrast intent for that background. */
+    body.theme-light .cell-auto { color: #000; }
+    body.theme-dark  .cell-auto { color: #fff; }
 
     @media (max-width: 700px) {
       .cell { font-size: 1.3rem; }
       .cell-notes { font-size: 0.55rem;  inset: 0.12rem;}
-      .cell-auto { font-size: 0.5rem; inset: 0.12rem; }
+      .cell-auto { font-size: 0.575rem; inset: 0.12rem; }
     }
 
     /* iPhone-ish small screens: make notes clearer */
