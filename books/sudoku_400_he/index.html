@@ -1953,12 +1953,26 @@
       padding-left: 1.2rem;
       font-size: 0.88rem;
       line-height: 1.6;
+      /* Long routes (some Hard grids run 50+ steps) scroll inside the panel
+         instead of pushing the rest of the page down. The reader can scroll
+         all the way to the final steps, which are the hardest ones. */
+      max-height: 22rem;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .hint-path > li { margin-bottom: 0.5rem; }
+    .hint-path > li:last-child { margin-bottom: 0.15rem; }
     .hint-path > li::marker { color: var(--accent); font-weight: 600; }
     .hint-path > li > b { color: var(--accent); }
     .hint-path .hint-chain { margin-top: 0.3rem; }
+
+    /* A subtle scrollbar so it's clear the list continues below the fold. */
+    .hint-path::-webkit-scrollbar { width: 8px; }
+    .hint-path::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 999px;
+    }
 
   </style>
 </head>
@@ -2792,7 +2806,10 @@ const HintEngine = (function () {
     const g = Int8Array.from(g0);
     const cand = Int32Array.from(cand0);
     const steps = [];
-    for (let guard = 0; guard < 60; guard++) {
+    /* Guard well above the longest routes in the pool (some Hard grids run
+       past 55 steps) so the walk always reaches a placement rather than
+       stopping short and dropping the final, hardest deductions. */
+    for (let guard = 0; guard < 200; guard++) {
       const s = nakedSingle(g, cand) || hiddenSingle(g, cand);
       if (s) {
         steps.push({ tech: s.tech, text: s.l3, focus: s.focus });
@@ -3473,18 +3490,17 @@ const HintEngine = (function () {
 
     /* Level 4: the whole route, spelled out, so nothing is left implicit. */
     if (hintLevel >= 4 && h.path && h.path.length > 1) {
-      const shown = h.path.slice(0, 6);
-      html += '<div class="hint-step"><b>The full route to a placed digit:</b>' +
-              '<ol class="hint-path">';
-      shown.forEach(st => {
+      html += '<div class="hint-step"><b>The full route to a placed digit:</b>';
+      if (h.path.length > 6)
+        html += '<div class="hint-note">' + h.path.length +
+                " steps in all \u2014 scroll the list to see every one.</div>";
+      html += '<ol class="hint-path">';
+      h.path.forEach(st => {
         html += "<li><b>" + st.tech + "</b> \u2014 " + st.text +
                 (st.chain ? '<ol class="hint-chain"><li>' + st.chain.join("</li><li>") + "</li></ol>" : "") +
                 "</li>";
       });
       html += "</ol>";
-      if (h.path.length > shown.length)
-        html += '<div class="hint-note">\u2026and ' + (h.path.length - shown.length) +
-                " more step(s) of the same kind.</div>";
       html += "</div>";
       if (h.unlock)
         html += '<div class="hint-note">That leaves <b>' + SudokuCore.rc(h.unlock.i) +
