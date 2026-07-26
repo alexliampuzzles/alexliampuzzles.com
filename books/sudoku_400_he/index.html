@@ -1955,6 +1955,20 @@
       line-height: 1.5;
     }
 
+    .hint-inline-btn {
+      display: inline;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      color: var(--accent);
+      font: inherit;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .hint-inline-btn:hover { opacity: 0.8; }
+
     .cell.hint-primary {
       box-shadow: inset 0 0 0 2px var(--accent);
       background: var(--accent-strong) !important;
@@ -2752,6 +2766,88 @@ const HintEngine = (function () {
     return null;
   }
 
+  /* Unique Rectangle types 2 and 4 — extend the deadly-pattern logic beyond
+     type 1. Same guarantee: a valid puzzle can't contain a rectangle of a bare
+     pair on all four corners, so certain candidates must be removed. Verified
+     against the reference solver to never remove a true candidate. */
+  function uniqueRectangle2(g, cand) {
+    for (let r1 = 0; r1 < 9; r1++) for (let r2 = r1 + 1; r2 < 9; r2++)
+      for (let c1 = 0; c1 < 9; c1++) for (let c2 = c1 + 1; c2 < 9; c2++) {
+        const cells = [r1 * 9 + c1, r1 * 9 + c2, r2 * 9 + c1, r2 * 9 + c2];
+        if (cells.some(i => g[i])) continue;
+        if (new Set(cells.map(boxOf)).size !== 2) continue;
+        const pairs = [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]];
+        for (const bi of pairs) {
+          const bare = [cells[bi[0]], cells[bi[1]]];
+          const extra = cells.filter(i => bare.indexOf(i) < 0);
+          if (bare.some(i => cnt(cand[i]) !== 2)) continue;
+          const p = cand[bare[0]];
+          if (cand[bare[1]] !== p) continue;
+          if (extra.some(i => (cand[i] & p) !== p || cnt(cand[i]) !== 3)) continue;
+          const e0 = cand[extra[0]] & ~p, e1 = cand[extra[1]] & ~p;
+          if (e0 !== e1 || cnt(e0) !== 1) continue;
+          if (!share(extra[0], extra[1])) continue;
+          const cd = bitsOf(e0)[0], el = [];
+          for (let i = 0; i < 81; i++)
+            if (cells.indexOf(i) < 0 && share(i, extra[0]) && share(i, extra[1]))
+              el.push({ i: i, d: cd });
+          const real = realElims(cand, g, el);
+          if (real.length) return {
+            tech: 'Unique rectangle', focus: cells, elimCells: real.map(e => e.i),
+            l1: 'Look at the rectangle ' + ls(cells) + '.',
+            l2: 'Two corners are a bare pair; the other two add the same extra candidate.',
+            l3: 'To avoid two solutions, one of ' + ls(extra) + ' must be <code>' + cd +
+                '</code>. Any cell seeing both therefore loses ' + cd + ': ' + elimText(real) + '.',
+            elims: real
+          };
+        }
+      }
+    return null;
+  }
+
+  function uniqueRectangle4(g, cand) {
+    for (let r1 = 0; r1 < 9; r1++) for (let r2 = r1 + 1; r2 < 9; r2++)
+      for (let c1 = 0; c1 < 9; c1++) for (let c2 = c1 + 1; c2 < 9; c2++) {
+        const cells = [r1 * 9 + c1, r1 * 9 + c2, r2 * 9 + c1, r2 * 9 + c2];
+        if (cells.some(i => g[i])) continue;
+        if (new Set(cells.map(boxOf)).size !== 2) continue;
+        const pairs = [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]];
+        for (const bi of pairs) {
+          const bare = [cells[bi[0]], cells[bi[1]]];
+          const roof = cells.filter(i => bare.indexOf(i) < 0);
+          if (bare.some(i => cnt(cand[i]) !== 2)) continue;
+          const p = cand[bare[0]];
+          if (cand[bare[1]] !== p) continue;
+          if (roof.some(i => (cand[i] & p) !== p || cnt(cand[i]) <= 2)) continue;
+          if (!share(roof[0], roof[1])) continue;
+          const [a, b] = bitsOf(p);
+          for (const [keep, drop] of [[a, b], [b, a]]) {
+            const kb = bit(keep), db = bit(drop);
+            let locked = false;
+            for (let ui = 0; ui < 27; ui++) {
+              const u = UNITS[ui];
+              if (u.indexOf(roof[0]) < 0 || u.indexOf(roof[1]) < 0) continue;
+              const spots = u.filter(i => !g[i] && (cand[i] & kb));
+              if (spots.length && spots.every(i => roof.indexOf(i) >= 0)) { locked = true; break; }
+            }
+            if (locked) {
+              const real = realElims(cand, g, roof.map(i => ({ i: i, d: drop })));
+              if (real.length) return {
+                tech: 'Unique rectangle', focus: cells, elimCells: real.map(e => e.i),
+                l1: 'Look at the rectangle ' + ls(cells) + '.',
+                l2: 'Two corners are a bare pair; in the roof, one of the pair is locked in place.',
+                l3: 'To avoid two solutions, ' + rc(roof[0]) + ' and ' + rc(roof[1]) + ' can\u2019t both be ' +
+                    'the bare pair. Since <code>' + keep + '</code> is confined to them, <code>' + drop +
+                    '</code> comes out: ' + elimText(real) + '.',
+                elims: real
+              };
+            }
+          }
+        }
+      }
+    return null;
+  }
+
   /* ---------------- wings ---------------- */
   function xyWing(g, cand) {
     const bv = [];
@@ -3032,7 +3128,7 @@ const HintEngine = (function () {
     (g, c) => nakedSubset(g, c, 4),
     (g, c) => fish(g, c, 2),
     skyscraper, twoStringKite,
-    uniqueRectangle, xyWing, xyzWing, wWing,
+    uniqueRectangle, uniqueRectangle2, uniqueRectangle4, xyWing, xyzWing, wWing,
     simpleColouring,
     (g, c) => fish(g, c, 3)
   ];
@@ -3889,8 +3985,15 @@ const HintEngine = (function () {
       if (h.unlock)
         html += '<div class="hint-note">That leaves <b>' + SudokuCore.rc(h.unlock.i) +
                 " = " + h.unlock.d + "</b> ready to write in.</div>";
+      else if (h.noPlacement && Checker.has())
+        html += '<div class="hint-note">These eliminations don\u2019t force a digit on their own \u2014 ' +
+                "this spot is one of the rare ones that would need a guessing chain, which this tier " +
+                'avoids. If you\u2019re stuck, you can <button type="button" id="btn-reveal-digit" ' +
+                'class="hint-inline-btn">reveal one digit</button> to keep going.</div>';
     }
     hintBodyEl.innerHTML = html;
+    const revealBtn = document.getElementById("btn-reveal-digit");
+    if (revealBtn) revealBtn.addEventListener("click", revealOneDigit);
     const hasPath = !!(h.path && h.path.length > 1);
     const maxLevel = hasPath ? 4 : 3;
     btnHintMore.style.display = hintLevel >= maxLevel ? "none" : "";
@@ -3941,7 +4044,40 @@ const HintEngine = (function () {
     setStatus("");
     currentHint = h;
     hintLevel = 1;
+    /* Some positions are solvable only via a chain, which this tier won't show.
+       The engine then returns clean eliminations but no placement (no unlock).
+       Flag that so the reader can, as a last resort, reveal one correct digit
+       from the answer key rather than being left with nothing to write. */
+    h.noPlacement = !h.place && !h.unlock;
     renderHint();
+  }
+
+  /* Reveal one correct digit as a last resort, when no chain-free step can
+     place anything from here. Prefers a cell the current hint already points
+     at, so the reveal feels connected to the eliminations shown. */
+  function revealOneDigit() {
+    if (!currentPuzzle || !Checker.has()) return;
+    const grid = readGrid();
+    let target = -1;
+    const h = currentHint;
+    if (h) {
+      const pool = [];
+      if (h.elimCells) pool.push.apply(pool, h.elimCells);
+      if (h.focus) pool.push.apply(pool, h.focus);
+      if (h.path) h.path.forEach(s => { if (s.elimCells) pool.push.apply(pool, s.elimCells); });
+      for (const i of pool) if (!grid[i]) { target = i; break; }
+    }
+    if (target < 0)
+      for (let i = 0; i < 81; i++) if (!grid[i]) { target = i; break; }
+    if (target < 0) return;
+    const d = Checker.digitAt(target);
+    clearHint();
+    selectCell(cellAt(target));
+    setCellValue(cellAt(target), String(d));
+    setStatus("Revealed " + SudokuCore.rc(target) + " = " + d +
+              ". This spot needed a chain, which this tier avoids \u2014 so here's the digit " +
+              "to keep you moving.", "good");
+    if (cellAt(target).scrollIntoView) cellAt(target).scrollIntoView({ block: "nearest", inline: "nearest" });
   }
 
   /* First cell whose current entry disagrees with the known solution, or -1.
