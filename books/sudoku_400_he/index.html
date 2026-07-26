@@ -2258,8 +2258,9 @@
             <button id="review-dismiss" class="review-dismiss" type="button" aria-label="Dismiss">&times;</button>
             <div class="review-prompt-title">Nice solving!</div>
             <p class="review-prompt-text">
-              Hope this companion is helping you get more out of the book. If you&rsquo;re enjoying it, an
-              <b>honest review on Amazon</b> means a lot &mdash; it helps other puzzlers find the book.
+              Hope this companion is helping you get more out of the book. You&rsquo;re welcome to leave
+              an <b>honest review on Amazon</b> and share your experience &mdash; reviews help other
+              puzzlers decide whether the book is right for them.
             </p>
             <a id="review-link" class="btn btn-outline review-link"
                href="https://www.amazon.com/portal/customer-reviews/B0G3VRZP4V/ref=cm_cr_dp_d_show_all_top?_encoding=UTF8&ie=UTF8&reviewerType=all_reviews" target="_blank" rel="noopener">Leave a review</a>
@@ -3412,6 +3413,9 @@ const HintEngine = (function () {
   let notesMode = false;
   let showMistakes = false;
   let puzzleCompleted = false;
+  /* True only when the grid was finished by the reader entering digits, not by
+     opening the full solution — gates the review invitation. */
+  let completedByPlaying = false;
 
   let currentHint = null;
   let hintLevel = 0;
@@ -3803,12 +3807,16 @@ const HintEngine = (function () {
     puzzleCompleted = true;
     setStatus("Solved. Nicely done.", "good");
     if (timerEnabled) pauseTimer(false);
-    maybeShowReviewPrompt();
+    /* Only invite a review after a genuine solving session — not when the
+       reader simply opened the full solution. */
+    if (completedByPlaying) maybeShowReviewPrompt();
   }
 
-  /* Review prompt: neutral, honest, shown at most once per session and only
-     after a genuine win. Never asks for a positive rating and is never tied to
-     any feature — an honest ask to verified buyers, dismissible at any time. */
+  /* Review prompt: neutral, honest, shown at most once per browser session and
+     only after a genuine win. Never asks for a positive rating and is never
+     tied to any feature — an honest ask to verified buyers, dismissible any
+     time. The flag is NOT reset on puzzle load, so a reader who solves several
+     puzzles in one visit is invited exactly once. */
   let reviewPromptShown = false;
   function maybeShowReviewPrompt() {
     if (reviewPromptShown) return;
@@ -3820,6 +3828,7 @@ const HintEngine = (function () {
     if (!currentPuzzle || puzzleCompleted || !Checker.has()) return;
     for (let i = 0; i < 81; i++)
       if (getCellValue(cellAt(i)) !== Checker.digitAt(i)) return;
+    completedByPlaying = true;
     showCompletionMessage();
   }
 
@@ -4149,8 +4158,8 @@ const HintEngine = (function () {
     selectCell(cellAt(target));
     setCellValue(cellAt(target), String(d));
     setStatus("Revealed " + SudokuCore.rc(target) + " = " + d +
-              ". This spot needed a chain, which this tier avoids \u2014 so here's the digit " +
-              "to keep you moving.", "good");
+              ". This position couldn't be advanced with the pattern-based hints, " +
+              "so one digit has been revealed to keep you moving.", "good");
     if (cellAt(target).scrollIntoView) cellAt(target).scrollIntoView({ block: "nearest", inline: "nearest" });
   }
 
@@ -4270,9 +4279,9 @@ const HintEngine = (function () {
 
     Checker.load(currentPuzzle.solution);
     puzzleCompleted = false;
-    /* Allow the review prompt to appear again on this new puzzle (it shows at
-       most once per puzzle, not once per page load). */
-    reviewPromptShown = false;
+    completedByPlaying = false;
+    /* Note: reviewPromptShown is intentionally NOT reset here — the invitation
+       appears at most once per browser session, not once per puzzle. */
     const rp = document.getElementById("review-prompt");
     if (rp) rp.classList.remove("show");
     setStatus("");
