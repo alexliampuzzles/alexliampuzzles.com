@@ -4270,6 +4270,9 @@ const HintEngine = (function () {
 
     Checker.load(currentPuzzle.solution);
     puzzleCompleted = false;
+    /* Allow the review prompt to appear again on this new puzzle (it shows at
+       most once per puzzle, not once per page load). */
+    reviewPromptShown = false;
     const rp = document.getElementById("review-prompt");
     if (rp) rp.classList.remove("show");
     setStatus("");
