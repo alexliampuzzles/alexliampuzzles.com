@@ -2854,6 +2854,91 @@ const HintEngine = (function () {
     return null;
   }
 
+  /* ---------------- simple colouring ----------------
+     For one digit, chain together its conjugate pairs (units where it has
+     exactly two spots) and two-colour the chain. Then two rules eliminate:
+     (a) if one colour appears twice in a single unit, that colour is
+     impossible, so the digit goes in the other colour everywhere; (b) any
+     cell outside the chain that sees both colours can't hold the digit,
+     because one colour is always true. Ported to match the reference solver;
+     verified never to remove a true candidate. */
+  function simpleColouring(g, cand) {
+    for (let d = 1; d <= 9; d++) {
+      const b = bit(d);
+      const links = new Map();
+      const addLink = (x, y) => {
+        if (!links.has(x)) links.set(x, []);
+        links.get(x).push(y);
+      };
+      for (let ui = 0; ui < 27; ui++) {
+        const spots = UNITS[ui].filter(i => !g[i] && (cand[i] & b));
+        if (spots.length === 2) { addLink(spots[0], spots[1]); addLink(spots[1], spots[0]); }
+      }
+      const seen = new Set();
+      for (const start of links.keys()) {
+        if (seen.has(start)) continue;
+        const col = new Map([[start, 0]]);
+        const stack = [start], comp = [start];
+        seen.add(start);
+        while (stack.length) {
+          const x = stack.pop();
+          for (const y of links.get(x) || []) {
+            if (!col.has(y)) {
+              col.set(y, 1 - col.get(x));
+              seen.add(y); comp.push(y); stack.push(y);
+            }
+          }
+        }
+        if (comp.length < 3) continue;
+        const g0 = comp.filter(c => col.get(c) === 0);
+        const g1 = comp.filter(c => col.get(c) === 1);
+
+        // Rule (a): same colour twice in a unit => that whole colour is false.
+        const sameUnit = grp => {
+          for (let x = 0; x < grp.length; x++)
+            for (let y = x + 1; y < grp.length; y++)
+              if (share(grp[x], grp[y])) return true;
+          return false;
+        };
+        for (const [bad, good] of [[g0, g1], [g1, g0]]) {
+          if (sameUnit(bad)) {
+            const real = realElims(cand, g, bad.map(c => ({ i: c, d: d })));
+            if (real.length) return {
+              tech: 'Simple colouring', focus: comp, elimCells: real.map(e => e.i),
+              l1: 'Trace where <code>' + d + '</code> can go along a chain of paired cells.',
+              l2: 'Two cells of the same colour share a unit, which is impossible.',
+              l3: 'Colouring the conjugate chain for <code>' + d + '</code>, two same-colour cells ' +
+                  'land in one unit — so that colour can\u2019t hold the ' + d + '. The other colour must, ' +
+                  'and ' + elimText(real) + '.',
+              elims: real
+            };
+          }
+        }
+
+        // Rule (b): a cell seeing both colours can't hold the digit.
+        const peersOf = grp => {
+          const s = new Set();
+          grp.forEach(c => { for (const pp of PEERS[c]) s.add(pp); });
+          return s;
+        };
+        const s0 = peersOf(g0), s1 = peersOf(g1);
+        const both = [];
+        s0.forEach(c => { if (s1.has(c) && comp.indexOf(c) < 0) both.push({ i: c, d: d }); });
+        const real = realElims(cand, g, both);
+        if (real.length) return {
+          tech: 'Simple colouring', focus: comp, elimCells: real.map(e => e.i),
+          l1: 'Trace where <code>' + d + '</code> can go along a chain of paired cells.',
+          l2: 'Some cells can see both colours of the chain at once.',
+          l3: 'Colouring the conjugate chain for <code>' + d + '</code>, one colour is always the ' +
+              'true ' + d + '. Any cell seeing both colours therefore can\u2019t be ' + d + ', so ' +
+              elimText(real) + '.',
+          elims: real
+        };
+      }
+    }
+    return null;
+  }
+
   /* ---------------- forcing chain fallback ---------------- */
   function propagate(g0, cand0, start, digit) {
     const g = Int8Array.from(g0);
@@ -2948,6 +3033,7 @@ const HintEngine = (function () {
     (g, c) => fish(g, c, 2),
     skyscraper, twoStringKite,
     uniqueRectangle, xyWing, xyzWing, wWing,
+    simpleColouring,
     (g, c) => fish(g, c, 3)
   ];
 
@@ -2981,8 +3067,11 @@ const HintEngine = (function () {
       if (!moved) {
         const fc = forcingChain(g, cand);
         if (fc && fc.place) {
-          steps.push({ tech: fc.tech, text: fc.l3, focus: fc.focus, chain: fc.chain });
-          return { place: fc.place, steps: steps };
+          /* A forcing chain is the only way onward from here. Don't add it to
+             the shown steps — the pattern tiers avoid guessing chains. Report
+             the clean route gathered so far, plus a flag saying the final
+             unlock needed a chain, so callers can decide how to present it. */
+          return { place: fc.place, steps: steps, chainOnly: true };
         }
         return null;
       }
@@ -3012,7 +3101,10 @@ const HintEngine = (function () {
       if (h) { hit = h; break; }
     }
     if (!hit) return { tech: 'Stuck', l1: 'No deduction found from this position.' };
-    if (hit.place) return hit;
+    if (hit.place) {
+      if (hit.tech === "Forcing chain") hit.usedChain = true;
+      return hit;
+    }
 
     /* Elimination-only deduction: work forward privately so the reader always
        ends up with a digit they can actually write down. */
@@ -3020,11 +3112,29 @@ const HintEngine = (function () {
     hit.elims.forEach(e => { work[e.i] &= ~bit(e.d); });
     const res = driveToPlacement(grid, work);
     if (res) {
-      hit.unlock = res.place;
-      /* The full route, headline deduction first, so the reader can follow
-         why each step is needed rather than being told to "carry on". */
-      hit.path = [{ tech: hit.tech, text: hit.l3, focus: hit.focus, elimCells: hit.elimCells, elims: hit.elims }]
-        .concat(res.steps);
+      if (res.chainOnly) {
+        /* The private walk could only reach a PLACEMENT via a forcing chain.
+           But the headline elimination is itself a clean, valid deduction the
+           reader can apply to their candidates. Show it as an elimination-only
+           hint (no unlock, no chain) plus any clean steps found before the
+           chain was needed. Only when there is nothing clean to show do we
+           flag usedChain so the UI suppresses it. */
+        const cleanSteps = res.steps || [];
+        if ((hit.elims && hit.elims.length) || cleanSteps.length) {
+          hit.path = [{ tech: hit.tech, text: hit.l3, focus: hit.focus, elimCells: hit.elimCells, elims: hit.elims }]
+            .concat(cleanSteps);
+          /* No unlock: this hint eliminates candidates rather than placing a
+             digit. renderHint already handles elimination-only hints. */
+        } else {
+          hit.usedChain = true;
+        }
+      } else {
+        hit.unlock = res.place;
+        /* The full route, headline deduction first, so the reader can follow
+           why each step is needed rather than being told to "carry on". */
+        hit.path = [{ tech: hit.tech, text: hit.l3, focus: hit.focus, elimCells: hit.elimCells, elims: hit.elims }]
+          .concat(res.steps);
+      }
     }
     return hit;
   }
@@ -3763,7 +3873,8 @@ const HintEngine = (function () {
 
     /* Level 4: the whole route, spelled out, so nothing is left implicit. */
     if (hintLevel >= 4 && h.path && h.path.length > 1) {
-      html += '<div class="hint-step"><b>The full route to a placed digit:</b>';
+      html += '<div class="hint-step"><b>' +
+              (h.unlock ? "The full route to a placed digit:" : "The full chain of eliminations:") + '</b>';
       if (h.path.length > 6)
         html += '<div class="hint-note">' + h.path.length +
                 " steps in all \u2014 scroll the list to see every one.</div>";
@@ -3804,10 +3915,42 @@ const HintEngine = (function () {
     const h = HintEngine.getHint(grid);
     if (h.tech === "Solved") { setStatus("This grid is already complete.", "good"); return; }
     if (h.tech === "Stuck") { setStatus("No deduction found from this position.", "bad"); return; }
+
+    /* Pattern-based tiers promise no guessing chains. If the ONLY thing the
+       engine can offer is a forcing chain (headline included), don't show it —
+       tell the reader whether they've made a mistake (Checker knows the answer
+       key; the engine never does) or simply hit an awkward spot. When the chain
+       is only the buried tail of an otherwise-clean route, the path builder has
+       already trimmed it, so h.usedChain is false and we show the clean hint. */
+    if (h.usedChain) {
+      clearHint();
+      const wrong = firstWrongCell(grid);
+      if (wrong >= 0) {
+        setStatus("One of your entries doesn't lead to a solution \u2014 there's a mistake at " +
+                  SudokuCore.rc(wrong) + ". Fix it, then the puzzle solves with the usual techniques. " +
+                  "Use \u201cCheck my grid\u201d to review.", "bad");
+        cellAt(wrong).classList.add("hint-eliminate");
+        if (cellAt(wrong).scrollIntoView) cellAt(wrong).scrollIntoView({ block: "nearest", inline: "nearest" });
+        return;
+      }
+      setStatus("No single-step technique unlocks this exact spot \u2014 and this tier avoids guessing " +
+                "chains. Filling an easier cell elsewhere first usually opens up a clean step here.", "good");
+      return;
+    }
+
     setStatus("");
     currentHint = h;
     hintLevel = 1;
     renderHint();
+  }
+
+  /* First cell whose current entry disagrees with the known solution, or -1.
+     Only the Checker consults the answer key; the hint engine never does. */
+  function firstWrongCell(grid) {
+    if (!Checker.has()) return -1;
+    for (let i = 0; i < 81; i++)
+      if (grid[i] && !Checker.isCorrect(i, grid[i])) return i;
+    return -1;
   }
 
   function escalateHint() {
