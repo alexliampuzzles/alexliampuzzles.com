@@ -2621,6 +2621,109 @@ const HintEngine = (function () {
     return null;
   }
 
+  /* ---------------- single-digit chains: skyscraper & 2-string kite ----------
+     Both rest on conjugate pairs — a unit where a digit has exactly two spots,
+     so one of the two must hold it. Two such pairs sharing a "base" line force
+     the digit into one of the two far ends; any cell seeing both ends can't be
+     that digit. These sit between basic fish and the wings in difficulty. */
+  function conjugatePairs(g, cand, d) {
+    /* Every row/column with exactly two spots for digit d, as [i1, i2]. */
+    const pairs = [];
+    for (const byRow of [true, false]) {
+      for (let a = 0; a < 9; a++) {
+        const spots = [];
+        for (let b = 0; b < 9; b++) {
+          const i = byRow ? a * 9 + b : b * 9 + a;
+          if (!g[i] && (cand[i] & bit(d))) spots.push(i);
+        }
+        if (spots.length === 2) pairs.push({ cells: spots, byRow: byRow });
+      }
+    }
+    return pairs;
+  }
+  const rowOf = i => Math.floor(i / 9);
+  const colOf = i => i % 9;
+  /* Cells that see BOTH a and b (shared peers), excluding the pattern cells. */
+  function seesBoth(a, b, exclude) {
+    const out = [];
+    const pa = PEERS[a];
+    for (let k = 0; k < pa.length; k++) {
+      const c = pa[k];
+      if (exclude.indexOf(c) >= 0) continue;
+      if (PEERS[b].indexOf(c) >= 0) out.push(c);
+    }
+    return out;
+  }
+
+  function skyscraper(g, cand) {
+    for (let d = 1; d <= 9; d++) {
+      const pairs = conjugatePairs(g, cand, d);
+      for (const orient of [true, false]) {
+        const lines = pairs.filter(p => p.byRow === orient);
+        for (let i = 0; i < lines.length; i++)
+          for (let j = i + 1; j < lines.length; j++) {
+            const A = lines[i].cells, B = lines[j].cells;
+            // Perpendicular index: column when scanning rows, row when columns.
+            const perp = orient ? colOf : rowOf;
+            for (const ai of [0, 1]) for (const bi of [0, 1]) {
+              // Base end where the two lines share a perpendicular index.
+              if (perp(A[ai]) !== perp(B[bi])) continue;
+              const roof = [A[1 - ai], B[1 - bi]];
+              if (perp(roof[0]) === perp(roof[1])) continue;   // that's an X-wing, not this
+              if (boxOf(roof[0]) === boxOf(roof[1])) continue; // roof ends must not share a box
+              const targets = seesBoth(roof[0], roof[1], A.concat(B))
+                .map(c => ({ i: c, d: d }));
+              const real = realElims(cand, g, targets);
+              if (real.length) return {
+                tech: 'Skyscraper', focus: A.concat(B), elimCells: real.map(e => e.i),
+                l1: 'Follow where <code>' + d + '</code> can sit in two ' +
+                    (orient ? 'rows' : 'columns') + '.',
+                l2: 'Two ' + (orient ? 'rows' : 'columns') + ' each pin ' + d +
+                    ' to two cells, and they line up at one end.',
+                l3: 'In ' + ls(A) + ' and ' + ls(B) + ', <code>' + d + '</code> has just two homes each. ' +
+                    'They share ' + (orient ? 'a column' : 'a row') + ' at one end, so the other two ends ' +
+                    '(' + ls(roof) + ') must contain the ' + d + '. Any cell seeing both ends loses it, so ' +
+                    elimText(real) + '.',
+                elims: real
+              };
+            }
+          }
+      }
+    }
+    return null;
+  }
+
+  function twoStringKite(g, cand) {
+    for (let d = 1; d <= 9; d++) {
+      const pairs = conjugatePairs(g, cand, d);
+      const rows = pairs.filter(p => p.byRow);
+      const cols = pairs.filter(p => !p.byRow);
+      for (const R of rows) for (const C2 of cols) {
+        if (R.cells.some(c => C2.cells.indexOf(c) >= 0)) continue;
+        for (const ri of [0, 1]) for (const ci of [0, 1]) {
+          // One end of the row-pair and one end of the column-pair share a box.
+          if (boxOf(R.cells[ri]) !== boxOf(C2.cells[ci])) continue;
+          const ends = [R.cells[1 - ri], C2.cells[1 - ci]];
+          if (boxOf(ends[0]) === boxOf(ends[1])) continue;
+          const targets = seesBoth(ends[0], ends[1], R.cells.concat(C2.cells))
+            .map(c => ({ i: c, d: d }));
+          const real = realElims(cand, g, targets);
+          if (real.length) return {
+            tech: '2-string kite', focus: R.cells.concat(C2.cells), elimCells: real.map(e => e.i),
+            l1: 'Look at <code>' + d + '</code> in one row and one column that meet in a box.',
+            l2: 'A row and a column each pin ' + d + ' to two cells, joined through a shared box.',
+            l3: 'The row ' + ls(R.cells) + ' and the column ' + ls(C2.cells) +
+                ' each hold <code>' + d + '</code> in exactly two places, linked inside one box. ' +
+                'That forces ' + d + ' into ' + ls(ends) + ' at the far ends, so any cell seeing both ' +
+                'loses it: ' + elimText(real) + '.',
+            elims: real
+          };
+        }
+      }
+    }
+    return null;
+  }
+
   /* ---------------- uniqueness ---------------- */
   function uniqueRectangle(g, cand) {
     for (let r1 = 0; r1 < 9; r1++) for (let r2 = r1 + 1; r2 < 9; r2++)
@@ -2843,6 +2946,7 @@ const HintEngine = (function () {
     (g, c) => nakedSubset(g, c, 3), (g, c) => hiddenSubset(g, c, 3),
     (g, c) => nakedSubset(g, c, 4),
     (g, c) => fish(g, c, 2),
+    skyscraper, twoStringKite,
     uniqueRectangle, xyWing, xyzWing, wWing,
     (g, c) => fish(g, c, 3)
   ];
@@ -3479,8 +3583,11 @@ const HintEngine = (function () {
   function handleNumInput(value) {
     if (!selectedCell) return;
     if (value === "clear") {
-      setCellValue(selectedCell, ""); clearNotes(selectedCell);
-      selectedCell.classList.add("empty"); return;
+      clearNotes(selectedCell);
+      setCellValue(selectedCell, "");
+      selectedCell.classList.add("empty");
+      refreshAutoCandidates();
+      return;
     }
     if (notesMode) toggleNote(selectedCell, value);
     else trySetCellValue(selectedCell, value);
@@ -3497,8 +3604,10 @@ const HintEngine = (function () {
       if (notesMode) toggleNote(selectedCell, e.key);
       else trySetCellValue(selectedCell, e.key);
     } else if (e.key === "Backspace" || e.key === "Delete" || e.key === "0") {
-      setCellValue(selectedCell, ""); clearNotes(selectedCell);
+      clearNotes(selectedCell);
+      setCellValue(selectedCell, "");
       selectedCell.classList.add("empty");
+      refreshAutoCandidates();
     }
   });
 
@@ -3589,9 +3698,34 @@ const HintEngine = (function () {
       const s = a.querySelector('span[data-digit="' + d + '"]');
       if (s && s.textContent) s.classList.add("cand-elim");
     };
-    if (level >= 2 && h.elims) h.elims.forEach(e => markElim(e.i, e.d));
+    // Highlight the candidates that FORM the pattern, in the focus cells, using
+    // the digit(s) the deduction is about. Elim cells are left for markElim so
+    // the two never fight over the same span.
+    const markFocus = (i, d) => {
+      const a = cellAt(i).querySelector(".cell-auto");
+      if (!a) return;
+      const s = a.querySelector('span[data-digit="' + d + '"]');
+      if (s && s.textContent && !s.classList.contains("cand-elim"))
+        s.classList.add("cand-focus");
+    };
+    const focusStep = st => {
+      if (!st.focus || !st.elims) return;
+      const digits = new Set(st.elims.map(e => e.d));
+      const elimCells = new Set(st.elims.map(e => e.i));
+      st.focus.forEach(i => {
+        if (elimCells.has(i)) return;
+        digits.forEach(d => markFocus(i, d));
+      });
+    };
+    if (level >= 2) {
+      if (h.elims) h.elims.forEach(e => markElim(e.i, e.d));
+      focusStep(h);
+    }
     if (level >= 4 && h.path)
-      h.path.forEach(st => { if (st.elims) st.elims.forEach(e => markElim(e.i, e.d)); });
+      h.path.forEach(st => {
+        if (st.elims) st.elims.forEach(e => markElim(e.i, e.d));
+        focusStep(st);
+      });
   }
 
   /* Select the cell the hint is pointing at so the reader can type straight
