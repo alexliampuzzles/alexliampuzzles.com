@@ -683,6 +683,46 @@
     }
 
     /* Completion overlay in center of board */
+    .review-prompt {
+      display: none;
+      position: relative;
+      margin-top: 0.9rem;
+      padding: 1rem 1.2rem;
+      border-radius: 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(248, 250, 252, 0.12);
+    }
+    .review-prompt.show { display: block; }
+    body.theme-light .review-prompt {
+      background: #f8fafc;
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+    .review-prompt-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .review-prompt-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 0.7rem;
+    }
+    .review-link { display: inline-block; }
+    .review-dismiss {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.6rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0.1rem 0.3rem;
+    }
+    .review-dismiss:hover { color: var(--text); }
+
     .completion-overlay {
       position: absolute;
       inset: 0.4rem;
@@ -2182,6 +2222,19 @@
       </div>
     </section>
 
+    <!-- Shown once, after a puzzle is completed. Neutral, honest, dismissible.
+         Asks only for an honest review and is never tied to any feature. -->
+    <div id="review-prompt" class="review-prompt" role="status" aria-live="polite">
+      <button id="review-dismiss" class="review-dismiss" type="button" aria-label="Dismiss">&times;</button>
+      <div class="review-prompt-title">Nice solving!</div>
+      <p class="review-prompt-text">
+        Hope this companion is helping you get more out of the book. If you&rsquo;re enjoying it, an
+        <b>honest review on Amazon</b> means a lot &mdash; it helps other puzzlers find the book.
+      </p>
+      <a id="review-link" class="btn btn-outline review-link"
+         href="https://www.amazon.com/portal/customer-reviews/B0G3VRZP4V/ref=cm_cr_dp_d_show_all_top?_encoding=UTF8&ie=UTF8&reviewerType=all_reviews" target="_blank" rel="noopener">Leave a review</a>
+    </div>
+
     <div class="side-column">
       <aside class="side-card">
         <div class="side-card-inner">
@@ -3654,6 +3707,15 @@ const HintEngine = (function () {
   }
   btnAutoCand.addEventListener("click", () => setAutoCandidates(!autoCandOn));
 
+  /* Review prompt dismiss. */
+  (function () {
+    const rd = document.getElementById("review-dismiss");
+    if (rd) rd.addEventListener("click", () => {
+      const el = document.getElementById("review-prompt");
+      if (el) el.classList.remove("show");
+    });
+  })();
+
   function toggleNote(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     if (!value || value < "1" || value > "9") return;
@@ -3741,6 +3803,18 @@ const HintEngine = (function () {
     puzzleCompleted = true;
     setStatus("Solved. Nicely done.", "good");
     if (timerEnabled) pauseTimer(false);
+    maybeShowReviewPrompt();
+  }
+
+  /* Review prompt: neutral, honest, shown at most once per session and only
+     after a genuine win. Never asks for a positive rating and is never tied to
+     any feature — an honest ask to verified buyers, dismissible at any time. */
+  let reviewPromptShown = false;
+  function maybeShowReviewPrompt() {
+    if (reviewPromptShown) return;
+    reviewPromptShown = true;
+    const el = document.getElementById("review-prompt");
+    if (el) el.classList.add("show");
   }
   function checkCompletionAuto() {
     if (!currentPuzzle || puzzleCompleted || !Checker.has()) return;
@@ -4196,6 +4270,8 @@ const HintEngine = (function () {
 
     Checker.load(currentPuzzle.solution);
     puzzleCompleted = false;
+    const rp = document.getElementById("review-prompt");
+    if (rp) rp.classList.remove("show");
     setStatus("");
     renderBoard();
     if (mode === "solution") showSolution();
