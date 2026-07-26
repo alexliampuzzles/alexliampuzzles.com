@@ -3416,6 +3416,9 @@ const HintEngine = (function () {
   /* True only when the grid was finished by the reader entering digits, not by
      opening the full solution — gates the review invitation. */
   let completedByPlaying = false;
+  /* True only while showSolution() is filling the grid, so the auto-completion
+     check doesn't count a revealed solution as a played solve. */
+  let revealingSolution = false;
 
   let currentHint = null;
   let hintLevel = 0;
@@ -3824,12 +3827,23 @@ const HintEngine = (function () {
     const el = document.getElementById("review-prompt");
     if (el) el.classList.add("show");
   }
-  function checkCompletionAuto() {
-    if (!currentPuzzle || puzzleCompleted || !Checker.has()) return;
+  function gridMatchesSolution() {
+    if (!Checker.has()) return false;
     for (let i = 0; i < 81; i++)
-      if (getCellValue(cellAt(i)) !== Checker.digitAt(i)) return;
+      if (getCellValue(cellAt(i)) !== Checker.digitAt(i)) return false;
+    return true;
+  }
+  function checkCompletionAuto() {
+    if (!currentPuzzle || !Checker.has()) return;
+    if (revealingSolution) return;
+    if (!gridMatchesSolution()) return;
+    /* The grid is genuinely complete and correct through the reader's own
+       entries. Mark it a real solve and show the message/review prompt. This
+       runs even if puzzleCompleted was already set by another path, so a manual
+       final digit always counts. */
     completedByPlaying = true;
-    showCompletionMessage();
+    if (!puzzleCompleted) showCompletionMessage();
+    else maybeShowReviewPrompt();
   }
 
   /* ---------- Input ---------- */
@@ -3919,6 +3933,7 @@ const HintEngine = (function () {
 
   function showSolution() {
     if (!currentPuzzle || !Checker.has()) return;
+    revealingSolution = true;
     clearHint();
     for (let i = 0; i < 81; i++) {
       const cell = cellAt(i), val = Checker.digitAt(i);
@@ -3929,6 +3944,7 @@ const HintEngine = (function () {
       clearAutoCell(cell);
     }
     updateNumberKeyStatus();
+    revealingSolution = false;
     showCompletionMessage();
   }
 
@@ -4212,6 +4228,7 @@ const HintEngine = (function () {
     if (!v.ok) { reportProblem(v, givens); return; }
     if (Array.from(grid).every(x => x)) {
       setStatus("Complete and correct.", "good");
+      completedByPlaying = true;
       showCompletionMessage();
       return;
     }
