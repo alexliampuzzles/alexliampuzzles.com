@@ -2279,7 +2279,7 @@
 
         <div class="mobile-hint-row">
           <button id="btn-hint-m" class="btn btn-outline" type="button">Hint</button>
-          <button id="btn-hard-hint-m" class="btn btn-outline" type="button">Hardest pattern</button>
+          <button id="btn-hard-hint-m" class="btn btn-outline" type="button">Harder pattern</button>
           <button id="btn-check-grid-m" class="btn btn-outline" type="button">Check</button>
           <button id="btn-undo-m" class="btn btn-outline" type="button">Undo</button>
         </div>
@@ -2297,16 +2297,17 @@
 
           <div class="hint-actions">
             <button id="btn-hint" class="btn btn-outline" type="button">Give me a hint</button>
-            <button id="btn-hard-hint" class="btn btn-outline" type="button">Hardest pattern here</button>
+            <button id="btn-hard-hint" class="btn btn-outline" type="button">Show a harder pattern</button>
             <button id="btn-auto-cand" class="btn btn-outline" type="button" aria-pressed="false">Show candidates</button>
             <button id="btn-check-grid" class="btn btn-outline" type="button">Check my grid</button>
             <button id="btn-undo" class="btn btn-outline" type="button">Undo</button>
           </div>
           <p class="side-sub" style="margin-top:0.5rem;font-size:0.82rem;">
             <b>Give me a hint</b> always offers the <i>easiest</i> step available, so you never do more work
-            than you have to. <b>Hardest pattern here</b> does the opposite: it names the most advanced
-            technique the position will support, for when you would rather learn the pattern than finish
-            the grid.
+            than you have to. <b>Show a harder pattern</b> does the opposite: it picks one of the advanced
+            techniques the position will support, for when you would rather learn a pattern than finish the
+            grid. Press it again for a different one &mdash; it works through everything the position
+            offers before repeating itself.
           </p>
           <p class="side-sub" style="margin-top:0.5rem;font-size:0.82rem;">
             <b>Show candidates</b> pencils in every possible digit for each empty cell automatically, so you can
@@ -2317,7 +2318,7 @@
 
           <div id="hint-panel" class="hint-panel" aria-live="polite">
             <div id="hint-tech" class="hint-tech"></div>
-            <div id="hint-teaching" class="hint-teaching" hidden>Teaching mode</div>
+            <div id="hint-teaching" class="hint-teaching" hidden>Harder pattern</div>
             <div id="hint-body" class="hint-body"></div>
             <div class="hint-more">
               <button id="btn-hint-more" class="btn btn-outline" type="button">Tell me more</button>
@@ -2368,7 +2369,7 @@
               <div><span class="key">N</span> &ndash; toggle Notes</div>
               <div><span class="key">C</span> &ndash; toggle candidates</div>
               <div><span class="key">H</span> &ndash; hint</div>
-              <div><span class="key">G</span> &ndash; hardest pattern here</div>
+              <div><span class="key">G</span> &ndash; show a harder pattern</div>
               <div><span class="key">Ctrl/&#8984; + Z</span> &ndash; undo</div>
               <div><span class="key">Click</span> &ndash; select a cell</div>
             </div>
@@ -3267,37 +3268,43 @@ const HintEngine = (function () {
   /* Techniques that remove candidates rather than placing a digit.
      Easiest first — this is the order the ordinary hint button walks, so the
      reader is always offered the cheapest step that works.
-     Swordfish now sits ABOVE simple colouring: most references rank it the
-     easier of the two, and with colouring first a swordfish was almost never
-     the technique actually named. */
+     Ordering follows SudokuWiki's ranking. Simple colouring belongs at #8,
+     just past X-Wing — NOT at the hard end. Parking it last made it the
+     "hardest" technique in almost every position, because a colouring chain is
+     available far more often than a swordfish or an XYZ-wing. */
   const ELIM_LADDER = [
     lockedCandidates,
     (g, c) => nakedSubset(g, c, 2), (g, c) => hiddenSubset(g, c, 2),
     (g, c) => nakedSubset(g, c, 3), (g, c) => hiddenSubset(g, c, 3),
     (g, c) => nakedSubset(g, c, 4),
+    /* ---- everything from here down counts as "advanced" ---- */
     (g, c) => fish(g, c, 2),
     skyscraper, twoStringKite,
-    uniqueRectangle, uniqueRectangle2, uniqueRectangle4, xyWing, xyzWing, wWing,
+    simpleColouring,
+    xyWing, wWing,
+    uniqueRectangle, uniqueRectangle2, uniqueRectangle4,
     (g, c) => fish(g, c, 3),
-    simpleColouring
+    xyzWing
   ];
+  /* Index of the first rung the harder-pattern button treats as advanced. */
+  const ADVANCED_FROM = 6;
 
   const LADDER = [nakedSingle, hiddenSingle].concat(ELIM_LADDER).concat([forcingChain]);
 
-  /* The same rungs walked hardest-first, for the teaching button. Forcing
-     chains are deliberately absent: this tier never asks the reader to guess.
-     Singles sit at the bottom so the walk always returns something. */
-  const HARD_LADDER = ELIM_LADDER.slice().reverse().concat([hiddenSingle, nakedSingle]);
-
-  /* Every technique that fires in this position, hardest first. Lets the panel
-     tell the reader what else is on the board besides the step being shown. */
-  function availableTechniques(g, cand) {
+  /* Every technique that fires in this position, easiest first, de-duplicated
+     by name (the three unique-rectangle variants share one label). Each entry
+     carries the ladder index, so a caller can ask for that exact technique. */
+  function surveyList(g, cand) {
     const out = [];
-    for (const fn of HARD_LADDER) {
-      const h = fn(g, cand);
-      if (h && out.indexOf(h.tech) < 0) out.push(h.tech);
+    for (let i = 0; i < ELIM_LADDER.length; i++) {
+      const h = ELIM_LADDER[i](g, cand);
+      if (h && !out.some(o => o.tech === h.tech))
+        out.push({ tech: h.tech, index: i, advanced: i >= ADVANCED_FROM });
     }
     return out;
+  }
+  function surveyHints(grid) {
+    return surveyList(grid, SudokuCore.buildCandidates(grid));
   }
 
   /* Continue past an elimination-only deduction until a digit can be placed.
@@ -3341,8 +3348,8 @@ const HintEngine = (function () {
   }
 
   /* Returns a hint object, or {tech:'Solved'}, or {tech:'Stuck'}.
-       opts.hardest — walk the ladder hardest-first (teaching mode)
-       opts.survey  — also attach the list of every technique available here */
+       opts.only   — use this ELIM_LADDER rung as the headline deduction
+       opts.survey — also attach the list of every technique available here */
   function getHint(grid, opts) {
     opts = opts || {};
 
@@ -3363,18 +3370,19 @@ const HintEngine = (function () {
                  l1: 'Something placed earlier is wrong \u2014 ' + rc(i) + ' has no legal digit left.' };
 
     let hit = null;
-    for (const fn of (opts.hardest ? HARD_LADDER : LADDER)) {
+    /* A caller can name the rung it wants. If that technique has stopped firing
+       since the position was surveyed, fall through to the ordinary walk. */
+    if (typeof opts.only === 'number' && ELIM_LADDER[opts.only]) {
+      hit = ELIM_LADDER[opts.only](grid, cand);
+      if (hit) hit.teaching = true;
+    }
+    if (!hit) for (const fn of LADDER) {
       const h = fn(grid, cand);
       if (h) { hit = h; break; }
     }
     if (!hit) return { tech: 'Stuck', l1: 'No deduction found from this position.' };
 
-    if (opts.hardest) {
-      hit.hardest = true;
-      /* Nothing above a single is on the board, so there is no pattern to teach. */
-      hit.noPattern = (hit.tech === 'Naked single' || hit.tech === 'Hidden single');
-    }
-    if (opts.survey) hit.available = availableTechniques(grid, cand);
+    if (opts.survey) hit.available = surveyList(grid, cand).map(o => o.tech);
 
     if (hit.place) {
       if (hit.tech === "Forcing chain") hit.usedChain = true;
@@ -3414,7 +3422,7 @@ const HintEngine = (function () {
     return hit;
   }
 
-  return { getHint, availableTechniques };
+  return { getHint, surveyHints };
 })();
 
 </script>
@@ -4179,7 +4187,7 @@ const HintEngine = (function () {
 
     const k = e.key;
     if (k === "h" || k === "H") { e.preventDefault(); requestHint(); return; }
-    if (k === "g" || k === "G") { e.preventDefault(); requestHardHint(); return; }
+    if (k === "g" || k === "G") { e.preventDefault(); requestHarderPattern(); return; }
     if (k === "n" || k === "N") { e.preventDefault(); btnNotes.click(); return; }
     if (k === "c" || k === "C") { e.preventDefault(); setAutoCandidates(!autoCandOn); return; }
     if (k === "Escape") { clearSelection(); selectedCell = null; announce("Selection cleared."); return; }
@@ -4383,7 +4391,7 @@ const HintEngine = (function () {
     const h = currentHint;
     if (!h) return;
     hintTechEl.textContent = hintLevel >= 2 ? h.tech : "Hint";
-    if (hintTeachEl) hintTeachEl.hidden = !h.hardest;
+    if (hintTeachEl) hintTeachEl.hidden = !h.teaching;
     let html = "<div>" + (h.l1 || "") + "</div>";
     if (hintLevel >= 2 && h.l2) html += '<div class="hint-step">' + h.l2 + "</div>";
     if (hintLevel >= 3 && h.l3) {
@@ -4432,7 +4440,7 @@ const HintEngine = (function () {
       const others = h.available.filter(t => t !== h.tech);
       if (others.length)
         html += '<div class="hint-available">Also available here, easiest first: <b>' +
-                others.slice().reverse().join("</b>, <b>") + "</b>.</div>";
+                others.join("</b>, <b>") + "</b>.</div>";
     }
 
     hintBodyEl.innerHTML = html;
@@ -4501,33 +4509,82 @@ const HintEngine = (function () {
     renderHint();
   }
 
-  /* Teaching mode. The ordinary hint button always offers the CHEAPEST step
-     available, which is right for finishing a grid but means an advanced
-     pattern is almost never the technique actually named: a naked single is
-     nearly always available too, and it wins. This button walks the same ladder
-     from the hard end instead, so the reader can be shown the swordfish or the
-     colouring chain that is sitting on the board. Forcing chains stay excluded,
-     so it still never asks anyone to guess. */
-  function requestHardHint() {
+  /* The ordinary hint button always offers the CHEAPEST step available, which
+     is right for finishing a grid but means an advanced pattern is almost never
+     the technique actually named. This button does the opposite.
+
+     It does NOT simply take the hardest rung: whichever technique sits at the
+     hard end of the ladder is available in most positions, so "hardest" returns
+     the same name over and over and stops teaching anything. Instead it surveys
+     everything the position supports and rotates: pick among the techniques
+     shown least often this session, breaking ties at random. Every pattern a
+     position offers comes up before any of them repeats, and the order still
+     feels unpredictable. Forcing chains are never in the pool, so this still
+     never asks anyone to guess. */
+  const patternShown = Object.create(null);
+  let lastPattern = null;
+
+  function requestHarderPattern() {
     if (!currentPuzzle) return;
     const grid = readGrid(), givens = readGivens();
 
     const v = Validator.check(grid, givens);
     if (!v.ok) { clearHint(); reportProblem(v, givens); return; }
 
-    const h = HintEngine.getHint(grid, { hardest: true, survey: true });
-    if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
-    if (h.tech === "Stuck") { clearHint(); setStatus("No deduction found from this position.", "bad"); return; }
+    const all = HintEngine.surveyHints(grid);
+    const advanced = all.filter(o => o.advanced);
+    /* Prefer genuinely advanced patterns; fall back to the basics only when the
+       position has nothing else, so this never rotates through naked pairs
+       while a swordfish is sitting on the board. */
+    const pool = advanced.length ? advanced : all;
+
+    if (!pool.length) {
+      clearHint();
+      const h = HintEngine.getHint(grid);
+      if (h.tech === "Solved") { setStatus("This grid is already complete.", "good"); return; }
+      if (h.tech === "Stuck" || h.usedChain) {
+        setStatus("No pattern is available here \u2014 fill an easier cell somewhere else and one " +
+                  "usually opens up.", "good");
+        return;
+      }
+      h.noPlacement = !h.place && !h.unlock;
+      currentHint = h; hintLevel = 1;
+      setStatus("No pattern is available in this position \u2014 the only step here is a " +
+                h.tech.toLowerCase() + ".", "good");
+      renderHint();
+      return;
+    }
+
+    /* Never hand back the same technique twice running while an alternative
+       exists. Without this, a technique that is behind on the session tally
+       keeps winning until it catches up, which produced long identical runs. */
+    let choices = pool;
+    if (pool.length > 1 && lastPattern) {
+      const others = pool.filter(o => o.tech !== lastPattern);
+      if (others.length) choices = others;
+    }
+    let fewest = Infinity;
+    choices.forEach(o => { const n = patternShown[o.tech] || 0; if (n < fewest) fewest = n; });
+    const least = choices.filter(o => (patternShown[o.tech] || 0) === fewest);
+    const pick = least[Math.floor(Math.random() * least.length)];
+    patternShown[pick.tech] = (patternShown[pick.tech] || 0) + 1;
+    lastPattern = pick.tech;
+
+    const h = HintEngine.getHint(grid, { only: pick.index });
+    if (h.tech === "Solved" || h.tech === "Stuck") {
+      clearHint(); setStatus("No deduction found from this position.", "bad"); return;
+    }
+    h.available = pool.map(o => o.tech);
+    h.noPlacement = !h.place && !h.unlock;
 
     clearHint();
-    h.noPlacement = !h.place && !h.unlock;
     currentHint = h;
     /* Start at level 2: naming the technique is the whole point of this button. */
     hintLevel = 2;
-    setStatus(h.noPattern
-      ? "No advanced pattern is available here \u2014 the hardest step in this position is a single."
-      : "Hardest technique available here: " + h.tech +
-        ". The ordinary hint button would have offered you something easier.", "good");
+    setStatus(pool.length > 1
+      ? "Showing " + h.tech + ". " + pool.length +
+        " patterns are available in this position \u2014 press again for a different one."
+      : "Showing " + h.tech + " \u2014 the only pattern available in this position.", "good");
     renderHint();
   }
 
@@ -4580,10 +4637,10 @@ const HintEngine = (function () {
 
   btnHint.addEventListener("click", requestHint);
   btnHintMore.addEventListener("click", escalateHint);
-  if (btnHardHint) btnHardHint.addEventListener("click", requestHardHint);
+  if (btnHardHint) btnHardHint.addEventListener("click", requestHarderPattern);
   if (btnUndo) btnUndo.addEventListener("click", undo);
   if (btnHintM) btnHintM.addEventListener("click", requestHint);
-  if (btnHardHintM) btnHardHintM.addEventListener("click", requestHardHint);
+  if (btnHardHintM) btnHardHintM.addEventListener("click", requestHarderPattern);
   if (btnUndoM) btnUndoM.addEventListener("click", undo);
 
   /* Shared reporting for both the hint button and the check button. */
