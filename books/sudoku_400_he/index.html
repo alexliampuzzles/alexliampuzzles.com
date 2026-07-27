@@ -3378,7 +3378,7 @@ const HintEngine = (function () {
       const s = nakedSingle(g, cand) || hiddenSingle(g, cand);
       if (s) {
         steps.push({ tech: s.tech, text: s.l3, focus: s.focus });
-        return { place: s.place, steps: steps };
+        return { place: s.place, steps: steps, cand: cand };
       }
       let moved = false;
       for (const fn of ELIM_LADDER) {
@@ -3399,17 +3399,24 @@ const HintEngine = (function () {
              Report
              the clean route gathered so far, plus a flag saying the final
              unlock needed a chain, so callers can decide how to present it. */
-          return { place: fc.place, steps: steps, chainOnly: true };
+          return { place: fc.place, steps: steps, chainOnly: true, cand: cand };
         }
-        return null;
+        return { place: null, steps: steps, cand: cand };
       }
     }
-    return null;
+    return { place: null, steps: steps, cand: cand };
   }
 
   /* Returns a hint object, or {tech:'Solved'}, or {tech:'Stuck'}.
        opts.only   — use this ELIM_LADDER rung as the headline deduction
-       opts.survey — also attach the list of every technique available here */
+       opts.survey — also attach the list of every technique available here
+       opts.cand   — start from these candidates instead of rebuilding from the
+                     placed digits. Unique rectangles and BUG+1 depend on the
+                     exact shape of the candidate set, so an elimination they
+                     licensed cannot always be re-derived once a corner has been
+                     filled in. Carrying the candidates forward keeps those.
+     When a route is computed, hit.narrowed holds the candidate set at the end
+     of it, so the caller can carry it forward. */
   function getHint(grid, opts) {
     opts = opts || {};
 
@@ -3423,7 +3430,7 @@ const HintEngine = (function () {
     if (Array.from(grid).every(v => v))
       return { tech: 'Solved', l1: 'This grid is already complete.' };
 
-    const cand = SudokuCore.buildCandidates(grid);
+    const cand = opts.cand ? Int32Array.from(opts.cand) : SudokuCore.buildCandidates(grid);
     for (let i = 0; i < 81; i++)
       if (!grid[i] && cand[i] === 0)
         return { tech: 'Contradiction', focus: [i], nudgeCells: [i],
@@ -3454,6 +3461,7 @@ const HintEngine = (function () {
     const work = Int32Array.from(cand);
     hit.elims.forEach(e => { work[e.i] &= ~bit(e.d); });
     const res = driveToPlacement(grid, work);
+    hit.narrowed = res.cand;
     if (res) {
       if (res.chainOnly) {
         /* The private walk could only reach a PLACEMENT via a forcing chain.
@@ -3704,6 +3712,7 @@ const HintEngine = (function () {
   function renderBoard() {
     boardEl.innerHTML = "";
     selectedCell = null;
+    liveCand = null;
     autoCleared.clear();
     clearHint();
     if (!currentPuzzle) return;
@@ -3985,6 +3994,22 @@ const HintEngine = (function () {
   const undoStack = [];
   let suspendRecompute = false;
 
+  /* The hint engine's candidate memo.
+
+     Unique rectangles and BUG+1 are the only rungs whose availability depends
+     on the SHAPE of the candidate set rather than just the placed digits, so an
+     elimination they licensed cannot always be re-derived once a corner of the
+     rectangle has been filled in. Rebuilding candidates from the grid on every
+     hint therefore threw those away. Measured against the book: three Expert
+     grids (8, 12 and 154) stalled and needed the reveal button because of it,
+     and all three finish cleanly once the candidates are carried forward.
+
+     This is engine state only. The on-screen candidate overlay stays built from
+     the placed digits, so it never shows the reader an elimination they haven't
+     worked out for themselves. Reset whenever the board loses a digit, since an
+     erase can't soundly un-eliminate anything. */
+  let liveCand = null;
+
   function snapshot() {
     const out = [];
     for (let i = 0; i < 81; i++) {
@@ -4013,6 +4038,7 @@ const HintEngine = (function () {
     }
     /* The auto-clear ledger describes a history this snapshot may not share. */
     autoCleared.clear();
+    liveCand = null;
     clearHint();
     recomputeConflicts();
     updateNumberKeyStatus();
@@ -4220,6 +4246,15 @@ const HintEngine = (function () {
     cell.classList.remove("error");
     refreshCellLabel(cell);
     const r0 = +cell.dataset.row, c0 = +cell.dataset.col, idx0 = r0 * 9 + c0;
+    if (!value) liveCand = null;
+    else if (liveCand) {
+      const nd = +value;
+      liveCand[idx0] = SudokuCore.bit(nd);
+      SudokuCore.PEERS[idx0].forEach(q => {
+        const pc = cellAt(q);
+        if (pc && !pc.dataset.value) liveCand[q] &= ~SudokuCore.bit(nd);
+      });
+    }
     /* Show solution fills 81 cells one by one; re-running every check per cell
        made that visibly slow. Batch callers set the flag and sweep up once. */
     if (suspendRecompute) return;
@@ -4320,6 +4355,7 @@ const HintEngine = (function () {
     if (!currentPuzzle || !Checker.has()) return;
     revealingSolution = true;
     suspendRecompute = true;
+    liveCand = null;
     clearHint();
     for (let i = 0; i < 81; i++) {
       const cell = cellAt(i), val = Checker.digitAt(i);
@@ -4562,7 +4598,8 @@ const HintEngine = (function () {
     const v = Validator.check(grid, givens);
     if (!v.ok) { clearHint(); reportProblem(v, givens); return; }
 
-    const h = HintEngine.getHint(grid);
+    const h = HintEngine.getHint(grid, liveCand ? { cand: liveCand } : {});
+    if (h.narrowed) liveCand = Int32Array.from(h.narrowed);
     /* clearHint() as well as the message: a previous "check my grid" may have
        left red rings on the board that no longer mean anything. */
     if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
