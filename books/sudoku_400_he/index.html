@@ -60,6 +60,12 @@
       --accent-strong: rgba(249, 115, 22, 0.18);
       --accent-glow: 0 4px 10px rgba(249, 115, 22, 0.20);
       --danger: #f97373;
+      /* Hint highlighting. Deliberately stronger than the ordinary row/column
+         wash (0.28) so the hint is never the quietest thing on the board. */
+      --hint-unit: rgba(249, 115, 22, 0.13);
+      --hint-soft: rgba(249, 115, 22, 0.30);
+      --hint-strong: rgba(249, 115, 22, 0.50);
+      --sel-ring: #facc15;
       --border-subtle: rgba(148, 163, 184, 0.35);
       --btn-bg: #111827;
       --btn-hover: #1f2933;
@@ -104,6 +110,7 @@
       --btn-bg: #ffffff;
       --btn-hover: #f3f4f6;
       --shadow-soft: 0 18px 35px rgba(15, 23, 42, 0.12);
+      --sel-ring: #2563eb;
     }
 
     .page-shell {
@@ -2009,17 +2016,63 @@
     }
     .hint-inline-btn:hover { opacity: 0.8; }
 
+    /* Level 1 nudge: a whole unit, faintly. Never the answer cell. */
+    .cell.hint-unit { background: var(--hint-unit); }
+
     .cell.hint-primary {
       box-shadow: inset 0 0 0 2px var(--accent);
-      background: var(--accent-strong) !important;
+      background: var(--hint-strong) !important;
     }
 
-    .cell.hint-secondary {
-      background: var(--accent-soft) !important;
-    }
+    .cell.hint-secondary { background: var(--hint-soft) !important; }
 
+    /* An outline rather than a box-shadow, so an elimination marker can share a
+       cell with .hint-primary instead of the two rings cancelling out. */
     .cell.hint-eliminate {
-      box-shadow: inset 0 0 0 2px var(--danger);
+      outline: 2px dashed var(--danger);
+      outline-offset: -3px;
+    }
+
+    /* An error always reads as an error, whatever else is painted on the cell.
+       The light theme already forced this; the dark theme used to lose to the
+       hint background and showed orange where light showed red. */
+    body.theme-dark .cell.error { background: rgba(239, 68, 68, 0.28) !important; }
+
+    /* The selection ring lives on a pseudo-element so it survives a hint
+       background, which has to use !important to win the cascade. */
+    .cell.selected::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 3px var(--sel-ring);
+      z-index: 4;
+    }
+
+    .board:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+
+    /* Compact hint controls directly under the grid. On narrow screens the side
+       column stacks below the board AND the number pad, so the real hint
+       buttons are a long scroll away from the puzzle. */
+    .mobile-hint-row { display: none; gap: 0.5rem; margin-top: 0.8rem; }
+    .mobile-hint-row .btn { flex: 1 1 0; padding: 0.55rem 0.35rem; font-size: 0.82rem; }
+    @media (max-width: 880px) { .mobile-hint-row { display: flex; } }
+
+    .hint-available { margin-top: 0.6rem; font-size: 0.8rem; color: var(--text-muted); }
+    .hint-available b { color: var(--accent); font-weight: 600; }
+
+    .hint-teaching {
+      margin-top: 0.15rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
     }
 
     .status-line {
@@ -2169,7 +2222,10 @@
                 <button id="btn-show-solution" class="btn btn-outline" type="button">Show Solution</button>
               </div>
 
-              <button id="btn-mistakes" class="btn btn-outline" type="button">Show mistakes</button>
+              <div class="book-action-group">
+                <button id="btn-mistakes" class="btn btn-outline" type="button" aria-pressed="false">Block wrong moves</button>
+                <button id="btn-restart" class="btn btn-outline" type="button">Restart puzzle</button>
+              </div>
             </div>
           </div>
         </div>
@@ -2187,7 +2243,8 @@
         </div>
 
         <div class="board-wrapper">
-          <div id="board" class="board" aria-label="Sudoku grid"></div>
+          <div id="board" class="board" role="grid" tabindex="0"
+               aria-label="Sudoku grid. Use the arrow keys to move, 1 to 9 to fill, Backspace to erase."></div>
 
           <div id="board-overlay" class="board-overlay" aria-hidden="true">
             <div class="overlay-content">
@@ -2219,6 +2276,13 @@
             </button>
           </div>
         </div>
+
+        <div class="mobile-hint-row">
+          <button id="btn-hint-m" class="btn btn-outline" type="button">Hint</button>
+          <button id="btn-hard-hint-m" class="btn btn-outline" type="button">Hardest pattern</button>
+          <button id="btn-check-grid-m" class="btn btn-outline" type="button">Check</button>
+          <button id="btn-undo-m" class="btn btn-outline" type="button">Undo</button>
+        </div>
       </div>
     </section>
 
@@ -2233,9 +2297,17 @@
 
           <div class="hint-actions">
             <button id="btn-hint" class="btn btn-outline" type="button">Give me a hint</button>
+            <button id="btn-hard-hint" class="btn btn-outline" type="button">Hardest pattern here</button>
             <button id="btn-auto-cand" class="btn btn-outline" type="button" aria-pressed="false">Show candidates</button>
             <button id="btn-check-grid" class="btn btn-outline" type="button">Check my grid</button>
+            <button id="btn-undo" class="btn btn-outline" type="button">Undo</button>
           </div>
+          <p class="side-sub" style="margin-top:0.5rem;font-size:0.82rem;">
+            <b>Give me a hint</b> always offers the <i>easiest</i> step available, so you never do more work
+            than you have to. <b>Hardest pattern here</b> does the opposite: it names the most advanced
+            technique the position will support, for when you would rather learn the pattern than finish
+            the grid.
+          </p>
           <p class="side-sub" style="margin-top:0.5rem;font-size:0.82rem;">
             <b>Show candidates</b> pencils in every possible digit for each empty cell automatically, so you can
             see the pattern a hint describes. It updates as you play and never counts as one of your own notes.
@@ -2245,6 +2317,7 @@
 
           <div id="hint-panel" class="hint-panel" aria-live="polite">
             <div id="hint-tech" class="hint-tech"></div>
+            <div id="hint-teaching" class="hint-teaching" hidden>Teaching mode</div>
             <div id="hint-body" class="hint-body"></div>
             <div class="hint-more">
               <button id="btn-hint-more" class="btn btn-outline" type="button">Tell me more</button>
@@ -2289,9 +2362,14 @@
           <div>
             <div class="side-section-title">Keyboard tips</div>
             <div class="legend">
+              <div><span class="key">&larr; &uarr; &darr; &rarr;</span> &ndash; move around the grid</div>
               <div><span class="key">1&ndash;9</span> &ndash; fill a number</div>
               <div><span class="key">Backspace</span> &ndash; erase</div>
+              <div><span class="key">N</span> &ndash; toggle Notes</div>
+              <div><span class="key">C</span> &ndash; toggle candidates</div>
               <div><span class="key">H</span> &ndash; hint</div>
+              <div><span class="key">G</span> &ndash; hardest pattern here</div>
+              <div><span class="key">Ctrl/&#8984; + Z</span> &ndash; undo</div>
               <div><span class="key">Click</span> &ndash; select a cell</div>
             </div>
           </div>
@@ -2317,6 +2395,8 @@
       -->
     </div>
   </main>
+
+  <div id="sr-live" class="sr-only" role="status" aria-live="polite"></div>
 
   <footer>
     <span>&copy; <span id="year"></span> Alex Liam Puzzles</span>
@@ -2494,7 +2574,7 @@ const HintEngine = (function () {
       if (!g[i] && cnt(cand[i]) === 1) {
         const d = bitsOf(cand[i])[0];
         return {
-          tech: 'Naked single', focus: [i],
+          tech: 'Naked single', focus: [i], nudgeCells: [i],
           l1: 'Take a close look at ' + rc(i) + '.',
           l2: 'Every digit but one is already blocked in ' + rc(i) + ' by its row, column or box.',
           l3: rc(i) + ' must be <code>' + d + '</code>.',
@@ -2517,7 +2597,7 @@ const HintEngine = (function () {
         }
         if (!done && n === 1) {
           return {
-            tech: 'Hidden single', focus: [spot], unit: ui,
+            tech: 'Hidden single', focus: [spot], unit: ui, nudgeUnits: [ui],
             l1: 'Concentrate on ' + un(ui) + '.',
             l2: 'One digit has only a single square left anywhere in ' + un(ui) + '.',
             l3: 'In ' + un(ui) + ', <code>' + d + '</code> fits nowhere except ' + rc(spot) + '.',
@@ -2544,6 +2624,7 @@ const HintEngine = (function () {
           const real = realElims(cand, g, el);
           if (real.length) return {
             tech: 'Locked candidates (pointing)', focus: spots, elimCells: real.map(e => e.i),
+            nudgeUnits: [b, r],
             l1: 'Compare ' + un(b) + ' with row ' + (r + 1) + '.',
             l2: 'Inside ' + un(b) + ', one digit is confined to a single row.',
             l3: 'In ' + un(b) + ', <code>' + d + '</code> can only sit in row ' + (r + 1) +
@@ -2557,6 +2638,7 @@ const HintEngine = (function () {
           const real = realElims(cand, g, el);
           if (real.length) return {
             tech: 'Locked candidates (pointing)', focus: spots, elimCells: real.map(e => e.i),
+            nudgeUnits: [b, 9 + c],
             l1: 'Compare ' + un(b) + ' with column ' + (c + 1) + '.',
             l2: 'Inside ' + un(b) + ', one digit is confined to a single column.',
             l3: 'In ' + un(b) + ', <code>' + d + '</code> can only sit in column ' + (c + 1) +
@@ -2578,6 +2660,7 @@ const HintEngine = (function () {
           UNITS[18 + b].filter(i => u.indexOf(i) < 0).map(i => ({ i: i, d: d })));
         if (real.length) return {
           tech: 'Locked candidates (claiming)', focus: spots, elimCells: real.map(e => e.i),
+          nudgeUnits: [ui, 18 + b],
           l1: 'Compare ' + un(ui) + ' with ' + un(18 + b) + '.',
           l2: 'In ' + un(ui) + ', one digit only fits inside a single box.',
           l3: 'In ' + un(ui) + ', <code>' + d + '</code> is restricted to ' + un(18 + b) +
@@ -2603,6 +2686,7 @@ const HintEngine = (function () {
         const real = realElims(cand, g, el);
         if (real.length) return {
           tech: names[size], focus: combo, elimCells: real.map(e => e.i),
+          nudgeUnits: [ui],
           l1: 'Something is locked up in ' + un(ui) + '.',
           l2: size + ' cells in ' + un(ui) + ' share only ' + size + ' candidates between them.',
           l3: ls(combo) + ' hold nothing but <code>' + digs.join('</code> <code>') +
@@ -2633,7 +2717,9 @@ const HintEngine = (function () {
         cells.forEach(i => bitsOf(cand[i] & ~m).forEach(d => el.push({ i: i, d: d })));
         const real = realElims(cand, g, el);
         if (real.length) return {
-          tech: names[size], focus: cells, elimCells: cells,
+          tech: names[size], focus: cells,
+          elimCells: Array.from(new Set(real.map(e => e.i))),
+          nudgeUnits: [ui],
           l1: 'Count where each digit can go in ' + un(ui) + '.',
           l2: size + ' digits in ' + un(ui) + ' are confined to the same ' + size + ' cells.',
           l3: 'In ' + un(ui) + ', <code>' + combo.join('</code> <code>') + '</code> only fit in ' +
@@ -2675,6 +2761,7 @@ const HintEngine = (function () {
           const real = realElims(cand, g, el);
           if (real.length) return {
             tech: names[size], focus: foc, elimCells: real.map(e => e.i),
+            nudgeUnits: base.map(a => byRow ? a : 9 + a),
             l1: 'Track where <code>' + d + '</code> can go across several ' + (byRow ? 'rows' : 'columns') + '.',
             l2: 'The digit ' + d + ' forms a rectangle pattern across ' + size + ' ' +
                 (byRow ? 'rows' : 'columns') + '.',
@@ -2704,7 +2791,7 @@ const HintEngine = (function () {
           const i = byRow ? a * 9 + b : b * 9 + a;
           if (!g[i] && (cand[i] & bit(d))) spots.push(i);
         }
-        if (spots.length === 2) pairs.push({ cells: spots, byRow: byRow });
+        if (spots.length === 2) pairs.push({ cells: spots, byRow: byRow, ui: byRow ? a : 9 + a });
       }
     }
     return pairs;
@@ -2744,6 +2831,7 @@ const HintEngine = (function () {
               const real = realElims(cand, g, targets);
               if (real.length) return {
                 tech: 'Skyscraper', focus: A.concat(B), elimCells: real.map(e => e.i),
+                nudgeUnits: [lines[i].ui, lines[j].ui],
                 l1: 'Follow where <code>' + d + '</code> can sit in two ' +
                     (orient ? 'rows' : 'columns') + '.',
                 l2: 'Two ' + (orient ? 'rows' : 'columns') + ' each pin ' + d +
@@ -2778,6 +2866,7 @@ const HintEngine = (function () {
           const real = realElims(cand, g, targets);
           if (real.length) return {
             tech: '2-string kite', focus: R.cells.concat(C2.cells), elimCells: real.map(e => e.i),
+            nudgeUnits: [R.ui, C2.ui],
             l1: 'Look at <code>' + d + '</code> in one row and one column that meet in a box.',
             l2: 'A row and a column each pin ' + d + ' to two cells, joined through a shared box.',
             l3: 'The row ' + ls(R.cells) + ' and the column ' + ls(C2.cells) +
@@ -2807,7 +2896,7 @@ const HintEngine = (function () {
         if ((cand[fourth] & p) !== p || cnt(cand[fourth]) <= 2) continue;
         const real = realElims(cand, g, bitsOf(p).map(d => ({ i: fourth, d: d })));
         if (real.length) return {
-          tech: 'Unique rectangle', focus: cells, elimCells: [fourth],
+          tech: 'Unique rectangle', focus: cells, elimCells: [fourth], nudgeCells: cells,
           l1: 'Look at the rectangle ' + ls(cells) + '.',
           l2: 'Three corners of that rectangle share the same two candidates — a shape that would ' +
               'give the puzzle two solutions if the fourth corner matched.',
@@ -2847,7 +2936,7 @@ const HintEngine = (function () {
               el.push({ i: i, d: cd });
           const real = realElims(cand, g, el);
           if (real.length) return {
-            tech: 'Unique rectangle', focus: cells, elimCells: real.map(e => e.i),
+            tech: 'Unique rectangle', focus: cells, elimCells: real.map(e => e.i), nudgeCells: cells,
             l1: 'Look at the rectangle ' + ls(cells) + '.',
             l2: 'Two corners are a bare pair; the other two add the same extra candidate.',
             l3: 'To avoid two solutions, one of ' + ls(extra) + ' must be <code>' + cd +
@@ -2887,7 +2976,7 @@ const HintEngine = (function () {
             if (locked) {
               const real = realElims(cand, g, roof.map(i => ({ i: i, d: drop })));
               if (real.length) return {
-                tech: 'Unique rectangle', focus: cells, elimCells: real.map(e => e.i),
+                tech: 'Unique rectangle', focus: cells, elimCells: real.map(e => e.i), nudgeCells: cells,
                 l1: 'Look at the rectangle ' + ls(cells) + '.',
                 l2: 'Two corners are a bare pair; in the roof, one of the pair is locked in place.',
                 l3: 'To avoid two solutions, ' + rc(roof[0]) + ' and ' + rc(roof[1]) + ' can\u2019t both be ' +
@@ -2924,7 +3013,7 @@ const HintEngine = (function () {
           if (i !== p && i !== w1 && i !== w2 && share(i, w1) && share(i, w2)) el.push({ i: i, d: z });
         const real = realElims(cand, g, el);
         if (real.length) return {
-          tech: 'XY-Wing', focus: [p, w1, w2], elimCells: real.map(e => e.i),
+          tech: 'XY-Wing', focus: [p, w1, w2], elimCells: real.map(e => e.i), nudgeCells: [p],
           l1: 'Three two-candidate cells around ' + rc(p) + ' are doing something.',
           l2: rc(p) + ' is a pivot; ' + rc(w1) + ' and ' + rc(w2) + ' are its wings.',
           l3: rc(p) + ' holds <code>' + x + '</code><code>' + y + '</code>. Whichever it turns out to be, ' +
@@ -2958,7 +3047,7 @@ const HintEngine = (function () {
             el.push({ i: i, d: z });
         const real = realElims(cand, g, el);
         if (real.length) return {
-          tech: 'XYZ-Wing', focus: [p, w1, w2], elimCells: real.map(e => e.i),
+          tech: 'XYZ-Wing', focus: [p, w1, w2], elimCells: real.map(e => e.i), nudgeCells: [p],
           l1: 'Look at ' + rc(p) + ' and the two-candidate cells it sees.',
           l2: rc(p) + ' has three candidates; ' + rc(w1) + ' and ' + rc(w2) + ' each hold two of them.',
           l3: 'Between ' + rc(p) + ', ' + rc(w1) + ' and ' + rc(w2) + ', one of them must be <code>' + z +
@@ -2991,6 +3080,7 @@ const HintEngine = (function () {
           const real = realElims(cand, g, el);
           if (real.length) return {
             tech: 'W-Wing', focus: [w1, w2, s1, s2], elimCells: real.map(e => e.i),
+            nudgeCells: [w1, w2],
             l1: rc(w1) + ' and ' + rc(w2) + ' hold the same two candidates.',
             l2: 'They are joined by a strong link on <code>' + link + '</code> in ' + un(ui) + '.',
             l3: 'In ' + un(ui) + ', <code>' + link + '</code> sits in only ' + ls(spots) +
@@ -3174,7 +3264,12 @@ const HintEngine = (function () {
     };
   }
 
-  /* Techniques that remove candidates rather than placing a digit. */
+  /* Techniques that remove candidates rather than placing a digit.
+     Easiest first — this is the order the ordinary hint button walks, so the
+     reader is always offered the cheapest step that works.
+     Swordfish now sits ABOVE simple colouring: most references rank it the
+     easier of the two, and with colouring first a swordfish was almost never
+     the technique actually named. */
   const ELIM_LADDER = [
     lockedCandidates,
     (g, c) => nakedSubset(g, c, 2), (g, c) => hiddenSubset(g, c, 2),
@@ -3183,11 +3278,27 @@ const HintEngine = (function () {
     (g, c) => fish(g, c, 2),
     skyscraper, twoStringKite,
     uniqueRectangle, uniqueRectangle2, uniqueRectangle4, xyWing, xyzWing, wWing,
-    simpleColouring,
-    (g, c) => fish(g, c, 3)
+    (g, c) => fish(g, c, 3),
+    simpleColouring
   ];
 
   const LADDER = [nakedSingle, hiddenSingle].concat(ELIM_LADDER).concat([forcingChain]);
+
+  /* The same rungs walked hardest-first, for the teaching button. Forcing
+     chains are deliberately absent: this tier never asks the reader to guess.
+     Singles sit at the bottom so the walk always returns something. */
+  const HARD_LADDER = ELIM_LADDER.slice().reverse().concat([hiddenSingle, nakedSingle]);
+
+  /* Every technique that fires in this position, hardest first. Lets the panel
+     tell the reader what else is on the board besides the step being shown. */
+  function availableTechniques(g, cand) {
+    const out = [];
+    for (const fn of HARD_LADDER) {
+      const h = fn(g, cand);
+      if (h && out.indexOf(h.tech) < 0) out.push(h.tech);
+    }
+    return out;
+  }
 
   /* Continue past an elimination-only deduction until a digit can be placed.
      Works on a private copy so the reader's grid is never modified. */
@@ -3229,28 +3340,42 @@ const HintEngine = (function () {
     return null;
   }
 
-  /* Returns a hint object, or {tech:'Solved'}, or {tech:'Stuck'}. */
-  function getHint(grid) {
-    if (Array.from(grid).every(v => v))
-      return { tech: 'Solved', l1: 'This grid is already complete.' };
+  /* Returns a hint object, or {tech:'Solved'}, or {tech:'Stuck'}.
+       opts.hardest — walk the ladder hardest-first (teaching mode)
+       opts.survey  — also attach the list of every technique available here */
+  function getHint(grid, opts) {
+    opts = opts || {};
 
+    /* Rule breaches are tested BEFORE completeness. A full grid that repeats a
+       digit is broken, not solved, and the old order reported it as solved. */
     const dup = Validator.findDuplicates(grid);
     if (dup.length)
-      return { tech: 'Rule broken', focus: dup,
+      return { tech: 'Rule broken', focus: dup, nudgeCells: dup,
                l1: 'A digit is repeated in a row, column or box. Clear the highlighted cells first.' };
+
+    if (Array.from(grid).every(v => v))
+      return { tech: 'Solved', l1: 'This grid is already complete.' };
 
     const cand = SudokuCore.buildCandidates(grid);
     for (let i = 0; i < 81; i++)
       if (!grid[i] && cand[i] === 0)
-        return { tech: 'Contradiction', focus: [i],
+        return { tech: 'Contradiction', focus: [i], nudgeCells: [i],
                  l1: 'Something placed earlier is wrong \u2014 ' + rc(i) + ' has no legal digit left.' };
 
     let hit = null;
-    for (const fn of LADDER) {
+    for (const fn of (opts.hardest ? HARD_LADDER : LADDER)) {
       const h = fn(grid, cand);
       if (h) { hit = h; break; }
     }
     if (!hit) return { tech: 'Stuck', l1: 'No deduction found from this position.' };
+
+    if (opts.hardest) {
+      hit.hardest = true;
+      /* Nothing above a single is on the board, so there is no pattern to teach. */
+      hit.noPattern = (hit.tech === 'Naked single' || hit.tech === 'Hidden single');
+    }
+    if (opts.survey) hit.available = availableTechniques(grid, cand);
+
     if (hit.place) {
       if (hit.tech === "Forcing chain") hit.usedChain = true;
       return hit;
@@ -3289,7 +3414,7 @@ const HintEngine = (function () {
     return hit;
   }
 
-  return { getHint };
+  return { getHint, availableTechniques };
 })();
 
 </script>
@@ -3384,6 +3509,15 @@ const HintEngine = (function () {
   const btnHintMore = document.getElementById("btn-hint-more");
   const btnHintClose = document.getElementById("btn-hint-close");
   const btnCheckGrid = document.getElementById("btn-check-grid");
+  const btnHardHint = document.getElementById("btn-hard-hint");
+  const btnUndo = document.getElementById("btn-undo");
+  const btnRestart = document.getElementById("btn-restart");
+  const btnHintM = document.getElementById("btn-hint-m");
+  const btnHardHintM = document.getElementById("btn-hard-hint-m");
+  const btnCheckGridM = document.getElementById("btn-check-grid-m");
+  const btnUndoM = document.getElementById("btn-undo-m");
+  const hintTeachEl = document.getElementById("hint-teaching");
+  const srLive = document.getElementById("sr-live");
   const hintPanel = document.getElementById("hint-panel");
   const hintTechEl = document.getElementById("hint-tech");
   const hintBodyEl = document.getElementById("hint-body");
@@ -3484,6 +3618,21 @@ const HintEngine = (function () {
   const cellAt = i => boardEl.children[i];
   function getCellValue(cell) { return cell ? (cell.dataset.value || "") : ""; }
 
+  /* Screen-reader description of a cell. The board is a flat grid of divs, so
+     without these it announces nothing at all. */
+  function describeCell(cell) {
+    if (!cell) return "";
+    const r = +cell.dataset.row + 1, c = +cell.dataset.col + 1;
+    const v = cell.dataset.value, n = cell.dataset.notes;
+    let what;
+    if (v) what = cell.classList.contains("given") ? v + ", given" : v;
+    else if (n) what = "notes " + n.split("").join(" ");
+    else what = "empty";
+    return "Row " + r + ", column " + c + ", " + what;
+  }
+  function refreshCellLabel(cell) { if (cell) cell.setAttribute("aria-label", describeCell(cell)); }
+  function announce(msg) { if (srLive) srLive.textContent = msg || ""; }
+
   function renderBoard() {
     boardEl.innerHTML = "";
     selectedCell = null;
@@ -3498,11 +3647,13 @@ const HintEngine = (function () {
       cell.dataset.row = r; cell.dataset.col = c;
       cell.dataset.value = isGiven ? ch : "";
       cell.dataset.notes = "";
+      cell.setAttribute("role", "gridcell");
       const v = document.createElement("div");
       v.className = "cell-value";
       if (isGiven) { v.textContent = ch; cell.classList.add("given"); }
       else { v.textContent = ""; cell.classList.add("empty"); }
       cell.appendChild(v);
+      refreshCellLabel(cell);
       boardEl.appendChild(cell);
     }
     recomputeConflicts();
@@ -3533,6 +3684,10 @@ const HintEngine = (function () {
     boardEl.querySelectorAll(".cell").forEach(c =>
       c.classList.remove("row-highlight", "col-highlight", "same-digit", "box-highlight"));
     if (!selectedCell) return;
+    /* A hint tints at most a handful of cells; the row/column/box wash tints
+       twenty-one. With both on screen the wash wins on area alone and the hint
+       reads as the quieter mark, so it is held back until the hint is dismissed. */
+    if (currentHint) { selectedCell.classList.add("selected"); return; }
     const row = +selectedCell.dataset.row, col = +selectedCell.dataset.col;
     const value = getCellValue(selectedCell);
     const bR = Math.floor(row / 3), bC = Math.floor(col / 3);
@@ -3546,10 +3701,18 @@ const HintEngine = (function () {
     selectedCell.classList.add("selected");
   }
   function selectCell(cell) {
+    if (!cell) return;
     clearSelection();
     selectedCell = cell;
     selectedCell.classList.add("selected");
     updateHighlights();
+  }
+  function selectIndex(i) {
+    if (i < 0 || i > 80) return;
+    const cell = cellAt(i);
+    if (!cell) return;
+    selectCell(cell);
+    announce(describeCell(cell));
   }
   boardEl.addEventListener("click", e => {
     const cell = e.target.closest(".cell");
@@ -3734,7 +3897,9 @@ const HintEngine = (function () {
     cell.dataset.notes = notes.join("");
     if (notes.length) syncNotesView(cell, notes);
     else { clearNotes(cell); if (!cell.dataset.value) cell.classList.add("empty"); }
+    refreshCellLabel(cell);
     refreshAutoCandidates();
+    saveProgress();
     if (cell === selectedCell) updateHighlights();
   }
   btnNotes.addEventListener("click", () => {
@@ -3744,6 +3909,95 @@ const HintEngine = (function () {
     const l = btnNotes.querySelector(".label");
     if (l) l.textContent = notesMode ? "Notes on" : "Notes";
   });
+
+  /* ---------- Snapshots: undo and saved progress ----------
+     A snapshot is the value and pencil marks of all 81 cells. Givens are
+     recorded but never written back, so a stale or corrupt save can't rewrite
+     the puzzle itself. */
+  const undoStack = [];
+  let suspendRecompute = false;
+
+  function snapshot() {
+    const out = [];
+    for (let i = 0; i < 81; i++) {
+      const c = cellAt(i);
+      out.push(c ? (c.dataset.value || "") + "|" + (c.dataset.notes || "") : "|");
+    }
+    return out.join(",");
+  }
+  function applySnapshot(str) {
+    const parts = String(str || "").split(",");
+    if (parts.length !== 81) return false;
+    for (let i = 0; i < 81; i++) {
+      const cell = cellAt(i);
+      if (!cell || cell.classList.contains("given")) continue;
+      const bits = parts[i].split("|");
+      const v = (bits[0] || "").replace(/[^1-9]/g, "").slice(0, 1);
+      const n = (bits[1] || "").replace(/[^1-9]/g, "");
+      cell.dataset.value = v;
+      cell.querySelector(".cell-value").textContent = v;
+      cell.classList.toggle("filled", !!v);
+      clearNotes(cell);
+      if (!v && n) { cell.dataset.notes = n; syncNotesView(cell, n.split("")); }
+      cell.classList.toggle("empty", !v && !n);
+      cell.classList.remove("error");
+      refreshCellLabel(cell);
+    }
+    /* The auto-clear ledger describes a history this snapshot may not share. */
+    autoCleared.clear();
+    clearHint();
+    recomputeConflicts();
+    updateNumberKeyStatus();
+    refreshAutoCandidates();
+    if (selectedCell) updateHighlights();
+    return true;
+  }
+  function updateUndoButtons() {
+    [btnUndo, btnUndoM].forEach(b => { if (b) b.disabled = undoStack.length === 0; });
+  }
+  /* Run a board edit and record it for undo, but only if it changed something —
+     so pressing Erase on an already-empty cell doesn't cost an undo step. */
+  function withUndo(fn) {
+    const before = snapshot();
+    fn();
+    if (snapshot() !== before) {
+      undoStack.push(before);
+      if (undoStack.length > 300) undoStack.shift();
+      updateUndoButtons();
+    }
+  }
+  function undo() {
+    if (!undoStack.length) return;
+    applySnapshot(undoStack.pop());
+    updateUndoButtons();
+    saveProgress();
+    announce("Undone.");
+  }
+
+  /* Progress is kept per puzzle, so switching away and back doesn't lose work.
+     Never written while the solution is on screen. */
+  const progressKey = () => "sudokuProgress:" + currentLevel + ":" + currentPuzzleNumber;
+  function saveProgress() {
+    if (revealingSolution || currentMode === "solution" || !currentPuzzle) return;
+    try { localStorage.setItem(progressKey(), snapshot()); } catch (e) { /* private mode */ }
+  }
+  function loadProgress() {
+    if (!currentPuzzle) return;
+    let saved = null;
+    try { saved = localStorage.getItem(progressKey()); } catch (e) { return; }
+    if (saved) applySnapshot(saved);
+  }
+  function clearProgress() {
+    try { localStorage.removeItem(progressKey()); } catch (e) { /* private mode */ }
+  }
+  function boardHasWork() {
+    for (let i = 0; i < 81; i++) {
+      const c = cellAt(i);
+      if (!c || c.classList.contains("given")) continue;
+      if (c.dataset.value || c.dataset.notes) return true;
+    }
+    return false;
+  }
 
   /* ---------- Conflicts / completion ---------- */
   /* Always on. A digit repeated in a row, column or box breaks the rules of
@@ -3873,7 +4127,11 @@ const HintEngine = (function () {
       if (!cell.dataset.notes) cell.classList.add("empty");
     }
     cell.classList.remove("error");
+    refreshCellLabel(cell);
     const r0 = +cell.dataset.row, c0 = +cell.dataset.col, idx0 = r0 * 9 + c0;
+    /* Show solution fills 81 cells one by one; re-running every check per cell
+       made that visibly slow. Batch callers set the flag and sweep up once. */
+    if (suspendRecompute) return;
     restoreAutoCleared(idx0);
     if (value) clearDigitFromPeers(r0, c0, value);
     clearHint();
@@ -3881,44 +4139,80 @@ const HintEngine = (function () {
     updateNumberKeyStatus();
     checkCompletionAuto();
     refreshAutoCandidates();
+    saveProgress();
     if (cell === selectedCell) updateHighlights();
   }
   function handleNumInput(value) {
     if (!selectedCell) return;
-    if (value === "clear") {
-      clearNotes(selectedCell);
-      setCellValue(selectedCell, "");
-      selectedCell.classList.add("empty");
-      refreshAutoCandidates();
-      return;
-    }
-    if (notesMode) toggleNote(selectedCell, value);
-    else trySetCellValue(selectedCell, value);
+    withUndo(() => {
+      if (value === "clear") {
+        clearNotes(selectedCell);
+        setCellValue(selectedCell, "");
+        selectedCell.classList.add("empty");
+        refreshAutoCandidates();
+      } else if (notesMode) toggleNote(selectedCell, value);
+      else trySetCellValue(selectedCell, value);
+    });
+    announce(describeCell(selectedCell));
   }
   numKeys.forEach(key => {
     const val = key.dataset.value;
     key.addEventListener("click", () => handleNumInput(val));
     key.addEventListener("touchend", e => { e.preventDefault(); handleNumInput(val); }, { passive: false });
   });
-  window.addEventListener("keydown", e => {
-    if (e.key === "h" || e.key === "H") { requestHint(); return; }
-    if (!selectedCell) return;
-    if (e.key >= "1" && e.key <= "9") {
-      if (notesMode) toggleNote(selectedCell, e.key);
-      else trySetCellValue(selectedCell, e.key);
-    } else if (e.key === "Backspace" || e.key === "Delete" || e.key === "0") {
-      clearNotes(selectedCell);
-      setCellValue(selectedCell, "");
-      selectedCell.classList.add("empty");
-      refreshAutoCandidates();
-    }
-  });
+  /* Typing into the puzzle dropdown used to write digits onto the board, and
+     Ctrl/Cmd+H used to fire a hint. Both are guarded now. */
+  function isTypingTarget(t) {
+    return !!t && (t.tagName === "INPUT" || t.tagName === "SELECT" ||
+                   t.tagName === "TEXTAREA" || t.isContentEditable);
+  }
+  const ARROW_KEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 
-  function setMistakesMode(on, announce) {
+  window.addEventListener("keydown", e => {
+    /* Undo is the one shortcut that wants a modifier. */
+    if ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === "z" || e.key === "Z")) {
+      if (isTypingTarget(e.target)) return;
+      e.preventDefault(); undo(); return;
+    }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (isTypingTarget(e.target)) return;
+
+    const k = e.key;
+    if (k === "h" || k === "H") { e.preventDefault(); requestHint(); return; }
+    if (k === "g" || k === "G") { e.preventDefault(); requestHardHint(); return; }
+    if (k === "n" || k === "N") { e.preventDefault(); btnNotes.click(); return; }
+    if (k === "c" || k === "C") { e.preventDefault(); setAutoCandidates(!autoCandOn); return; }
+    if (k === "Escape") { clearSelection(); selectedCell = null; announce("Selection cleared."); return; }
+
+    if (ARROW_KEYS.indexOf(k) >= 0) {
+      /* Leave the arrows to the page until the reader is actually in the grid,
+         otherwise the board silently hijacks scrolling for the whole document. */
+      if (!selectedCell && document.activeElement !== boardEl) return;
+      e.preventDefault();
+      if (!selectedCell) { selectIndex(0); return; }
+      let r = +selectedCell.dataset.row, c = +selectedCell.dataset.col;
+      if (k === "ArrowUp") r = Math.max(0, r - 1);
+      if (k === "ArrowDown") r = Math.min(8, r + 1);
+      if (k === "ArrowLeft") c = Math.max(0, c - 1);
+      if (k === "ArrowRight") c = Math.min(8, c + 1);
+      selectIndex(r * 9 + c);
+      return;
+    }
+
+    if (!selectedCell) return;
+    if (k >= "1" && k <= "9") { e.preventDefault(); handleNumInput(k); }
+    else if (k === "Backspace" || k === "Delete" || k === "0") { e.preventDefault(); handleNumInput("clear"); }
+  });
+  boardEl.addEventListener("focus", () => { if (!selectedCell) selectIndex(0); });
+
+  function setMistakesMode(on, say) {
     showMistakes = !!on;
-    if (btnMistakes) btnMistakes.classList.toggle("mistakes-on", showMistakes);
+    if (btnMistakes) {
+      btnMistakes.classList.toggle("mistakes-on", showMistakes);
+      btnMistakes.setAttribute("aria-pressed", showMistakes ? "true" : "false");
+    }
     recomputeConflicts();
-    if (!announce) return;
+    if (!say) return;
     if (showMistakes) {
       const n = countWrongEntries();
       setStatus(n
@@ -3934,6 +4228,7 @@ const HintEngine = (function () {
   function showSolution() {
     if (!currentPuzzle || !Checker.has()) return;
     revealingSolution = true;
+    suspendRecompute = true;
     clearHint();
     for (let i = 0; i < 81; i++) {
       const cell = cellAt(i), val = Checker.digitAt(i);
@@ -3942,8 +4237,12 @@ const HintEngine = (function () {
       else cell.querySelector(".cell-value").textContent = val;
       clearNotes(cell);
       clearAutoCell(cell);
+      refreshCellLabel(cell);
     }
+    suspendRecompute = false;
+    recomputeConflicts();
     updateNumberKeyStatus();
+    refreshAutoCandidates();
     revealingSolution = false;
     showCompletionMessage();
   }
@@ -3958,34 +4257,49 @@ const HintEngine = (function () {
   }
   function clearHintHighlights() {
     boardEl.querySelectorAll(".cell").forEach(c =>
-      c.classList.remove("hint-primary", "hint-secondary", "hint-eliminate"));
+      c.classList.remove("hint-primary", "hint-secondary", "hint-eliminate", "hint-unit"));
     boardEl.querySelectorAll(".cell-auto span.cand-focus, .cell-auto span.cand-elim")
       .forEach(s => s.classList.remove("cand-focus", "cand-elim"));
   }
   function clearHint() {
     currentHint = null; hintLevel = 0;
     hintPanel.classList.remove("show");
+    if (hintTeachEl) hintTeachEl.hidden = true;
     clearHintHighlights();
+    /* The row/column wash was suppressed while the hint was up; bring it back. */
+    if (selectedCell) updateHighlights();
   }
   btnHintClose.addEventListener("click", clearHint);
 
   function paintHint(h, level) {
     clearHintHighlights();
     if (!h) return;
-    if (level >= 1 && h.focus) h.focus.forEach(i => cellAt(i).classList.add("hint-secondary"));
-    if (level >= 2) {
-      if (h.focus) h.focus.forEach(i => {
-        cellAt(i).classList.remove("hint-secondary");
-        cellAt(i).classList.add("hint-primary");
-      });
-      if (h.elimCells) h.elimCells.forEach(i => cellAt(i).classList.add("hint-eliminate"));
+    const mark = (i, cls) => { const c = cellAt(i); if (c) c.classList.add(cls); };
+
+    /* Levels 1 and 2 are a nudge and a technique name. Neither may point at the
+       answer, so only the UNIT named in the text is washed, plus any cell the
+       text has already spelled out (nudgeCells). The old code painted every
+       focus cell from level 1, which meant a hidden-single hint reading
+       "Concentrate on row 1" lit up the one cell that was the answer. */
+    if (level <= 2) {
+      if (h.nudgeUnits)
+        h.nudgeUnits.forEach(ui => SudokuCore.UNITS[ui].forEach(i => mark(i, "hint-unit")));
+      if (h.nudgeCells)
+        h.nudgeCells.forEach(i => mark(i, level >= 2 ? "hint-primary" : "hint-secondary"));
+    }
+
+    /* Level 3 is where the deduction is spelled out, so the pattern appears. */
+    if (level >= 3) {
+      if (h.focus) h.focus.forEach(i => mark(i, "hint-primary"));
+      if (h.elimCells) h.elimCells.forEach(i => mark(i, "hint-eliminate"));
     }
     if (level >= 4 && h.path) {
       h.path.forEach(st => {
         if (st.focus) st.focus.forEach(i => {
-          if (!cellAt(i).classList.contains("hint-primary")) cellAt(i).classList.add("hint-secondary");
+          const c = cellAt(i);
+          if (c && !c.classList.contains("hint-primary")) c.classList.add("hint-secondary");
         });
-        if (st.elimCells) st.elimCells.forEach(i => cellAt(i).classList.add("hint-eliminate"));
+        if (st.elimCells) st.elimCells.forEach(i => mark(i, "hint-eliminate"));
       });
     }
     // When the candidate overlay is on, tint the exact digits the hint acts on.
@@ -4022,7 +4336,9 @@ const HintEngine = (function () {
         digits.forEach(d => markFocus(i, d));
       });
     };
-    if (level >= 2) {
+    /* Matched to paintHint: the individual candidates are only tinted once the
+       deduction itself is on screen at level 3. */
+    if (level >= 3) {
       if (h.elims) h.elims.forEach(e => markElim(e.i, e.d));
       focusStep(h);
     }
@@ -4040,18 +4356,34 @@ const HintEngine = (function () {
     let idx = null;
     if (level >= 4 && h.unlock) idx = h.unlock.i;
     else if (level >= 3 && h.place) idx = h.place.i;
-    else if (h.focus && h.focus.length === 1) idx = h.focus[0];
+    /* Was ungated, so a single-focus technique (hidden single, forcing chain)
+       moved the cursor onto the answer cell while level 1 still said
+       "concentrate on row 1". Only ever jump to a cell the text has named. */
+    else if (level >= 3 && h.focus && h.focus.length === 1) idx = h.focus[0];
+    else if (h.nudgeCells && h.nudgeCells.length === 1) idx = h.nudgeCells[0];
     if (idx === null) return;
     const cell = cellAt(idx);
     if (!cell || cell.classList.contains("given")) return;
     selectCell(cell);
-    if (cell.scrollIntoView) cell.scrollIntoView({ block: "nearest", inline: "nearest" });
+    /* On narrow screens renderHint scrolls the panel instead; two competing
+       smooth scrolls just fight each other. */
+    if (window.innerWidth > 880 && cell.scrollIntoView)
+      cell.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+
+  /* Level 4 exists when there is a route to show, or a digit to offer as a
+     last resort. Previously it was gated on the route alone. */
+  function maxHintLevel(h) {
+    const hasPath = !!(h.path && h.path.length > 1);
+    const canReveal = !!(h.noPlacement && Checker.has());
+    return (hasPath || canReveal) ? 4 : 3;
   }
 
   function renderHint() {
     const h = currentHint;
     if (!h) return;
     hintTechEl.textContent = hintLevel >= 2 ? h.tech : "Hint";
+    if (hintTeachEl) hintTeachEl.hidden = !h.hardest;
     let html = "<div>" + (h.l1 || "") + "</div>";
     if (hintLevel >= 2 && h.l2) html += '<div class="hint-step">' + h.l2 + "</div>";
     if (hintLevel >= 3 && h.l3) {
@@ -4067,41 +4399,57 @@ const HintEngine = (function () {
     }
 
     /* Level 4: the whole route, spelled out, so nothing is left implicit. */
-    if (hintLevel >= 4 && h.path && h.path.length > 1) {
-      html += '<div class="hint-step"><b>' +
-              (h.unlock ? "The full route to a placed digit:" : "The full chain of eliminations:") + '</b>';
-      if (h.path.length > 6)
-        html += '<div class="hint-note">' + h.path.length +
-                " steps in all \u2014 scroll the list to see every one.</div>";
-      html += '<ol class="hint-path">';
-      h.path.forEach(st => {
-        html += "<li><b>" + st.tech + "</b> \u2014 " + st.text +
-                (st.chain ? '<ol class="hint-chain"><li>' + st.chain.join("</li><li>") + "</li></ol>" : "") +
-                "</li>";
-      });
-      html += "</ol>";
-      html += "</div>";
+    if (hintLevel >= 4) {
+      if (h.path && h.path.length > 1) {
+        html += '<div class="hint-step"><b>' +
+                (h.unlock ? "The full route to a placed digit:" : "The full chain of eliminations:") + '</b>';
+        if (h.path.length > 6)
+          html += '<div class="hint-note">' + h.path.length +
+                  " steps in all \u2014 scroll the list to see every one.</div>";
+        html += '<ol class="hint-path">';
+        h.path.forEach(st => {
+          html += "<li><b>" + st.tech + "</b> \u2014 " + st.text +
+                  (st.chain ? '<ol class="hint-chain"><li>' + st.chain.join("</li><li>") + "</li></ol>" : "") +
+                  "</li>";
+        });
+        html += "</ol>";
+        html += "</div>";
+      }
       if (h.unlock)
         html += '<div class="hint-note">That leaves <b>' + SudokuCore.rc(h.unlock.i) +
                 " = " + h.unlock.d + "</b> ready to write in.</div>";
+      /* Lifted out of the path block. A dead-end hint can have a one-step path,
+         and in that case the escape hatch used to be unreachable entirely. */
       else if (h.noPlacement && Checker.has())
         html += '<div class="hint-note">These eliminations don\u2019t force a digit on their own \u2014 ' +
                 "this spot is one of the rare ones that would need a guessing chain, which this tier " +
                 'avoids. If you\u2019re stuck, you can <button type="button" id="btn-reveal-digit" ' +
                 'class="hint-inline-btn">reveal one digit</button> to keep going.</div>';
     }
+
+    /* Teaching mode: what else this position supports, easiest first. */
+    if (hintLevel >= 2 && h.available && h.available.length > 1) {
+      const others = h.available.filter(t => t !== h.tech);
+      if (others.length)
+        html += '<div class="hint-available">Also available here, easiest first: <b>' +
+                others.slice().reverse().join("</b>, <b>") + "</b>.</div>";
+    }
+
     hintBodyEl.innerHTML = html;
     const revealBtn = document.getElementById("btn-reveal-digit");
     if (revealBtn) revealBtn.addEventListener("click", revealOneDigit);
-    const hasPath = !!(h.path && h.path.length > 1);
-    const maxLevel = hasPath ? 4 : 3;
-    btnHintMore.style.display = hintLevel >= maxLevel ? "none" : "";
+    btnHintMore.style.display = hintLevel >= maxHintLevel(h) ? "none" : "";
     btnHintMore.textContent =
       hintLevel === 1 ? "Tell me more" :
       hintLevel === 2 ? "Show me exactly" : "Show the full route";
     hintPanel.classList.add("show");
+    if (selectedCell) updateHighlights();
     paintHint(h, hintLevel);
     focusHintCell(h, hintLevel);
+    /* On a phone the hint card sits below the board AND the number pad, so
+       without this the reader never sees the text they just asked for. */
+    if (window.innerWidth <= 880 && hintPanel.scrollIntoView)
+      hintPanel.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   function requestHint() {
@@ -4115,8 +4463,10 @@ const HintEngine = (function () {
     if (!v.ok) { clearHint(); reportProblem(v, givens); return; }
 
     const h = HintEngine.getHint(grid);
-    if (h.tech === "Solved") { setStatus("This grid is already complete.", "good"); return; }
-    if (h.tech === "Stuck") { setStatus("No deduction found from this position.", "bad"); return; }
+    /* clearHint() as well as the message: a previous "check my grid" may have
+       left red rings on the board that no longer mean anything. */
+    if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
+    if (h.tech === "Stuck") { clearHint(); setStatus("No deduction found from this position.", "bad"); return; }
 
     /* Pattern-based tiers promise no guessing chains. If the ONLY thing the
        engine can offer is a forcing chain (headline included), don't show it —
@@ -4151,6 +4501,36 @@ const HintEngine = (function () {
     renderHint();
   }
 
+  /* Teaching mode. The ordinary hint button always offers the CHEAPEST step
+     available, which is right for finishing a grid but means an advanced
+     pattern is almost never the technique actually named: a naked single is
+     nearly always available too, and it wins. This button walks the same ladder
+     from the hard end instead, so the reader can be shown the swordfish or the
+     colouring chain that is sitting on the board. Forcing chains stay excluded,
+     so it still never asks anyone to guess. */
+  function requestHardHint() {
+    if (!currentPuzzle) return;
+    const grid = readGrid(), givens = readGivens();
+
+    const v = Validator.check(grid, givens);
+    if (!v.ok) { clearHint(); reportProblem(v, givens); return; }
+
+    const h = HintEngine.getHint(grid, { hardest: true, survey: true });
+    if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
+    if (h.tech === "Stuck") { clearHint(); setStatus("No deduction found from this position.", "bad"); return; }
+
+    clearHint();
+    h.noPlacement = !h.place && !h.unlock;
+    currentHint = h;
+    /* Start at level 2: naming the technique is the whole point of this button. */
+    hintLevel = 2;
+    setStatus(h.noPattern
+      ? "No advanced pattern is available here \u2014 the hardest step in this position is a single."
+      : "Hardest technique available here: " + h.tech +
+        ". The ordinary hint button would have offered you something easier.", "good");
+    renderHint();
+  }
+
   /* Reveal one correct digit as a last resort, when no chain-free step can
      place anything from here. Prefers a cell the current hint already points
      at, so the reveal feels connected to the eliminations shown. */
@@ -4172,7 +4552,7 @@ const HintEngine = (function () {
     const d = Checker.digitAt(target);
     clearHint();
     selectCell(cellAt(target));
-    setCellValue(cellAt(target), String(d));
+    withUndo(() => setCellValue(cellAt(target), String(d)));
     setStatus("Revealed " + SudokuCore.rc(target) + " = " + d +
               ". This position couldn't be advanced with the pattern-based hints, " +
               "so one digit has been revealed to keep you moving.", "good");
@@ -4184,19 +4564,27 @@ const HintEngine = (function () {
   function firstWrongCell(grid) {
     if (!Checker.has()) return -1;
     for (let i = 0; i < 81; i++)
-      if (grid[i] && !Checker.isCorrect(i, grid[i])) return i;
+      /* Checker holds the answer key as a STRING (gridToString), while
+         readGrid() yields numbers. Comparing "5" === 5 is always false, so this
+         used to report the first filled cell — usually a given — as a mistake
+         on a grid that was provably correct. */
+      if (grid[i] && !Checker.isCorrect(i, String(grid[i]))) return i;
     return -1;
   }
 
   function escalateHint() {
     if (!currentHint) return;
-    const hasPath = !!(currentHint.path && currentHint.path.length > 1);
-    if (hintLevel < (hasPath ? 4 : 3)) hintLevel++;
+    if (hintLevel < maxHintLevel(currentHint)) hintLevel++;
     renderHint();
   }
 
   btnHint.addEventListener("click", requestHint);
   btnHintMore.addEventListener("click", escalateHint);
+  if (btnHardHint) btnHardHint.addEventListener("click", requestHardHint);
+  if (btnUndo) btnUndo.addEventListener("click", undo);
+  if (btnHintM) btnHintM.addEventListener("click", requestHint);
+  if (btnHardHintM) btnHardHintM.addEventListener("click", requestHardHint);
+  if (btnUndoM) btnUndoM.addEventListener("click", undo);
 
   /* Shared reporting for both the hint button and the check button. */
   function reportProblem(v, givens) {
@@ -4220,7 +4608,7 @@ const HintEngine = (function () {
     setStatus("There are mistakes in more than one area of the grid.", "bad");
   }
 
-  btnCheckGrid.addEventListener("click", () => {
+  function checkGrid() {
     if (!currentPuzzle) return;
     clearHint();
     const grid = readGrid(), givens = readGivens();
@@ -4233,7 +4621,9 @@ const HintEngine = (function () {
       return;
     }
     setStatus("No mistakes so far \u2014 everything you have entered is still consistent with a solution.", "good");
-  });
+  }
+  btnCheckGrid.addEventListener("click", checkGrid);
+  if (btnCheckGridM) btnCheckGridM.addEventListener("click", checkGrid);
 
   /* =====================================================================
      Puzzle selection
@@ -4303,7 +4693,13 @@ const HintEngine = (function () {
     if (rp) rp.classList.remove("show");
     setStatus("");
     renderBoard();
+    undoStack.length = 0;
+    /* Work in progress survives a reload, a tab close, and hopping to the
+       solution and back. Nothing is written to storage while the solution is
+       on screen, so looking never overwrites solving. */
     if (mode === "solution") showSolution();
+    else loadProgress();
+    updateUndoButtons();
     if (timerEnabled) resetTimer();
   }
 
@@ -4323,6 +4719,9 @@ const HintEngine = (function () {
     await loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
   });
   btnShowSolution.addEventListener("click", async () => {
+    if (currentMode !== "solution" && boardHasWork() &&
+        !window.confirm("Show the full solution?\n\nYour work on this puzzle is saved and will still " +
+                        "be there when you switch back to Solve Puzzle.")) return;
     currentMode = "solution";
     btnShowSolution.classList.add("btn-solution-active");
     btnPlay.classList.remove("btn-solution-active");
@@ -4332,6 +4731,22 @@ const HintEngine = (function () {
   selectEl.addEventListener("change", async () => {
     setQueryParams();
     await loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
+  });
+
+  /* The only genuinely destructive action on the page, so it is the only one
+     that asks. Solve Puzzle and Show Solution no longer throw work away. */
+  if (btnRestart) btnRestart.addEventListener("click", async () => {
+    if (!currentPuzzle) return;
+    if (boardHasWork() &&
+        !window.confirm("Clear everything you have entered on this puzzle and start it again?")) return;
+    clearProgress();
+    undoStack.length = 0;
+    currentMode = "play";
+    btnPlay.classList.add("btn-solution-active");
+    btnShowSolution.classList.remove("btn-solution-active");
+    setQueryParams();
+    await loadPuzzleByNumber(currentPuzzleNumber, "play");
+    setStatus("Puzzle reset.", "good");
   });
 
   /* ---------- Boot ---------- */
@@ -4347,6 +4762,7 @@ const HintEngine = (function () {
   setQueryParams();
   setMistakesMode(false);
   setTimerEnabled(false);
+  updateUndoButtons();
   loadPuzzleByNumber(currentPuzzleNumber, currentMode);
 
 </script>
