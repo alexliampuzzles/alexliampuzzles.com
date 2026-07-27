@@ -3265,6 +3265,63 @@ const HintEngine = (function () {
     };
   }
 
+  /* BUG+1 (bivalue universal grave, plus one).
+     If every unsolved cell held exactly two candidates, and every digit
+     appeared exactly twice in every unit, the grid would have an even number of
+     solutions — impossible for a puzzle with a single answer. So when exactly
+     one cell holds THREE candidates and all the rest hold two, that cell has to
+     take whichever of its three digits breaks the pattern: the one appearing an
+     odd number of times in the units it sits in.
+
+     The parity of every unit is checked in full rather than inferred, so this
+     can never fire on a position that merely looks like a BUG.
+
+     Reported as an elimination (the other two candidates go) rather than a
+     placement, which keeps it interchangeable with the other ladder rungs; the
+     naked single that follows does the actual placing. */
+  function bugPlusOne(g, cand) {
+    let tri = -1;
+    for (let i = 0; i < 81; i++) {
+      if (g[i]) continue;
+      const n = cnt(cand[i]);
+      if (n === 2) continue;
+      if (n === 3 && tri < 0) { tri = i; continue; }
+      return null;                       // a 1, a 4+, or a second 3 — not a BUG+1
+    }
+    if (tri < 0) return null;
+
+    let pick = 0;
+    for (let ui = 0; ui < 27; ui++) {
+      const cells = UNITS[ui];
+      const holdsTri = cells.indexOf(tri) >= 0;
+      for (let d = 1; d <= 9; d++) {
+        let n = 0;
+        for (const i of cells) if (!g[i] && (cand[i] & bit(d))) n++;
+        if (n % 2 === 0) continue;
+        /* An odd count is only allowed for the extra digit, and only in the
+           three units that contain the extra cell. */
+        if (!holdsTri) return null;
+        if (!(cand[tri] & bit(d))) return null;
+        if (pick && pick !== d) return null;
+        pick = d;
+      }
+    }
+    if (!pick) return null;
+
+    const others = bitsOf(cand[tri]).filter(d => d !== pick);
+    const el = others.map(d => ({ i: tri, d: d }));
+    return {
+      tech: 'BUG+1', focus: [tri], elimCells: [tri], nudgeCells: [tri],
+      l1: 'Almost every empty cell is down to two candidates now. Find the odd one out.',
+      l2: rc(tri) + ' is the only cell left with three candidates, and that alone settles it.',
+      l3: 'If every unsolved cell held exactly two candidates, every digit would appear exactly ' +
+          'twice in every unit and the grid would have two solutions — which a proper puzzle ' +
+          'cannot. So ' + rc(tri) + ' must take the digit that breaks the pattern: <code>' + pick +
+          '</code>. ' + elimText(el),
+      elims: el
+    };
+  }
+
   /* Techniques that remove candidates rather than placing a digit.
      Easiest first — this is the order the ordinary hint button walks, so the
      reader is always offered the cheapest step that works.
@@ -3283,6 +3340,7 @@ const HintEngine = (function () {
     simpleColouring,
     xyWing, wWing,
     uniqueRectangle, uniqueRectangle2, uniqueRectangle4,
+    bugPlusOne,
     (g, c) => fish(g, c, 3),
     xyzWing
   ];
@@ -3335,8 +3393,10 @@ const HintEngine = (function () {
       if (!moved) {
         const fc = forcingChain(g, cand);
         if (fc && fc.place) {
-          /* A forcing chain is the only way onward from here. Don't add it to
-             the shown steps — the pattern tiers avoid guessing chains. Report
+          /* A forcing chain is the only way onward from here. It is a sound
+             deduction, but not a named pattern, so it is kept out of the shown
+             steps to match the book's tiers rather than because it is a guess.
+             Report
              the clean route gathered so far, plus a flag saying the final
              unlock needed a chain, so callers can decide how to present it. */
           return { place: fc.place, steps: steps, chainOnly: true };
@@ -3976,7 +4036,21 @@ const HintEngine = (function () {
   }
   function undo() {
     if (!undoStack.length) return;
+    const wasCompleted = puzzleCompleted;
     applySnapshot(undoStack.pop());
+    /* Stepping back off a finished grid has to un-finish it. Without this the
+       board is incomplete while the app still believes it is solved: the timer
+       stays paused, the win message stays up, and the next completion is
+       swallowed because puzzleCompleted is already true. */
+    const nowComplete = gridMatchesSolution();
+    puzzleCompleted = nowComplete;
+    if (!nowComplete) completedByPlaying = false;
+    if (wasCompleted && !nowComplete) {
+      const review = document.getElementById("review-prompt");
+      if (review) review.classList.remove("show");
+      setStatus("");
+      if (timerEnabled && !timerRunning) startTimer();
+    }
     updateUndoButtons();
     saveProgress();
     announce("Undone.");
@@ -4082,9 +4156,18 @@ const HintEngine = (function () {
      tied to any feature — an honest ask to verified buyers, dismissible any
      time. The flag is NOT reset on puzzle load, so a reader who solves several
      puzzles in one visit is invited exactly once. */
+  const REVIEW_SESSION_KEY = "sudoku400ReviewPromptShown";
   let reviewPromptShown = false;
   function maybeShowReviewPrompt() {
     if (reviewPromptShown) return;
+    /* An in-memory flag only lasts until the page reloads, which is not what
+       "once per session" means to a reader who solves three puzzles and
+       refreshes between them. sessionStorage is; the boolean stays as the
+       fallback for browsers where storage is unavailable. */
+    try {
+      if (sessionStorage.getItem(REVIEW_SESSION_KEY) === "1") { reviewPromptShown = true; return; }
+      sessionStorage.setItem(REVIEW_SESSION_KEY, "1");
+    } catch (e) { /* storage blocked — the boolean alone still limits it */ }
     reviewPromptShown = true;
     const el = document.getElementById("review-prompt");
     if (el) el.classList.add("show");
@@ -4429,10 +4512,11 @@ const HintEngine = (function () {
       /* Lifted out of the path block. A dead-end hint can have a one-step path,
          and in that case the escape hatch used to be unreachable entirely. */
       else if (h.noPlacement && Checker.has())
-        html += '<div class="hint-note">These eliminations don\u2019t force a digit on their own \u2014 ' +
-                "this spot is one of the rare ones that would need a guessing chain, which this tier " +
-                'avoids. If you\u2019re stuck, you can <button type="button" id="btn-reveal-digit" ' +
-                'class="hint-inline-btn">reveal one digit</button> to keep going.</div>';
+        html += '<div class="hint-note">These eliminations don\u2019t produce a placement on their own. ' +
+                'The next step from here needs a forcing chain \u2014 that is a sound deduction, not a ' +
+                'guess, but it is not one of the named patterns this hint mode walks you through. ' +
+                'You can <button type="button" id="btn-reveal-digit" class="hint-inline-btn">reveal ' +
+                'one digit</button> to keep going.</div>';
     }
 
     /* Teaching mode: what else this position supports, easiest first. */
@@ -4442,6 +4526,14 @@ const HintEngine = (function () {
         html += '<div class="hint-available">Also available here, easiest first: <b>' +
                 others.join("</b>, <b>") + "</b>.</div>";
     }
+    /* Available is not the same as required. Saying so protects the tier claim
+       on the cover: a Hard grid that happens to support colouring is still a
+       Hard grid. */
+    if (h.teaching && h.aboveTier)
+      html += '<div class="hint-available">This pattern sits above the ' +
+              (currentLevel === "expert" ? "Expert" : "Hard") + ' tier \u2014 the puzzle can be ' +
+              'finished without it. It simply happens to work here, which makes this a comfortable ' +
+              'place to practise it.</div>';
 
     hintBodyEl.innerHTML = html;
     const revealBtn = document.getElementById("btn-reveal-digit");
@@ -4476,7 +4568,7 @@ const HintEngine = (function () {
     if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
     if (h.tech === "Stuck") { clearHint(); setStatus("No deduction found from this position.", "bad"); return; }
 
-    /* Pattern-based tiers promise no guessing chains. If the ONLY thing the
+    /* The tiers promise named patterns, not chains. If the ONLY thing the
        engine can offer is a forcing chain (headline included), don't show it —
        tell the reader whether they've made a mistake (Checker knows the answer
        key; the engine never does) or simply hit an awkward spot. When the chain
@@ -4524,6 +4616,13 @@ const HintEngine = (function () {
   const patternShown = Object.create(null);
   let lastPattern = null;
 
+  /* What each tier of the book actually promises. Hard grids are curated to
+     need nothing beyond naked/hidden triples; Expert may need any named pattern
+     but never a chain. Indices are into ELIM_LADDER. A technique past the
+     ceiling is one the board happens to support without the puzzle needing it —
+     worth showing, worth labelling, never worth implying the tier is wrong. */
+  const TIER_CEILING = { hard: 4, expert: 99 };
+
   function requestHarderPattern() {
     if (!currentPuzzle) return;
     const grid = readGrid(), givens = readGivens();
@@ -4533,10 +4632,13 @@ const HintEngine = (function () {
 
     const all = HintEngine.surveyHints(grid);
     const advanced = all.filter(o => o.advanced);
-    /* Prefer genuinely advanced patterns; fall back to the basics only when the
-       position has nothing else, so this never rotates through naked pairs
-       while a swordfish is sitting on the board. */
-    const pool = advanced.length ? advanced : all;
+    /* Prefer genuinely advanced patterns, but only if there are at least two to
+       rotate between. With a single advanced technique the button would hand
+       back the same name every press — which is exactly what happens on Hard
+       grids, where simple colouring is often the only advanced pattern going.
+       Widening to the full list there gives the rotation something to work
+       with, and everything in it is still harder than the plain hint's step. */
+    const pool = advanced.length >= 2 ? advanced : all;
 
     if (!pool.length) {
       clearHint();
@@ -4576,6 +4678,8 @@ const HintEngine = (function () {
     }
     h.available = pool.map(o => o.tech);
     h.noPlacement = !h.place && !h.unlock;
+    const ceiling = TIER_CEILING[currentLevel] === undefined ? 99 : TIER_CEILING[currentLevel];
+    h.aboveTier = pick.index > ceiling;
 
     clearHint();
     currentHint = h;
@@ -4764,16 +4868,19 @@ const HintEngine = (function () {
     if (currentLevel === b.dataset.level) return;
     currentLevel = b.dataset.level;
     levelButtons.forEach(x => x.classList.toggle("active", x === b));
-    setQueryParams();
+    /* setQueryParams reads currentPuzzleNumber, which loadPuzzleByNumber sets.
+       Writing the URL first left a stale n= behind, so a bookmarked or shared
+       link pointed at the previous puzzle. */
     await loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
+    setQueryParams();
   }));
 
   btnPlay.addEventListener("click", async () => {
     currentMode = "play";
     btnPlay.classList.add("btn-solution-active");
     btnShowSolution.classList.remove("btn-solution-active");
-    setQueryParams();
     await loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
+    setQueryParams();
   });
   btnShowSolution.addEventListener("click", async () => {
     if (currentMode !== "solution" && boardHasWork() &&
@@ -4782,12 +4889,12 @@ const HintEngine = (function () {
     currentMode = "solution";
     btnShowSolution.classList.add("btn-solution-active");
     btnPlay.classList.remove("btn-solution-active");
-    setQueryParams();
     await loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
+    setQueryParams();
   });
   selectEl.addEventListener("change", async () => {
-    setQueryParams();
     await loadPuzzleByNumber(parseInt(selectEl.value, 10), currentMode);
+    setQueryParams();
   });
 
   /* The only genuinely destructive action on the page, so it is the only one
@@ -4801,10 +4908,31 @@ const HintEngine = (function () {
     currentMode = "play";
     btnPlay.classList.add("btn-solution-active");
     btnShowSolution.classList.remove("btn-solution-active");
-    setQueryParams();
     await loadPuzzleByNumber(currentPuzzleNumber, "play");
+    setQueryParams();
     setStatus("Puzzle reset.", "good");
   });
+
+  /* ---------- Header dropdown ----------
+     The markup and the .dropdown-menu.show rule were both already present, but
+     nothing ever toggled the class, so Printables just followed href="#". */
+  const printablesToggle = document.getElementById("header-printables-toggle");
+  const printablesMenu = document.getElementById("header-printables-menu");
+  if (printablesToggle && printablesMenu) {
+    const setPrintables = open => {
+      printablesMenu.classList.toggle("show", open);
+      printablesToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+    printablesToggle.addEventListener("click", e => {
+      e.preventDefault();
+      setPrintables(!printablesMenu.classList.contains("show"));
+    });
+    document.addEventListener("click", e => {
+      if (!printablesToggle.contains(e.target) && !printablesMenu.contains(e.target))
+        setPrintables(false);
+    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") setPrintables(false); });
+  }
 
   /* ---------- Boot ---------- */
   fillSelector();
