@@ -4151,6 +4151,16 @@ const HintEngine = (function () {
     if (!value || value < "1" || value > "9") return;
     if (cell.dataset.value) setCellValue(cell, "");
     let notes = (cell.dataset.notes || "").split("").filter(Boolean);
+    /* If the reader is looking at the computed candidates and this cell has no
+       marks of its own yet, clicking a digit means "take that one out of the
+       list I can see" — not "start a fresh note containing only this digit".
+       Seed from what is displayed so the toggle removes from the visible set,
+       which is what the overlay leads you to expect. */
+    if (!notes.length && autoCandOn) {
+      const idx = (+cell.dataset.row) * 9 + (+cell.dataset.col);
+      const shown = SudokuCore.buildCandidates(readGrid())[idx];
+      notes = SudokuCore.bitsOf(shown).map(String);
+    }
     const i = notes.indexOf(value);
     if (i >= 0) notes.splice(i, 1); else notes.push(value);
     notes.sort();
