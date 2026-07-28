@@ -4816,6 +4816,38 @@ const HintEngine = (function () {
     return -1;
   }
 
+  /* Survey the reader's pencil marks for two distinct kinds of mistake:
+
+     impossible — a note listing a digit that already appears in that cell's row,
+       column or box. Pure rules, no answer key needed, and always an error.
+     missingTrue — notes that have ruled out the digit which actually belongs
+       there. Needs the Checker, and means any deduction from those marks would
+       be built on a false premise.
+
+     Note that a note simply being "not the answer" is not a mistake: candidates
+     are possibilities, so listing several is the whole point. */
+  function findNoteProblems(grid) {
+    const base = SudokuCore.buildCandidates(grid);
+    const impossible = [];
+    let missingTrue = -1;
+    for (let i = 0; i < 81; i++) {
+      if (grid[i]) continue;
+      const m = notesMaskOf(cellAt(i));
+      if (!m) continue;
+      const badBits = m & ~base[i];
+      if (badBits) impossible.push({ i: i, digits: SudokuCore.bitsOf(badBits) });
+      if (missingTrue < 0 && Checker.has()) {
+        const d = +Checker.digitAt(i);
+        if (d && !(m & SudokuCore.bit(d))) missingTrue = i;
+      }
+    }
+    return { impossible: impossible, missingTrue: missingTrue };
+  }
+  function listDigits(ds) {
+    if (ds.length === 1) return String(ds[0]);
+    return ds.slice(0, -1).join(", ") + " and " + ds[ds.length - 1];
+  }
+
   function requestHint() {
     if (!currentPuzzle) return;
     /* Pressing Hint again walks the SAME hint down a level, so you never have
@@ -5093,6 +5125,33 @@ const HintEngine = (function () {
       const v = Validator.check(grid, readGivens());
       if (!v.ok) { reportProblem(v, readGivens()); return; }
     }
+
+    /* Pencil marks are part of the reader's work, so Check Grid reviews them
+       too — otherwise an impossible candidate sits there unchallenged and the
+       grid reports "no mistakes". */
+    const np = findNoteProblems(grid);
+    if (np.impossible.length) {
+      np.impossible.forEach(o => cellAt(o.i).classList.add("hint-eliminate"));
+      const f = np.impossible[0];
+      const lead = "Your pencil marks in " + SudokuCore.rc(f.i) + " include " +
+                   listDigits(f.digits) + ", which can\u2019t go there \u2014 already placed in " +
+                   "the same row, column or box.";
+      setStatus(np.impossible.length === 1 ? lead
+                : lead + " " + np.impossible.length + " cells have impossible marks; all are highlighted.",
+                "bad");
+      const t = cellAt(f.i);
+      if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
+      return;
+    }
+    if (np.missingTrue >= 0) {
+      cellAt(np.missingTrue).classList.add("hint-eliminate");
+      setStatus("Your pencil marks in " + SudokuCore.rc(np.missingTrue) + " rule out the digit that " +
+                "belongs there. Correct or clear that cell\u2019s notes.", "bad");
+      const t = cellAt(np.missingTrue);
+      if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
+      return;
+    }
+
     if (Array.from(grid).every(x => x)) {
       setStatus("Complete and correct.", "good");
       completedByPlaying = true;
