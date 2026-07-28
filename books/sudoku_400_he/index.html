@@ -2062,7 +2062,30 @@
     .deck-row.split { justify-content: space-between; }
     .deck-row.centre { justify-content: center; }
     .deck-group { display: flex; gap: 0.55rem; flex-wrap: wrap; }
-    .deck-row.wide > .framed-display { flex: 1 1 0; min-width: 0; }
+    /* The long label needs the room: 3/5 to it, 2/5 to the picker, and both on
+       one line. Equal halves forced "Hard Puzzle 001 / 200" to wrap. */
+    .deck-row.wide {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 0.55rem;
+      align-items: stretch;
+    }
+    .deck-row.wide > .framed-display {
+      min-width: 0;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.42rem 0.7rem;
+      /* Scales with the viewport so it keeps fitting as the card narrows. */
+      font-size: clamp(0.85rem, 2.5vw, 1.15rem);
+    }
+    .deck-row.wide .inline-select-label { font-size: inherit; letter-spacing: 0.1em; }
+    .deck-row.wide #puzzle-selection select { font-size: inherit; font-weight: 700; }
+
+    .deck-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+    .deck-actions .push { margin-left: auto; }
 
     /* Short, upper-case labels: they read as controls rather than sentences and
        take far less width, which is what let everything fit around the grid. */
@@ -2083,8 +2106,8 @@
       gap: 0.5rem;
     }
     .pad > * { min-width: 0; }
-    .pad .num-key { padding: 0.5rem 0; font-size: 1.35rem; }
-    .pad .num-key-erase { font-size: 0.95rem; padding: 0.5rem 0.3rem; border-radius: 0.75rem; }
+    .pad .num-key { padding: 0.5rem 0; }
+    .pad .num-key-erase { padding: 0.5rem 0.3rem; border-radius: 0.75rem; }
     .pad .btn-notes { width: 100%; margin: 0; border-radius: 0.75rem; }
 
     .pad-key {
@@ -2109,10 +2132,50 @@
     .tool-row { display: flex; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap; }
     .tool-row .btn { flex: 1 1 auto; }
 
+    /* ---------- Narrow screens ----------
+       Every control lives with the grid now, so the job here is to keep each
+       row on one line and each tap target big enough, rather than to hide
+       anything. Rows collapse one at a time as width runs out. */
     @media (max-width: 620px) {
-      .deck-row.split { justify-content: flex-start; }
-      .btn.pill { font-size: 0.72rem; padding: 0.55rem 0.8rem; }
+      .deck { gap: 0.5rem; }
+      .btn.pill { font-size: 0.72rem; padding: 0.55rem 0.7rem; letter-spacing: 0.04em; }
+
+      /* A tidy 2-up block beats three pills wrapping raggedly. */
+      .deck-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+      .deck-actions .btn { width: 100%; }
+      .deck-actions .push { margin-left: 0; grid-column: 1 / -1; }
+
+      .tool-row { gap: 0.45rem; }
       .tool-row .btn { flex: 1 1 44%; }
+
+      .pad { gap: 0.4rem; }
+      .pad .num-key { font-size: 1.2rem; padding: 0.45rem 0; }
+      .pad .num-key-erase, .pad .btn-notes { font-size: 0.82rem; letter-spacing: 0.03em; }
+    }
+
+    @media (max-width: 560px) {
+      /* Below this the two pills can't share a line without shrinking the text
+         past legibility, so they take a line each at full width. */
+      .deck-row.wide { grid-template-columns: minmax(0, 1fr); }
+      .deck-row.wide > .framed-display { font-size: 1rem; }
+
+      .deck-row.split { flex-wrap: wrap; justify-content: center; }
+      .deck-row.split .board-title { flex: 1 1 100%; text-align: center; }
+
+      .board-wrapper { padding: 0.75rem; }
+    }
+
+    @media (max-width: 400px) {
+      .pad { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.12fr); gap: 0.32rem; }
+      .pad .num-key { font-size: 1.05rem; }
+      .pad .num-key-erase, .pad .btn-notes { font-size: 0.7rem; padding: 0.45rem 0.15rem; }
+      .pad .btn-notes span.icon, .pad-ico { font-size: 0.85rem; }
+      .pad-undo { font-size: 0.8rem; }
+      /* "SHOW CANDIDATES" is the widest label and sets the floor here. */
+      .btn.pill { font-size: 0.62rem; padding: 0.5rem 0.3rem; letter-spacing: 0; }
+      .tool-row { gap: 0.35rem; }
+      .board-wrapper { padding: 0.55rem; }
+      .cell { font-size: 1.15rem; }
     }
 
     .hint-available { margin-top: 0.6rem; font-size: 0.8rem; color: var(--text-muted); }
@@ -2260,12 +2323,10 @@
             </div>
           </div>
 
-          <div class="deck-row split">
-            <div class="deck-group">
-              <button id="btn-play" class="btn btn-outline pill btn-solution-active" type="button">Solve Puzzle</button>
-              <button id="btn-show-solution" class="btn btn-outline pill" type="button">Show Solution</button>
-            </div>
-            <button id="btn-check-grid" class="btn btn-outline pill" type="button">Check Grid</button>
+          <div class="deck-row deck-actions">
+            <button id="btn-play" class="btn btn-outline pill btn-solution-active" type="button">Solve Puzzle</button>
+            <button id="btn-show-solution" class="btn btn-outline pill" type="button">Show Solution</button>
+            <button id="btn-check-grid" class="btn btn-outline pill push" type="button">Check Grid</button>
           </div>
 
           <div class="deck-row centre">
