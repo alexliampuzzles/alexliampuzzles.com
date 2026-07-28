@@ -2044,7 +2044,19 @@
        hint background and showed orange where light showed red. */
     body.theme-dark .cell.error { background: rgba(239, 68, 68, 0.28) !important; }
 
-    .board:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    /* The board is focusable so the arrow keys can drive it, and focusing it
+       immediately selects a cell — so the selected cell IS the focus indicator,
+       and it moves with you. A ring round the whole grid on top of that was
+       just noise: it appeared the moment you typed, because Chrome only counts
+       focus as "visible" once a key is pressed, even if focus arrived by click.
+
+       It is kept for the one case the selection can't cover: Escape clears the
+       selection while the board still holds focus, which would otherwise leave
+       a keyboard user with nothing on screen telling them where they are. */
+    .board:focus-visible:not(.has-selection) {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
 
     .sr-only {
       position: absolute; width: 1px; height: 1px;
@@ -3852,6 +3864,7 @@ const HintEngine = (function () {
 
   function renderBoard() {
     boardEl.innerHTML = "";
+    boardEl.classList.remove("has-selection");
     selectedCell = null;
     liveCand = null;
     autoCleared.clear();
@@ -3923,6 +3936,7 @@ const HintEngine = (function () {
     clearSelection();
     selectedCell = cell;
     selectedCell.classList.add("selected");
+    boardEl.classList.add("has-selection");
     updateHighlights();
   }
   function selectIndex(i) {
@@ -4452,7 +4466,11 @@ const HintEngine = (function () {
     if (k === "g" || k === "G") { e.preventDefault(); requestHarderPattern(); return; }
     if (k === "n" || k === "N") { e.preventDefault(); btnNotes.click(); return; }
     if (k === "c" || k === "C") { e.preventDefault(); setAutoCandidates(!autoCandOn); return; }
-    if (k === "Escape") { clearSelection(); selectedCell = null; announce("Selection cleared."); return; }
+    if (k === "Escape") {
+      clearSelection(); selectedCell = null;
+      boardEl.classList.remove("has-selection");
+      announce("Selection cleared."); return;
+    }
 
     if (ARROW_KEYS.indexOf(k) >= 0) {
       /* Leave the arrows to the page until the reader is actually in the grid,
