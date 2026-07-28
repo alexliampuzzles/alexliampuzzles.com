@@ -3536,8 +3536,8 @@ const HintEngine = (function () {
     }
     return out;
   }
-  function surveyHints(grid) {
-    return surveyList(grid, SudokuCore.buildCandidates(grid));
+  function surveyHints(grid, cand) {
+    return surveyList(grid, cand ? Int32Array.from(cand) : SudokuCore.buildCandidates(grid));
   }
 
   /* Continue past an elimination-only deduction until a digit can be placed.
@@ -4751,6 +4751,51 @@ const HintEngine = (function () {
       hintPanel.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
+  /* ---------- The reader's pencil marks as candidates ----------
+     Hints should respect deductions you have already made by hand. Where a cell
+     carries your own notes, those become its candidate set — intersected with
+     the legally possible digits, so a stale note can never widen it. Cells you
+     have not pencilled keep the computed candidates.
+
+     Why the guard below matters: every technique here is sound, meaning it only
+     ever removes candidates that no solution inside the current candidate space
+     could use. So narrowing the space to your notes stays safe *as long as each
+     pencilled cell still contains the digit that actually belongs there*. If a
+     note has ruled that digit out, the space no longer contains the solution and
+     any deduction drawn from it would be nonsense — so that case is detected and
+     reported rather than used. */
+  function notesMaskOf(cell) {
+    const s = (cell && cell.dataset.notes) || "";
+    let m = 0;
+    for (let k = 0; k < s.length; k++) {
+      const d = +s[k];
+      if (d >= 1 && d <= 9) m |= SudokuCore.bit(d);
+    }
+    return m;
+  }
+  function applyReaderNotes(grid, base) {
+    const out = Int32Array.from(base);
+    for (let i = 0; i < 81; i++) {
+      if (grid[i]) continue;
+      const m = notesMaskOf(cellAt(i));
+      if (m) out[i] = base[i] & m;
+    }
+    return out;
+  }
+  /* First cell whose pencil marks rule out the digit that belongs there, or -1.
+     Only the Checker consults the answer key; the hint engine never does. */
+  function firstBadNoteCell(grid) {
+    if (!Checker.has()) return -1;
+    for (let i = 0; i < 81; i++) {
+      if (grid[i]) continue;
+      const m = notesMaskOf(cellAt(i));
+      if (!m) continue;
+      const d = +Checker.digitAt(i);
+      if (d && !(m & SudokuCore.bit(d))) return i;
+    }
+    return -1;
+  }
+
   function requestHint() {
     if (!currentPuzzle) return;
     /* Pressing Hint again walks the SAME hint down a level, so you never have
@@ -4765,7 +4810,22 @@ const HintEngine = (function () {
     const v = Validator.check(grid, givens);
     if (!v.ok) { clearHint(); reportProblem(v, givens); return; }
 
-    const h = HintEngine.getHint(grid, liveCand ? { cand: liveCand } : {});
+    /* Fold in the reader's own pencil marks so a hint never re-suggests an
+       elimination they have already made by hand. Checked for soundness first:
+       notes that rule out the true digit would poison every deduction. */
+    const badNote = firstBadNoteCell(grid);
+    if (badNote >= 0) {
+      clearHint();
+      setStatus("Your pencil marks in " + SudokuCore.rc(badNote) + " rule out the digit that " +
+                "belongs there, so any hint based on them would be wrong. Correct or clear that " +
+                "cell's notes, then ask again.", "bad");
+      cellAt(badNote).classList.add("hint-eliminate");
+      if (cellAt(badNote).scrollIntoView)
+        cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
+      return;
+    }
+    const baseCand = liveCand ? liveCand : SudokuCore.buildCandidates(grid);
+    const h = HintEngine.getHint(grid, { cand: applyReaderNotes(grid, baseCand) });
     if (h.narrowed) liveCand = Int32Array.from(h.narrowed);
     /* clearHint() as well as the message: a previous "check my grid" may have
        left red rings on the board that no longer mean anything. */
@@ -4834,7 +4894,22 @@ const HintEngine = (function () {
     const v = Validator.check(grid, givens);
     if (!v.ok) { clearHint(); reportProblem(v, givens); return; }
 
-    const all = HintEngine.surveyHints(grid);
+    /* Same treatment as the plain hint: honour the reader's pencil marks, but
+       refuse to reason from notes that have ruled out a true digit. */
+    const badNote = firstBadNoteCell(grid);
+    if (badNote >= 0) {
+      clearHint();
+      setStatus("Your pencil marks in " + SudokuCore.rc(badNote) + " rule out the digit that " +
+                "belongs there, so any hint based on them would be wrong. Correct or clear that " +
+                "cell's notes, then ask again.", "bad");
+      cellAt(badNote).classList.add("hint-eliminate");
+      if (cellAt(badNote).scrollIntoView)
+        cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
+      return;
+    }
+    const advCand = applyReaderNotes(grid, liveCand ? liveCand : SudokuCore.buildCandidates(grid));
+
+    const all = HintEngine.surveyHints(grid, advCand);
     const advanced = all.filter(o => o.advanced);
     /* Prefer genuinely advanced patterns, but only if there are at least two to
        rotate between. With a single advanced technique the button would hand
@@ -4846,7 +4921,7 @@ const HintEngine = (function () {
 
     if (!pool.length) {
       clearHint();
-      const h = HintEngine.getHint(grid);
+      const h = HintEngine.getHint(grid, { cand: advCand });
       if (h.tech === "Solved") { setStatus("This grid is already complete.", "good"); return; }
       if (h.tech === "Stuck" || h.usedChain) {
         setStatus("No pattern is available here \u2014 fill an easier cell somewhere else and one " +
@@ -4876,7 +4951,7 @@ const HintEngine = (function () {
     patternShown[pick.tech] = (patternShown[pick.tech] || 0) + 1;
     lastPattern = pick.tech;
 
-    const h = HintEngine.getHint(grid, { only: pick.index });
+    const h = HintEngine.getHint(grid, { only: pick.index, cand: advCand });
     if (h.tech === "Solved" || h.tech === "Stuck") {
       clearHint(); setStatus("No deduction found from this position.", "bad"); return;
     }
