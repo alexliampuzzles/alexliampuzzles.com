@@ -1538,7 +1538,7 @@
 
    /* Selected cell – background only, no outline (both modes) */
     .cell.selected {
-      background: rgba(250, 204, 21, 0.30); /* SAME as same-digit */
+      background: rgba(250, 204, 21, 0.38); /* SAME as same-digit */
       z-index: 2;
     }
     
@@ -2017,14 +2017,15 @@
     .hint-inline-btn:hover { opacity: 0.8; }
 
     /* Level 1 nudge: a whole unit, faintly. Never the answer cell. */
-    .cell.hint-unit { background: var(--hint-unit); }
+    .cell.hint-unit:not(.selected) { background: var(--hint-unit); }
 
+    /* Hint tints step aside for the selected cell, so selection needs no ring
+       of its own — the fill alone identifies it and the board stays calm. */
     .cell.hint-primary {
       box-shadow: inset 0 0 0 2px var(--accent);
-      background: var(--hint-strong) !important;
     }
-
-    .cell.hint-secondary { background: var(--hint-soft) !important; }
+    .cell.hint-primary:not(.selected) { background: var(--hint-strong); }
+    .cell.hint-secondary:not(.selected) { background: var(--hint-soft); }
 
     /* An outline rather than a box-shadow, so an elimination marker can share a
        cell with .hint-primary instead of the two rings cancelling out. */
@@ -2037,17 +2038,6 @@
        The light theme already forced this; the dark theme used to lose to the
        hint background and showed orange where light showed red. */
     body.theme-dark .cell.error { background: rgba(239, 68, 68, 0.28) !important; }
-
-    /* The selection ring lives on a pseudo-element so it survives a hint
-       background, which has to use !important to win the cascade. */
-    .cell.selected::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      box-shadow: inset 0 0 0 3px var(--sel-ring);
-      z-index: 4;
-    }
 
     .board:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
@@ -2063,6 +2053,67 @@
     .mobile-hint-row { display: none; gap: 0.5rem; margin-top: 0.8rem; }
     .mobile-hint-row .btn { flex: 1 1 0; padding: 0.55rem 0.35rem; font-size: 0.82rem; }
     @media (max-width: 880px) { .mobile-hint-row { display: flex; } }
+
+    /* ---------- Control deck: every control sits with the grid ----------
+       Previously the actions were split between the board card and the hint
+       card, which meant hunting in two places for one move. */
+    .deck { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.85rem; }
+    .deck-row { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; }
+    .deck-row.split { justify-content: space-between; }
+    .deck-row.centre { justify-content: center; }
+    .deck-group { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+    .deck-row.wide > .framed-display { flex: 1 1 0; min-width: 0; }
+
+    /* Short, upper-case labels: they read as controls rather than sentences and
+       take far less width, which is what let everything fit around the grid. */
+    .btn.pill {
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.055em;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.62rem 1.15rem;
+      white-space: nowrap;
+    }
+
+    .pad {
+      margin-top: 0.85rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.3fr);
+      gap: 0.5rem;
+    }
+    .pad > * { min-width: 0; }
+    .pad .num-key { padding: 0.5rem 0; font-size: 1.35rem; }
+    .pad .num-key-erase { font-size: 0.95rem; padding: 0.5rem 0.3rem; border-radius: 0.75rem; }
+    .pad .btn-notes { width: 100%; margin: 0; border-radius: 0.75rem; }
+
+    .pad-key {
+      border-radius: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-family: "Inter", sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem;
+      transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+    }
+    .pad-undo { background: rgba(250, 204, 21, 0.22); border-color: rgba(250, 204, 21, 0.5); color: #fde68a; }
+    .pad-undo:hover:not(:disabled) { background: rgba(250, 204, 21, 0.34); }
+    .pad-undo:disabled { opacity: 0.4; cursor: default; }
+    body.theme-light .pad-undo { background: #fef08a; border-color: #facc15; color: #1d4ed8; }
+    body.theme-light .pad-undo:hover:not(:disabled) { background: #fde047; }
+    body.theme-light .num-key-erase.pad-erase { background: #fee2e2; border-color: #fecaca; color: #dc2626; }
+    body.theme-light .num-key-erase.pad-erase:hover { background: #fecaca; }
+    .pad-ico { font-size: 1.05rem; line-height: 1; }
+
+    .tool-row { display: flex; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap; }
+    .tool-row .btn { flex: 1 1 auto; }
+
+    @media (max-width: 620px) {
+      .deck-row.split { justify-content: flex-start; }
+      .btn.pill { font-size: 0.72rem; padding: 0.55rem 0.8rem; }
+      .tool-row .btn { flex: 1 1 44%; }
+    }
 
     .hint-available { margin-top: 0.6rem; font-size: 0.8rem; color: var(--text-muted); }
     .hint-available b { color: var(--accent); font-weight: 600; }
@@ -2189,56 +2240,43 @@
   <main>
     <section class="board-card">
       <div class="board-card-inner">
-        <div class="board-header">
-          <div class="board-title">
-            400 Sudoku Hard to Expert
-            <span class="tier-badge" id="tier-badge">Hard 1&ndash;200</span>
-          </div>
-        </div>
-
-        <div class="controls-row">
-          <div class="board-buttons">
-            <div class="left-actions">
-
-              <div class="book-picker-row">
-                <div class="level-switch" role="group" aria-label="Book section">
-                  <button type="button" data-level="hard" class="active">Hard</button>
-                  <button type="button" data-level="expert">Expert</button>
-                </div>
-
-                <div id="puzzle-display" class="puzzle-display framed-display">
-                  <span id="puzzle-display-level">Hard</span> Puzzle
-                  <span id="puzzle-display-num">001</span> / 200
-                </div>
-
-                <div id="puzzle-selection" class="puzzle-selection framed-display">
-                  <label for="puzzle-select" class="inline-select-label">Puzzle #</label>
-                  <select id="puzzle-select"></select>
-                </div>
-              </div>
-
-              <div class="book-action-group">
-                <button id="btn-play" class="btn btn-outline" type="button">Solve Puzzle</button>
-                <button id="btn-show-solution" class="btn btn-outline" type="button">Show Solution</button>
-              </div>
-
-              <div class="book-action-group">
-                <button id="btn-mistakes" class="btn btn-outline" type="button" aria-pressed="false">Block wrong moves</button>
-                <button id="btn-restart" class="btn btn-outline" type="button">Restart puzzle</button>
-              </div>
+        <div class="deck">
+          <div class="deck-row split">
+            <div class="board-title">400 Sudoku Hard to Expert</div>
+            <div class="level-switch" role="group" aria-label="Book section">
+              <button type="button" data-level="hard" class="active">Hard</button>
+              <button type="button" data-level="expert">Expert</button>
             </div>
           </div>
-        </div>
 
-        <div class="timer-toggle-row">
-          <label class="helper-pill">
-            <input type="checkbox" id="toggle-timer">
-            <span>Timer</span>
-          </label>
+          <div class="deck-row wide">
+            <div id="puzzle-display" class="puzzle-display framed-display">
+              <span id="puzzle-display-level">Hard</span> Puzzle
+              <span id="puzzle-display-num">001</span> / 200
+            </div>
+            <div id="puzzle-selection" class="puzzle-selection framed-display">
+              <label for="puzzle-select" class="inline-select-label">Puzzle #</label>
+              <select id="puzzle-select"></select>
+            </div>
+          </div>
 
-          <div id="timer-container" class="timer-container">
-            <span id="timer-time" class="timer-time">00:00</span>
-            <button id="btn-timer-pause" class="timer-pause">Pause</button>
+          <div class="deck-row split">
+            <div class="deck-group">
+              <button id="btn-play" class="btn btn-outline pill btn-solution-active" type="button">Solve Puzzle</button>
+              <button id="btn-show-solution" class="btn btn-outline pill" type="button">Show Solution</button>
+            </div>
+            <button id="btn-check-grid" class="btn btn-outline pill" type="button">Check Grid</button>
+          </div>
+
+          <div class="deck-row centre">
+            <label class="helper-pill">
+              <input type="checkbox" id="toggle-timer">
+              <span>Timer</span>
+            </label>
+            <div id="timer-container" class="timer-container">
+              <span id="timer-time" class="timer-time">00:00</span>
+              <button id="btn-timer-pause" class="timer-pause">Pause</button>
+            </div>
           </div>
         </div>
 
@@ -2256,32 +2294,32 @@
           <div id="wrong-tooltip" class="wrong-tooltip">This number doesn&rsquo;t belong here</div>
         </div>
 
-        <div class="number-pad" aria-label="Number input">
-          <div class="number-grid">
-            <button class="num-key" data-value="1">1</button>
-            <button class="num-key" data-value="2">2</button>
-            <button class="num-key" data-value="3">3</button>
-            <button class="num-key" data-value="4">4</button>
-            <button class="num-key" data-value="5">5</button>
-            <button class="num-key" data-value="6">6</button>
-            <button class="num-key" data-value="7">7</button>
-            <button class="num-key" data-value="8">8</button>
-            <button class="num-key" data-value="9">9</button>
-          </div>
-          <div class="number-extra">
-            <button class="num-key num-key-erase" data-value="clear">&#9003; Erase</button>
-            <button id="btn-notes" class="btn-notes" type="button" aria-pressed="false">
-              <span class="icon">&#9998;</span>
-              <span class="label">Notes</span>
-            </button>
-          </div>
+        <div class="pad" aria-label="Number input">
+          <button class="num-key" data-value="1">1</button>
+          <button class="num-key" data-value="2">2</button>
+          <button class="num-key" data-value="3">3</button>
+          <button id="btn-undo" class="pad-key pad-undo" type="button">Undo</button>
+
+          <button class="num-key" data-value="4">4</button>
+          <button class="num-key" data-value="5">5</button>
+          <button class="num-key" data-value="6">6</button>
+          <button class="num-key num-key-erase pad-erase" data-value="clear" type="button">
+            <span class="pad-ico">&#8855;</span> Erase</button>
+
+          <button class="num-key" data-value="7">7</button>
+          <button class="num-key" data-value="8">8</button>
+          <button class="num-key" data-value="9">9</button>
+          <button id="btn-notes" class="btn-notes" type="button" aria-pressed="false">
+            <span class="icon">&#9998;</span>
+            <span class="label">Notes</span>
+          </button>
         </div>
 
-        <div class="mobile-hint-row">
-          <button id="btn-hint-m" class="btn btn-outline" type="button">Hint</button>
-          <button id="btn-hard-hint-m" class="btn btn-outline" type="button">Harder pattern</button>
-          <button id="btn-check-grid-m" class="btn btn-outline" type="button">Check</button>
-          <button id="btn-undo-m" class="btn btn-outline" type="button">Undo</button>
+        <div class="tool-row">
+          <button id="btn-hint" class="btn btn-outline pill" type="button">Hint</button>
+          <button id="btn-hard-hint" class="btn btn-outline pill" type="button">Advanced Hint</button>
+          <button id="btn-auto-cand" class="btn btn-outline pill" type="button" aria-pressed="false">Show Candidates</button>
+          <button id="btn-restart" class="btn btn-outline pill" type="button">Restart</button>
         </div>
       </div>
     </section>
@@ -2295,30 +2333,19 @@
             Start with a nudge and only go further if you need to.
           </p>
 
-          <div class="hint-actions">
-            <button id="btn-hint" class="btn btn-outline" type="button">Give me a hint</button>
-            <button id="btn-hard-hint" class="btn btn-outline" type="button">Show a harder pattern</button>
-            <button id="btn-auto-cand" class="btn btn-outline" type="button" aria-pressed="false">Show candidates</button>
-            <button id="btn-check-grid" class="btn btn-outline" type="button">Check my grid</button>
-            <button id="btn-undo" class="btn btn-outline" type="button">Undo</button>
-          </div>
-          <p class="side-sub" style="margin-top:0.5rem;font-size:0.82rem;">
-            <b>Give me a hint</b> always offers the <i>easiest</i> step available, so you never do more work
-            than you have to. <b>Show a harder pattern</b> does the opposite: it picks one of the advanced
-            techniques the position will support, for when you would rather learn a pattern than finish the
-            grid. Press it again for a different one &mdash; it works through everything the position
-            offers before repeating itself.
-          </p>
-          <p class="side-sub" style="margin-top:0.5rem;font-size:0.82rem;">
-            <b>Show candidates</b> pencils in every possible digit for each empty cell automatically, so you can
-            see the pattern a hint describes. It updates as you play and never counts as one of your own notes.
+          <p class="side-sub" style="margin-top:0.6rem;font-size:0.82rem;">
+            <b>Hint</b> always offers the <i>easiest</i> step available, so you never do more work than you
+            have to. <b>Advanced Hint</b> does the opposite: it picks one of the harder techniques the
+            position will support, for when you would rather learn a pattern than finish the grid &mdash;
+            press it again for a different one. <b>Show Candidates</b> pencils in every possible digit for
+            each empty cell so you can see the pattern a hint describes.
           </p>
 
           <div id="status-line" class="status-line"></div>
 
           <div id="hint-panel" class="hint-panel" aria-live="polite">
             <div id="hint-tech" class="hint-tech"></div>
-            <div id="hint-teaching" class="hint-teaching" hidden>Harder pattern</div>
+            <div id="hint-teaching" class="hint-teaching" hidden>Advanced hint</div>
             <div id="hint-body" class="hint-body"></div>
             <div class="hint-more">
               <button id="btn-hint-more" class="btn btn-outline" type="button">Tell me more</button>
@@ -2369,7 +2396,7 @@
               <div><span class="key">N</span> &ndash; toggle Notes</div>
               <div><span class="key">C</span> &ndash; toggle candidates</div>
               <div><span class="key">H</span> &ndash; hint</div>
-              <div><span class="key">G</span> &ndash; show a harder pattern</div>
+              <div><span class="key">G</span> &ndash; advanced hint</div>
               <div><span class="key">Ctrl/&#8984; + Z</span> &ndash; undo</div>
               <div><span class="key">Click</span> &ndash; select a cell</div>
             </div>
@@ -3569,7 +3596,6 @@ const HintEngine = (function () {
 
   /* ---------- Element handles ---------- */
   const boardEl = document.getElementById("board");
-  const btnMistakes = document.getElementById("btn-mistakes");
   const numKeys = document.querySelectorAll(".num-key");
   const btnNotes = document.getElementById("btn-notes");
   const timerToggle = document.getElementById("toggle-timer");
@@ -3588,17 +3614,12 @@ const HintEngine = (function () {
   const btnHardHint = document.getElementById("btn-hard-hint");
   const btnUndo = document.getElementById("btn-undo");
   const btnRestart = document.getElementById("btn-restart");
-  const btnHintM = document.getElementById("btn-hint-m");
-  const btnHardHintM = document.getElementById("btn-hard-hint-m");
-  const btnCheckGridM = document.getElementById("btn-check-grid-m");
-  const btnUndoM = document.getElementById("btn-undo-m");
   const hintTeachEl = document.getElementById("hint-teaching");
   const srLive = document.getElementById("sr-live");
   const hintPanel = document.getElementById("hint-panel");
   const hintTechEl = document.getElementById("hint-tech");
   const hintBodyEl = document.getElementById("hint-body");
   const statusLine = document.getElementById("status-line");
-  const tierBadge = document.getElementById("tier-badge");
 
   let wrongTooltipTimeout = null;
   function showWrongTooltip() {
@@ -3621,7 +3642,6 @@ const HintEngine = (function () {
   let currentPuzzle = null;
   let selectedCell = null;
   let notesMode = false;
-  let showMistakes = false;
   let puzzleCompleted = false;
   /* True only when the grid was finished by the reader entering digits, not by
      opening the full solution — gates the review invitation. */
@@ -3947,7 +3967,7 @@ const HintEngine = (function () {
     autoCandOn = !!on;
     btnAutoCand.classList.toggle("active", autoCandOn);
     btnAutoCand.setAttribute("aria-pressed", autoCandOn ? "true" : "false");
-    btnAutoCand.textContent = autoCandOn ? "Hide candidates" : "Show candidates";
+    btnAutoCand.textContent = autoCandOn ? "Hide Candidates" : "Show Candidates";
     refreshAutoCandidates();
     // If a hint is on screen, re-tint its candidates against the fresh overlay.
     if (currentHint) paintHint(currentHint, hintLevel);
@@ -4047,7 +4067,7 @@ const HintEngine = (function () {
     return true;
   }
   function updateUndoButtons() {
-    [btnUndo, btnUndoM].forEach(b => { if (b) b.disabled = undoStack.length === 0; });
+    if (btnUndo) btnUndo.disabled = undoStack.length === 0;
   }
   /* Run a board edit and record it for undo, but only if it changed something —
      so pressing Erase on an already-empty cell doesn't cost an undo step. */
@@ -4130,18 +4150,22 @@ const HintEngine = (function () {
       for (let rr = br; rr < br + 3; rr++) for (let cc = bc; cc < bc + 3; cc++)
         if (rr !== r || cc !== c) bump(cellAt(rr * 9 + cc));
     });
+  }
 
-    /* With the toggle on, audit everything already on the board against the
-       answer key — not just the digit being typed. Turning it on part-way
-       through a solve should surface mistakes made while it was off. */
-    if (showMistakes && Checker.has()) {
-      for (let i = 0; i < 81; i++) {
-        const cell = cellAt(i);
-        if (!cell || cell.classList.contains("given")) continue;
-        const v = getCellValue(cell);
-        if (v && !Checker.isCorrect(i, v)) cell.classList.add("error");
-      }
+  /* Paint every entry that disagrees with the answer key, and say how many.
+     This is what "Block wrong moves" used to show; the difference is that it
+     now happens when the reader ASKS rather than pre-empting the mistake, so
+     you can still make one and find it yourself. */
+  function markWrongCells() {
+    if (!Checker.has()) return 0;
+    let n = 0;
+    for (let i = 0; i < 81; i++) {
+      const cell = cellAt(i);
+      if (!cell || cell.classList.contains("given")) continue;
+      const v = getCellValue(cell);
+      if (v && !Checker.isCorrect(i, v)) { cell.classList.add("error"); n++; }
     }
+    return n;
   }
 
   /* How many placed digits currently disagree with the answer key. */
@@ -4221,16 +4245,12 @@ const HintEngine = (function () {
   function flashWrongDigit(cell) {
     if (!cell) return;
     cell.classList.add("error");
-    setTimeout(() => { if (showMistakes) recomputeConflicts(); else cell.classList.remove("error"); }, 220);
+    setTimeout(() => cell.classList.remove("error"), 220);
   }
+  /* Wrong digits are allowed in. Finding them is what Check Grid is for. */
   function trySetCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
-    if (!value) { setCellValue(cell, ""); return; }
-    if (showMistakes && Checker.has()) {
-      const idx = (+cell.dataset.row) * 9 + (+cell.dataset.col);
-      if (!Checker.isCorrect(idx, value)) { flashWrongDigit(cell); showWrongTooltip(); return; }
-    }
-    setCellValue(cell, value);
+    setCellValue(cell, value || "");
   }
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
@@ -4331,25 +4351,6 @@ const HintEngine = (function () {
   });
   boardEl.addEventListener("focus", () => { if (!selectedCell) selectIndex(0); });
 
-  function setMistakesMode(on, say) {
-    showMistakes = !!on;
-    if (btnMistakes) {
-      btnMistakes.classList.toggle("mistakes-on", showMistakes);
-      btnMistakes.setAttribute("aria-pressed", showMistakes ? "true" : "false");
-    }
-    recomputeConflicts();
-    if (!say) return;
-    if (showMistakes) {
-      const n = countWrongEntries();
-      setStatus(n
-        ? n + (n === 1 ? " entry disagrees" : " entries disagree") +
-          " with the solution \u2014 shown in red."
-        : "Nothing on the board disagrees with the solution.", n ? "bad" : "good");
-    } else {
-      setStatus("");
-    }
-  }
-  btnMistakes.addEventListener("click", () => setMistakesMode(!showMistakes, true));
 
   function showSolution() {
     if (!currentPuzzle || !Checker.has()) return;
@@ -4617,7 +4618,7 @@ const HintEngine = (function () {
       if (wrong >= 0) {
         setStatus("One of your entries doesn't lead to a solution \u2014 there's a mistake at " +
                   SudokuCore.rc(wrong) + ". Fix it, then the puzzle solves with the usual techniques. " +
-                  "Use \u201cCheck my grid\u201d to review.", "bad");
+                  "Use Check Grid to review.", "bad");
         cellAt(wrong).classList.add("hint-eliminate");
         if (cellAt(wrong).scrollIntoView) cellAt(wrong).scrollIntoView({ block: "nearest", inline: "nearest" });
         return;
@@ -4780,9 +4781,6 @@ const HintEngine = (function () {
   btnHintMore.addEventListener("click", escalateHint);
   if (btnHardHint) btnHardHint.addEventListener("click", requestHarderPattern);
   if (btnUndo) btnUndo.addEventListener("click", undo);
-  if (btnHintM) btnHintM.addEventListener("click", requestHint);
-  if (btnHardHintM) btnHardHintM.addEventListener("click", requestHarderPattern);
-  if (btnUndoM) btnUndoM.addEventListener("click", undo);
 
   /* Shared reporting for both the hint button and the check button. */
   function reportProblem(v, givens) {
@@ -4791,6 +4789,14 @@ const HintEngine = (function () {
       setStatus("The same digit appears twice in a row, column or box: " + names +
                 ". Clear one of them before going on.", "bad");
       v.cells.forEach(i => cellAt(i).classList.add("hint-eliminate"));
+      return;
+    }
+    /* Prefer naming the exact cells over describing a region of the board. */
+    const wrong = markWrongCells();
+    if (wrong) {
+      setStatus(wrong === 1
+        ? "One entry is wrong \u2014 it is highlighted in red."
+        : wrong + " entries are wrong \u2014 they are highlighted in red.", "bad");
       return;
     }
     if (v.box >= 0) {
@@ -4809,19 +4815,32 @@ const HintEngine = (function () {
   function checkGrid() {
     if (!currentPuzzle) return;
     clearHint();
-    const grid = readGrid(), givens = readGivens();
-    const v = Validator.check(grid, givens);
-    if (!v.ok) { reportProblem(v, givens); return; }
+    /* Clears any stale red, then re-flags genuine rule breaches. */
+    recomputeConflicts();
+
+    const wrong = markWrongCells();
+    if (wrong) {
+      setStatus(wrong === 1
+        ? "One entry is wrong \u2014 it is highlighted in red."
+        : wrong + " entries are wrong \u2014 they are highlighted in red.", "bad");
+      return;
+    }
+
+    const grid = readGrid();
+    if (!Checker.has()) {
+      /* No answer key loaded: fall back to checking the grid is still solvable. */
+      const v = Validator.check(grid, readGivens());
+      if (!v.ok) { reportProblem(v, readGivens()); return; }
+    }
     if (Array.from(grid).every(x => x)) {
       setStatus("Complete and correct.", "good");
       completedByPlaying = true;
       showCompletionMessage();
       return;
     }
-    setStatus("No mistakes so far \u2014 everything you have entered is still consistent with a solution.", "good");
+    setStatus("No mistakes so far.", "good");
   }
   btnCheckGrid.addEventListener("click", checkGrid);
-  if (btnCheckGridM) btnCheckGridM.addEventListener("click", checkGrid);
 
   /* =====================================================================
      Puzzle selection
@@ -4846,7 +4865,6 @@ const HintEngine = (function () {
   function updatePuzzleDisplay(n) {
     puzzleDisplayNumEl.textContent = String(n).padStart(3, "0");
     puzzleDisplayLevelEl.textContent = levelLabel(currentLevel);
-    tierBadge.textContent = levelLabel(currentLevel) + " 1\u2013200";
   }
   function setQueryParams() {
     const url = new URL(window.location.href);
@@ -4982,7 +5000,6 @@ const HintEngine = (function () {
   updatePuzzleDisplay(currentPuzzleNumber);
   (currentMode === "solution" ? btnShowSolution : btnPlay).classList.add("btn-solution-active");
   setQueryParams();
-  setMistakesMode(false);
   setTimerEnabled(false);
   updateUndoButtons();
   loadPuzzleByNumber(currentPuzzleNumber, currentMode);
