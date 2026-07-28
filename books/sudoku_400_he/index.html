@@ -509,6 +509,11 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      /* Without this the label hugs the left edge of any button that gets
+         stretched by a grid or flex row, which is what made Check Grid read as
+         an oversized box with the text off to one side. */
+      justify-content: center;
+      text-align: center;
       gap: 0.4rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -2065,6 +2070,9 @@
     /* The long label needs the room: 3/5 to it, 2/5 to the picker, and both on
        one line. Equal halves forced "Hard Puzzle 001 / 200" to wrap. */
     .deck-row.wide {
+      /* One size drives both boxes, so the puzzle label and the picker can
+         never drift apart. Scales with the viewport as the card narrows. */
+      --deck-fs: clamp(0.85rem, 2.5vw, 1.15rem);
       display: grid;
       grid-template-columns: 3fr 2fr;
       gap: 0.55rem;
@@ -2078,14 +2086,27 @@
       justify-content: center;
       gap: 0.35rem;
       padding: 0.42rem 0.7rem;
-      /* Scales with the viewport so it keeps fitting as the card narrows. */
-      font-size: clamp(0.85rem, 2.5vw, 1.15rem);
+      font-size: var(--deck-fs);
     }
+    /* Same size as the picker; the lighter weight and tighter tracking stop the
+       monospace face reading as the bigger of the two. */
+    .deck-row.wide > #puzzle-display { font-weight: 600; letter-spacing: 0.02em; }
     .deck-row.wide .inline-select-label { font-size: inherit; letter-spacing: 0.1em; }
     .deck-row.wide #puzzle-selection select { font-size: inherit; font-weight: 700; }
 
-    .deck-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
-    .deck-actions .push { margin-left: auto; }
+    /* Three equal columns, so Check Grid is exactly the size of Solve Puzzle. */
+    .deck-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
+    .deck-actions .btn { width: 100%; }
+
+    .lbl-short { display: none; }
+
+    /* A pressed toggle should look pressed, which is what lets the short mobile
+       label stay fixed instead of swapping wording. */
+    .btn.pill[aria-pressed="true"] {
+      background: var(--hint-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
     /* Short, upper-case labels: they read as controls rather than sentences and
        take far less width, which is what let everything fit around the grid. */
@@ -2130,7 +2151,8 @@
     .pad-ico { font-size: 1.05rem; line-height: 1; }
 
     .tool-row { display: flex; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap; }
-    .tool-row .btn { flex: 1 1 auto; }
+    /* Equal widths, so the four labels line up instead of sizing to their text. */
+    .tool-row .btn { flex: 1 1 0; }
 
     /* ---------- Narrow screens ----------
        Every control lives with the grid now, so the job here is to keep each
@@ -2138,19 +2160,23 @@
        anything. Rows collapse one at a time as width runs out. */
     @media (max-width: 620px) {
       .deck { gap: 0.5rem; }
+
+      /* Short labels keep Solve / Solution / Check on one line at three equal
+         widths, which reads better than two rows of long names. */
+      .lbl-full { display: none; }
+      .lbl-short { display: inline; }
+
       .btn.pill { font-size: 0.72rem; padding: 0.55rem 0.7rem; letter-spacing: 0.04em; }
+      .deck-actions { gap: 0.45rem; }
 
-      /* A tidy 2-up block beats three pills wrapping raggedly. */
-      .deck-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
-      .deck-actions .btn { width: 100%; }
-      .deck-actions .push { margin-left: 0; grid-column: 1 / -1; }
-
+      /* Tool row and pad keys run 15% larger than the action pills — they are
+         the ones you actually tap mid-solve. */
       .tool-row { gap: 0.45rem; }
-      .tool-row .btn { flex: 1 1 44%; }
+      .tool-row .btn { flex: 1 1 44%; font-size: 0.828rem; }
 
-      .pad { gap: 0.4rem; }
+      .pad { gap: 0.4rem; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.45fr); }
       .pad .num-key { font-size: 1.2rem; padding: 0.45rem 0; }
-      .pad .num-key-erase, .pad .btn-notes { font-size: 0.82rem; letter-spacing: 0.03em; }
+      .pad .num-key-erase, .pad .btn-notes, .pad-undo { font-size: 0.94rem; letter-spacing: 0.02em; }
     }
 
     @media (max-width: 560px) {
@@ -2166,14 +2192,13 @@
     }
 
     @media (max-width: 400px) {
-      .pad { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.12fr); gap: 0.32rem; }
+      .pad { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.35fr); gap: 0.32rem; }
       .pad .num-key { font-size: 1.05rem; }
-      .pad .num-key-erase, .pad .btn-notes { font-size: 0.7rem; padding: 0.45rem 0.15rem; }
-      .pad .btn-notes span.icon, .pad-ico { font-size: 0.85rem; }
-      .pad-undo { font-size: 0.8rem; }
-      /* "SHOW CANDIDATES" is the widest label and sets the floor here. */
+      .pad .num-key-erase, .pad .btn-notes, .pad-undo { font-size: 0.805rem; padding: 0.45rem 0.15rem; }
+      .pad .btn-notes span.icon, .pad-ico { font-size: 0.95rem; }
       .btn.pill { font-size: 0.62rem; padding: 0.5rem 0.3rem; letter-spacing: 0; }
       .tool-row { gap: 0.35rem; }
+      .tool-row .btn { font-size: 0.713rem; }
       .board-wrapper { padding: 0.55rem; }
       .cell { font-size: 1.15rem; }
     }
@@ -2324,9 +2349,12 @@
           </div>
 
           <div class="deck-row deck-actions">
-            <button id="btn-play" class="btn btn-outline pill btn-solution-active" type="button">Solve Puzzle</button>
-            <button id="btn-show-solution" class="btn btn-outline pill" type="button">Show Solution</button>
-            <button id="btn-check-grid" class="btn btn-outline pill push" type="button">Check Grid</button>
+            <button id="btn-play" class="btn btn-outline pill btn-solution-active" type="button" aria-label="Solve puzzle">
+              <span class="lbl-full">Solve Puzzle</span><span class="lbl-short">Solve</span></button>
+            <button id="btn-show-solution" class="btn btn-outline pill" type="button" aria-label="Show solution">
+              <span class="lbl-full">Show Solution</span><span class="lbl-short">Solution</span></button>
+            <button id="btn-check-grid" class="btn btn-outline pill" type="button" aria-label="Check grid">
+              <span class="lbl-full">Check Grid</span><span class="lbl-short">Check</span></button>
           </div>
 
           <div class="deck-row centre">
@@ -2378,8 +2406,10 @@
 
         <div class="tool-row">
           <button id="btn-hint" class="btn btn-outline pill" type="button">Hint</button>
-          <button id="btn-hard-hint" class="btn btn-outline pill" type="button">Advanced Hint</button>
-          <button id="btn-auto-cand" class="btn btn-outline pill" type="button" aria-pressed="false">Show Candidates</button>
+          <button id="btn-hard-hint" class="btn btn-outline pill" type="button" aria-label="Advanced hint">
+            <span class="lbl-full">Advanced Hint</span><span class="lbl-short">Advanced</span></button>
+          <button id="btn-auto-cand" class="btn btn-outline pill" type="button" aria-pressed="false" aria-label="Show candidates">
+            <span class="lbl-full">Show Candidates</span><span class="lbl-short">Candidates</span></button>
           <button id="btn-restart" class="btn btn-outline pill" type="button">Restart</button>
         </div>
       </div>
@@ -4028,7 +4058,10 @@ const HintEngine = (function () {
     autoCandOn = !!on;
     btnAutoCand.classList.toggle("active", autoCandOn);
     btnAutoCand.setAttribute("aria-pressed", autoCandOn ? "true" : "false");
-    btnAutoCand.textContent = autoCandOn ? "Hide Candidates" : "Show Candidates";
+    const acFull = btnAutoCand.querySelector(".lbl-full");
+    if (acFull) acFull.textContent = autoCandOn ? "Hide Candidates" : "Show Candidates";
+    else btnAutoCand.textContent = autoCandOn ? "Hide Candidates" : "Show Candidates";
+    btnAutoCand.setAttribute("aria-label", autoCandOn ? "Hide candidates" : "Show candidates");
     refreshAutoCandidates();
     // If a hint is on screen, re-tint its candidates against the fresh overlay.
     if (currentHint) paintHint(currentHint, hintLevel);
