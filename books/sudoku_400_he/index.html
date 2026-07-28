@@ -2100,12 +2100,42 @@
 
     .lbl-short { display: none; }
 
-    /* A pressed toggle should look pressed, which is what lets the short mobile
-       label stay fixed instead of swapping wording. */
-    .btn.pill[aria-pressed="true"] {
-      background: var(--hint-soft);
-      border-color: var(--accent);
-      color: var(--accent);
+    /* Outline only — the ring carries the colour, the label stays the ordinary
+       button grey. Green to red reads as a step up in difficulty from Hint to
+       Advanced Hint; Candidates sits OFF that axis in indigo because it is a
+       display toggle, not a harder hint, and orange is left to the brand. */
+    .btn.pill.tone-go    { border-color: #22c55e; }
+    .btn.pill.tone-alert { border-color: #ef4444; }
+    .btn.pill.tone-info  { border-color: #6366f1; }
+
+    /* .btn:hover repaints the border grey, so each tone has to hold its own.
+       Only the border is restated: the hover background and the label colour
+       stay exactly as they are on every other button. */
+    .btn.pill.tone-go:hover    { border-color: #22c55e; }
+    .btn.pill.tone-alert:hover { border-color: #ef4444; }
+    .btn.pill.tone-info:hover  { border-color: #6366f1; }
+
+    body.theme-light .btn.pill.tone-go,
+    body.theme-light .btn.pill.tone-go:hover    { border-color: #16a34a; }
+    body.theme-light .btn.pill.tone-alert,
+    body.theme-light .btn.pill.tone-alert:hover { border-color: #dc2626; }
+    body.theme-light .btn.pill.tone-info,
+    body.theme-light .btn.pill.tone-info:hover  { border-color: #4f46e5; }
+
+    /* Candidates is a toggle and still has to read as on or off at a glance.
+       Filling it would force the label off grey, so instead the ring doubles in
+       weight (an inset shadow on top of the border) over the faintest wash. */
+    .btn.pill.tone-info[aria-pressed="true"],
+    .btn.pill.tone-info[aria-pressed="true"]:hover {
+      border-color: #6366f1;
+      box-shadow: inset 0 0 0 1px #6366f1;
+      background: rgba(99, 102, 241, 0.16);
+    }
+    body.theme-light .btn.pill.tone-info[aria-pressed="true"],
+    body.theme-light .btn.pill.tone-info[aria-pressed="true"]:hover {
+      border-color: #4f46e5;
+      box-shadow: inset 0 0 0 1px #4f46e5;
+      background: #eef2ff;
     }
 
     /* Short, upper-case labels: they read as controls rather than sentences and
@@ -2405,10 +2435,10 @@
         </div>
 
         <div class="tool-row">
-          <button id="btn-hint" class="btn btn-outline pill" type="button">Hint</button>
-          <button id="btn-hard-hint" class="btn btn-outline pill" type="button" aria-label="Advanced hint">
+          <button id="btn-hint" class="btn btn-outline pill tone-go" type="button">Hint</button>
+          <button id="btn-hard-hint" class="btn btn-outline pill tone-alert" type="button" aria-label="Advanced hint">
             <span class="lbl-full">Advanced Hint</span><span class="lbl-short">Advanced</span></button>
-          <button id="btn-auto-cand" class="btn btn-outline pill" type="button" aria-pressed="false" aria-label="Show candidates">
+          <button id="btn-auto-cand" class="btn btn-outline pill tone-info" type="button" aria-pressed="false" aria-label="Show candidates">
             <span class="lbl-full">Show Candidates</span><span class="lbl-short">Candidates</span></button>
           <button id="btn-restart" class="btn btn-outline pill" type="button">Restart</button>
         </div>
@@ -4685,7 +4715,11 @@ const HintEngine = (function () {
 
   function requestHint() {
     if (!currentPuzzle) return;
-    if (currentHint) { escalateHint(); return; }
+    /* Pressing Hint again walks the SAME hint down a level, so you never have
+       to reach for "Show me exactly". But only its own hint: a hint left on
+       screen by Advanced Hint used to swallow the press and keep unfolding the
+       teaching pattern instead of answering with the easiest step. */
+    if (currentHint && !currentHint.teaching) { escalateHint(); return; }
 
     const grid = readGrid(), givens = readGivens();
 
