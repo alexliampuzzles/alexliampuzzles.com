@@ -1790,6 +1790,11 @@
 
     footer a { color: #60a5fa; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
+    .footer-note { text-align: right; max-width: 34rem; }
+    @media (max-width: 700px) {
+      footer { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+      .footer-note { text-align: left; max-width: none; }
+    }
 
     body.theme-light footer {
       border-top-color: rgba(148, 163, 184, 0.5);
@@ -2508,7 +2513,7 @@
               puzzlers decide whether the book is right for them.
             </p>
             <a id="review-link" class="btn btn-outline review-link"
-               href="https://www.amazon.com/portal/customer-reviews/B0G3VRZP4V/ref=cm_cr_dp_d_show_all_top?_encoding=UTF8&ie=UTF8&reviewerType=all_reviews" target="_blank" rel="noopener">Leave a review</a>
+               href="https://www.amazon.com/dp/B0HBZ686RP" target="_blank" rel="noopener">Leave a review</a>
           </div>
         </div>
       </aside>
@@ -2572,6 +2577,11 @@
 
   <footer>
     <span>&copy; <span id="year"></span> Alex Liam Puzzles</span>
+    <span class="footer-note">
+      This helper is new &mdash; if a hint looks wrong or something doesn&rsquo;t work,
+      please <a href="mailto:contact@alexliampuzzles.com?subject=Sudoku%20helper%20feedback">email me</a>
+      rather than struggling with it.
+    </span>
   </footer>
 </div>
 
