@@ -1714,14 +1714,21 @@
       margin-bottom: 1rem;
     }
 
+    /* The list item is a flex container, so every run of bare text and every
+       <b> became its own flex item — on a narrow screen "Show" and "solution"
+       landed in separate columns. The text is now one span, and the bullet is
+       given a fixed basis so it cannot be squeezed. */
     .feature-list li {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 0.45rem;
       line-height: 1.4;
     }
+    .feature-list li > span:last-child { flex: 1 1 auto; min-width: 0; }
 
     .feature-bullet {
+      flex: 0 0 7px;
+      margin-top: 0.4em;
       width: 7px;
       height: 7px;
       border-radius: 999px;
@@ -2266,6 +2273,10 @@
 
     .status-line.good { color: #34d399; }
     .status-line.bad { color: var(--danger); }
+    /* Those two are tuned for the dark board. On white they measure 1.9:1 and
+       2.7:1, well under the 4.5:1 minimum, so the light theme needs its own. */
+    body.theme-light .status-line.good { color: #047857; }
+    body.theme-light .status-line.bad { color: #b91c1c; }
 
     .tier-badge {
       display: inline-block;
@@ -2391,7 +2402,7 @@
           </div>
 
           <div class="deck-row deck-actions">
-            <button id="btn-play" class="btn btn-outline pill btn-solution-active" type="button" aria-label="Solve puzzle">
+            <button id="btn-play" class="btn btn-outline pill" type="button" aria-label="Solve puzzle">
               <span class="lbl-full">Solve Puzzle</span><span class="lbl-short">Solve</span></button>
             <button id="btn-show-solution" class="btn btn-outline pill" type="button" aria-label="Show solution">
               <span class="lbl-full">Show Solution</span><span class="lbl-short">Solution</span></button>
@@ -2513,10 +2524,10 @@
           <div>
             <div class="side-section-title">Quick steps</div>
             <ul class="feature-list">
-              <li><span class="feature-bullet"></span> Choose the <b>section</b> and <b>Puzzle #</b>.</li>
-              <li><span class="feature-bullet"></span> Press <b>Solve Puzzle</b> to play it online.</li>
-              <li><span class="feature-bullet"></span> Press <b>Show solution</b> for the completed grid.</li>
-              <li><span class="feature-bullet"></span> Use <b>Notes</b> for pencil marks.</li>
+              <li><span class="feature-bullet"></span><span>Choose the <b>section</b> and <b>Puzzle #</b>.</span></li>
+              <li><span class="feature-bullet"></span><span>Press <b>Solve Puzzle</b> to play it online.</span></li>
+              <li><span class="feature-bullet"></span><span>Press <b>Show solution</b> for the completed grid.</span></li>
+              <li><span class="feature-bullet"></span><span>Use <b>Notes</b> for pencil marks.</span></li>
             </ul>
           </div>
 
@@ -3433,8 +3444,13 @@ const HintEngine = (function () {
      take whichever of its three digits breaks the pattern: the one appearing an
      odd number of times in the units it sits in.
 
-     The parity of every unit is checked in full rather than inferred, so this
-     can never fire on a position that merely looks like a BUG.
+     Every unit is counted exactly: ordinary digits must appear twice, and the
+     extra digit three times in each of the three units holding the extra cell.
+     Checking parity alone would be sound — with every cell bivalue, u positive
+     even counts summing to 2u are all forced to be 2 — but it would also admit
+     the degenerate case where the "extra" digit appears just ONCE, which is a
+     hidden single wearing a BUG+1 explanation. Counting exactly keeps the
+     reasoning shown to the reader the reasoning that actually applies.
 
      Reported as an elimination (the other two candidates go) rather than a
      placement, which keeps it interchangeable with the other ladder rungs; the
@@ -3457,11 +3473,10 @@ const HintEngine = (function () {
       for (let d = 1; d <= 9; d++) {
         let n = 0;
         for (const i of cells) if (!g[i] && (cand[i] & bit(d))) n++;
-        if (n % 2 === 0) continue;
-        /* An odd count is only allowed for the extra digit, and only in the
-           three units that contain the extra cell. */
-        if (!holdsTri) return null;
-        if (!(cand[tri] & bit(d))) return null;
+        if (n === 0 || n === 2) continue;     // already placed, or the BUG norm
+        /* The only other count the pattern permits is the extra digit turning
+           up three times, and only in a unit that holds the extra cell. */
+        if (n !== 3 || !holdsTri || !(cand[tri] & bit(d))) return null;
         if (pick && pick !== d) return null;
         pick = d;
       }
@@ -4393,6 +4408,7 @@ const HintEngine = (function () {
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     const v = cell.querySelector(".cell-value");
+    const prevValue = cell.dataset.value || "";
     cell.dataset.value = value || "";
     if (value) {
       clearNotes(cell); v.textContent = value;
@@ -4404,7 +4420,11 @@ const HintEngine = (function () {
     cell.classList.remove("error");
     refreshCellLabel(cell);
     const r0 = +cell.dataset.row, c0 = +cell.dataset.col, idx0 = r0 * 9 + c0;
-    if (!value) liveCand = null;
+    /* Typing over a filled cell replaces the digit without an erase in between.
+       The peers the OLD digit knocked out cannot be restored from here, so the
+       memo has to go: keeping it would leave eliminations justified by a digit
+       that is no longer on the board. */
+    if (!value || (prevValue && prevValue !== value)) liveCand = null;
     else if (liveCand) {
       const nd = +value;
       liveCand[idx0] = SudokuCore.bit(nd);
@@ -4514,7 +4534,13 @@ const HintEngine = (function () {
     updateNumberKeyStatus();
     refreshAutoCandidates();
     revealingSolution = false;
-    showCompletionMessage();
+    /* Not a win — the reader asked to see the answer. Mark the puzzle finished
+       so the auto-completion check stays quiet, but say what actually happened
+       rather than congratulating them for it. */
+    puzzleCompleted = true;
+    completedByPlaying = false;
+    setStatus("Solution shown.", "good");
+    if (timerEnabled) pauseTimer(false);
   }
 
   /* =====================================================================
@@ -5144,7 +5170,11 @@ const HintEngine = (function () {
   selectEl.value = String(Math.min(BOOK_COUNT, Math.max(1, init.n)));
   currentPuzzleNumber = parseInt(selectEl.value, 10);
   updatePuzzleDisplay(currentPuzzleNumber);
-  (currentMode === "solution" ? btnShowSolution : btnPlay).classList.add("btn-solution-active");
+  /* Set BOTH, don't just add to one. The active class used to be hard-coded on
+     Solve in the markup, so opening a ?mode=solution link left it there and lit
+     two buttons at once. */
+  btnPlay.classList.toggle("btn-solution-active", currentMode !== "solution");
+  btnShowSolution.classList.toggle("btn-solution-active", currentMode === "solution");
   setQueryParams();
   setTimerEnabled(false);
   updateUndoButtons();
