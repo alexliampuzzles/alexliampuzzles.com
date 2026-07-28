@@ -4354,23 +4354,17 @@ const HintEngine = (function () {
     if (completedByPlaying) maybeShowReviewPrompt();
   }
 
-  /* Review prompt: neutral, honest, shown at most once per browser session and
-     only after a genuine win. Never asks for a positive rating and is never
-     tied to any feature — an honest ask to verified buyers, dismissible any
-     time. The flag is NOT reset on puzzle load, so a reader who solves several
-     puzzles in one visit is invited exactly once. */
-  const REVIEW_SESSION_KEY = "sudoku400ReviewPromptShown";
+  /* Review prompt: neutral, honest, shown after a genuine solve.
+
+     Deliberately a plain in-memory flag, reset when a new puzzle loads. An
+     earlier version stored "shown" in sessionStorage to survive reloads, but
+     sessionStorage lives for the whole tab: once the key was written the very
+     first time, every later solve read it back and returned early, so the
+     prompt never appeared again until the tab was closed. Any stale key from
+     that version is now inert, since nothing reads it. */
   let reviewPromptShown = false;
   function maybeShowReviewPrompt() {
     if (reviewPromptShown) return;
-    /* An in-memory flag only lasts until the page reloads, which is not what
-       "once per session" means to a reader who solves three puzzles and
-       refreshes between them. sessionStorage is; the boolean stays as the
-       fallback for browsers where storage is unavailable. */
-    try {
-      if (sessionStorage.getItem(REVIEW_SESSION_KEY) === "1") { reviewPromptShown = true; return; }
-      sessionStorage.setItem(REVIEW_SESSION_KEY, "1");
-    } catch (e) { /* storage blocked — the boolean alone still limits it */ }
     reviewPromptShown = true;
     const el = document.getElementById("review-prompt");
     if (el) el.classList.add("show");
@@ -5075,8 +5069,9 @@ const HintEngine = (function () {
     Checker.load(currentPuzzle.solution);
     puzzleCompleted = false;
     completedByPlaying = false;
-    /* Note: reviewPromptShown is intentionally NOT reset here — the invitation
-       appears at most once per browser session, not once per puzzle. */
+    /* Let the invitation appear again on this puzzle: at most once per puzzle,
+       and only after a genuine solve. */
+    reviewPromptShown = false;
     const rp = document.getElementById("review-prompt");
     if (rp) rp.classList.remove("show");
     setStatus("");
