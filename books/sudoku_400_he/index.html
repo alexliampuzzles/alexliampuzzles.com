@@ -2128,7 +2128,7 @@
     }
     .pad > * { min-width: 0; }
     .pad .num-key { padding: 0.5rem 0; }
-    .pad .num-key-erase { padding: 0.5rem 0.3rem; border-radius: 0.75rem; }
+    .pad .num-key-erase { padding: 0.5rem 0.3rem; border-radius: 0.75rem; gap: 0.4rem; }
     .pad .btn-notes { width: 100%; margin: 0; border-radius: 0.75rem; }
 
     .pad-key {
@@ -2174,7 +2174,7 @@
       .tool-row { gap: 0.45rem; }
       .tool-row .btn { flex: 1 1 44%; font-size: 0.828rem; }
 
-      .pad { gap: 0.4rem; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.45fr); }
+      .pad { gap: 0.4rem; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.55fr); }
       .pad .num-key { font-size: 1.2rem; padding: 0.45rem 0; }
       .pad .num-key-erase, .pad .btn-notes, .pad-undo { font-size: 0.94rem; letter-spacing: 0.02em; }
     }
@@ -2192,7 +2192,7 @@
     }
 
     @media (max-width: 400px) {
-      .pad { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.35fr); gap: 0.32rem; }
+      .pad { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.5fr); gap: 0.32rem; }
       .pad .num-key { font-size: 1.05rem; }
       .pad .num-key-erase, .pad .btn-notes, .pad-undo { font-size: 0.805rem; padding: 0.45rem 0.15rem; }
       .pad .btn-notes span.icon, .pad-ico { font-size: 0.95rem; }
@@ -2392,8 +2392,8 @@
           <button class="num-key" data-value="4">4</button>
           <button class="num-key" data-value="5">5</button>
           <button class="num-key" data-value="6">6</button>
-          <button class="num-key num-key-erase pad-erase" data-value="clear" type="button">
-            <span class="pad-ico">&#8855;</span> Erase</button>
+          <button class="num-key num-key-erase pad-erase" data-value="clear" type="button" aria-label="Erase">
+            <span class="pad-ico">&#9003;</span><span>Erase</span></button>
 
           <button class="num-key" data-value="7">7</button>
           <button class="num-key" data-value="8">8</button>
