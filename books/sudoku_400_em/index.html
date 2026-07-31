@@ -2904,7 +2904,17 @@ const HintEngine = (function () {
     for (let ui = 0; ui < 27; ui++) {
       const empt = UNITS[ui].filter(i => !g[i]);
       if (empt.length <= size) continue;
-      for (const combo of combos(empt, size)) {
+      /* Only cells holding at least TWO candidates may FORM the subset. A cell
+         down to one candidate is a naked single, and folding it in produces a
+         degenerate match: {5,9} together with {9} has a two-digit union across
+         two cells, so the size test passes and the reader is told both cells
+         "hold nothing but 5 and 9" — which is false of the second one. The
+         elimination that follows is soundly derived, but from the single, not
+         from any pair. Eliminations still target every empty cell in the unit;
+         only subset membership is restricted. */
+      const src = empt.filter(i => cnt(cand[i]) >= 2);
+      if (src.length < size) continue;
+      for (const combo of combos(src, size)) {
         let m = 0; combo.forEach(i => m |= cand[i]);
         if (cnt(m) !== size) continue;
         const digs = bitsOf(m), el = [];
@@ -2931,7 +2941,13 @@ const HintEngine = (function () {
       const digs = [];
       for (let d = 1; d <= 9; d++) {
         if (u.some(i => g[i] === d)) continue;
-        if (empt.some(i => cand[i] & bit(d))) digs.push(d);
+        /* The mirror of the naked-subset guard: a digit with only ONE possible
+           cell in this unit is a hidden single, not a member of a hidden
+           subset. Admitting it lets one digit's single spot pad out another
+           digit's two, so a hidden single gets announced as a hidden pair. */
+        let spots = 0;
+        for (const i of empt) if (cand[i] & bit(d)) spots++;
+        if (spots >= 2) digs.push(d);
       }
       if (digs.length <= size) continue;
       for (const combo of combos(digs, size)) {
