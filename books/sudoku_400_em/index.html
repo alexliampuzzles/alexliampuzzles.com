@@ -2152,10 +2152,13 @@
 
     /* Outline only — the ring carries the colour, the label stays the ordinary
        button grey. Green to red reads as a step up in difficulty from Hint to
-       Advanced Hint; Candidates sits OFF that axis in indigo because it is a
-       display toggle, not a harder hint, and orange is left to the brand. */
+       Learn a Technique. On this book that button never offers anything
+       alarming, so it takes violet rather than red: it is an invitation to
+       learn, not a warning. Candidates sits OFF that axis in indigo because it
+       is a display toggle, not a harder hint, and orange is left to the brand. */
     .btn.pill.tone-go    { border-color: #22c55e; }
     .btn.pill.tone-alert { border-color: #ef4444; }
+    .btn.pill.tone-teach { border-color: #a855f7; }
     .btn.pill.tone-info  { border-color: #6366f1; }
 
     /* .btn:hover repaints the border grey, so each tone has to hold its own.
@@ -2163,12 +2166,15 @@
        stay exactly as they are on every other button. */
     .btn.pill.tone-go:hover    { border-color: #22c55e; }
     .btn.pill.tone-alert:hover { border-color: #ef4444; }
+    .btn.pill.tone-teach:hover { border-color: #a855f7; }
     .btn.pill.tone-info:hover  { border-color: #6366f1; }
 
     body.theme-light .btn.pill.tone-go,
     body.theme-light .btn.pill.tone-go:hover    { border-color: #16a34a; }
     body.theme-light .btn.pill.tone-alert,
     body.theme-light .btn.pill.tone-alert:hover { border-color: #dc2626; }
+    body.theme-light .btn.pill.tone-teach,
+    body.theme-light .btn.pill.tone-teach:hover { border-color: #9333ea; }
     body.theme-light .btn.pill.tone-info,
     body.theme-light .btn.pill.tone-info:hover  { border-color: #4f46e5; }
 
@@ -2490,8 +2496,8 @@
 
         <div class="tool-row">
           <button id="btn-hint" class="btn btn-outline pill tone-go" type="button">Hint</button>
-          <button id="btn-hard-hint" class="btn btn-outline pill tone-alert" type="button" aria-label="Advanced hint">
-            <span class="lbl-full">Advanced Hint</span><span class="lbl-short">Advanced</span></button>
+          <button id="btn-hard-hint" class="btn btn-outline pill tone-teach" type="button" aria-label="Learn a technique">
+            <span class="lbl-full">Learn a Technique</span><span class="lbl-short">Technique</span></button>
           <button id="btn-auto-cand" class="btn btn-outline pill tone-info" type="button" aria-pressed="false" aria-label="Show candidates">
             <span class="lbl-full">Show Candidates</span><span class="lbl-short">Candidates</span></button>
           <button id="btn-restart" class="btn btn-outline pill" type="button">Restart</button>
@@ -2511,17 +2517,17 @@
           <p class="side-sub" style="margin-top:0.6rem;font-size:0.82rem;">
             <b>Hint</b> always offers the <i>easiest</i> step available, so you never do more work than you
             have to &mdash; on this book that is usually a single, and a single is all you ever need.
-            <b>Advanced Hint</b> is optional: it picks a harder named pattern the position happens to
-            support, for when you would rather learn a technique than finish the grid &mdash; press it
-            again for a different one. <b>Show Candidates</b> pencils in every possible digit for each
-            empty cell so you can see the pattern a hint describes.
+            <b>Learn a Technique</b> is optional: it shows one of the next steps up &mdash; locked
+            candidates, or a naked or hidden pair &mdash; for when you would rather pick up a new method
+            than finish the grid. Press it again for a different one. <b>Show Candidates</b> pencils in
+            every possible digit for each empty cell so you can see the pattern a hint describes.
           </p>
 
           <div id="status-line" class="status-line"></div>
 
           <div id="hint-panel" class="hint-panel" aria-live="polite">
             <div id="hint-tech" class="hint-tech"></div>
-            <div id="hint-teaching" class="hint-teaching" hidden>Advanced hint</div>
+            <div id="hint-teaching" class="hint-teaching" hidden>Technique</div>
             <div id="hint-body" class="hint-body"></div>
             <div class="hint-more">
               <button id="btn-hint-more" class="btn btn-outline" type="button">Tell me more</button>
@@ -2583,7 +2589,7 @@
               <div><span class="key">N</span> &ndash; toggle Notes</div>
               <div><span class="key">C</span> &ndash; toggle candidates</div>
               <div><span class="key">H</span> &ndash; hint</div>
-              <div><span class="key">G</span> &ndash; advanced hint</div>
+              <div><span class="key">G</span> &ndash; learn a technique</div>
               <div><span class="key">Ctrl/&#8984; + Z</span> &ndash; undo</div>
               <div><span class="key">Click</span> &ndash; select a cell</div>
             </div>
@@ -4903,8 +4909,8 @@ const HintEngine = (function () {
     if (!currentPuzzle) return;
     /* Pressing Hint again walks the SAME hint down a level, so you never have
        to reach for "Show me exactly". But only its own hint: a hint left on
-       screen by Advanced Hint used to swallow the press and keep unfolding the
-       teaching pattern instead of answering with the easiest step. */
+       screen by Learn a Technique used to swallow the press and keep unfolding
+       the teaching pattern instead of answering with the easiest step. */
     if (currentHint && !currentHint.teaching) { escalateHint(); return; }
 
     const grid = readGrid(), givens = readGivens();
@@ -4969,8 +4975,9 @@ const HintEngine = (function () {
   }
 
   /* The ordinary hint button always offers the CHEAPEST step available, which
-     is right for finishing a grid but means an advanced pattern is almost never
-     the technique actually named. This button does the opposite.
+     is right for finishing a grid but means a named pattern is almost never the
+     technique actually shown. This button does the opposite, within the tier's
+     teaching cap.
 
      It does NOT simply take the hardest rung: whichever technique sits at the
      hard end of the ladder is available in most positions, so "hardest" returns
@@ -4997,6 +5004,19 @@ const HintEngine = (function () {
      implying the tier is wrong. */
   const TIER_CEILING = { easy: -1, medium: 2 };
 
+  /* The highest ELIM_LADDER rung the teaching button will ever offer, per tier.
+     Measured across every solve position in both sections, an advanced pattern
+     (X-wing and beyond) happens to fire in roughly 70% of positions and in all
+     400 puzzles — so left uncapped this button hands a swordfish to a reader
+     who bought a book whose hardest required step is a pair. Availability is
+     not the same as suitability. Capping at index 2 keeps the button to locked
+     candidates and pairs: on Easy that is a preview of what the Medium section
+     will ask for, and on Medium it is the tier's own vocabulary. Anything
+     harder belongs to the Hard-to-Expert book, not this one.
+
+     Raise this to 4 to include triples, or 99 to restore the old behaviour. */
+  const TIER_TEACH_MAX = { easy: 2, medium: 2 };
+
   function requestHarderPattern() {
     if (!currentPuzzle) return;
     const grid = readGrid(), givens = readGivens();
@@ -5019,15 +5039,15 @@ const HintEngine = (function () {
     }
     const advCand = applyReaderNotes(grid, liveCand ? liveCand : SudokuCore.buildCandidates(grid));
 
+    const teachMax = TIER_TEACH_MAX[currentLevel] === undefined ? 99 : TIER_TEACH_MAX[currentLevel];
     const all = HintEngine.surveyHints(grid, advCand);
-    const advanced = all.filter(o => o.advanced);
-    /* Prefer genuinely advanced patterns, but only if there are at least two to
-       rotate between. With a single advanced technique the button would hand
-       back the same name every press — which is exactly what happens on Hard
-       grids, where simple colouring is often the only advanced pattern going.
-       Widening to the full list there gives the rotation something to work
-       with, and everything in it is still harder than the plain hint's step. */
-    const pool = advanced.length >= 2 ? advanced : all;
+    /* Everything this position supports, up to the tier's teaching cap. The
+       rotation below then spreads presses across whatever is left, so a reader
+       meets pointing, claiming, naked pair and hidden pair rather than the same
+       name every time. Filtering here also governs the "also available here"
+       line in the panel, which would otherwise name patterns this book never
+       teaches. */
+    const pool = all.filter(o => o.index <= teachMax);
 
     if (!pool.length) {
       clearHint();
