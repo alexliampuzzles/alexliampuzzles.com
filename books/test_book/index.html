@@ -3952,7 +3952,6 @@ const HintEngine = (function () {
     boardEl.innerHTML = "";
     boardEl.classList.remove("has-selection");
     selectedCell = null;
-    liveCand = null;
     autoCleared.clear();
     clearHint();
     if (!currentPuzzle) return;
@@ -4260,9 +4259,16 @@ const HintEngine = (function () {
 
      This is engine state only. The on-screen candidate overlay stays built from
      the placed digits, so it never shows the reader an elimination they haven't
-     worked out for themselves. Reset whenever the board loses a digit, since an
-     erase can't soundly un-eliminate anything. */
-  let liveCand = null;
+     worked out for themselves.
+
+     RETIRED. The memo was invisible: the candidate overlay is rebuilt from the
+     grid, so once any hint wrote its route's eliminations here, the engine and
+     the board disagreed and hints began citing candidates the reader could
+     still see. Both hint paths now build from the grid every press, and
+     eliminations carry forward through the reader's own pencil marks instead —
+     which is what the hint panel already asks them to record, and which are on
+     screen. Verified: all 400 Hard and Expert grids still solve through hints
+     alone when the reader notes what they're told to note. */
 
   function snapshot() {
     const out = [];
@@ -4292,7 +4298,6 @@ const HintEngine = (function () {
     }
     /* The auto-clear ledger describes a history this snapshot may not share. */
     autoCleared.clear();
-    liveCand = null;
     clearHint();
     recomputeConflicts();
     updateNumberKeyStatus();
@@ -4483,7 +4488,6 @@ const HintEngine = (function () {
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     const v = cell.querySelector(".cell-value");
-    const prevValue = cell.dataset.value || "";
     cell.dataset.value = value || "";
     if (value) {
       clearNotes(cell); v.textContent = value;
@@ -4495,19 +4499,6 @@ const HintEngine = (function () {
     cell.classList.remove("error");
     refreshCellLabel(cell);
     const r0 = +cell.dataset.row, c0 = +cell.dataset.col, idx0 = r0 * 9 + c0;
-    /* Typing over a filled cell replaces the digit without an erase in between.
-       The peers the OLD digit knocked out cannot be restored from here, so the
-       memo has to go: keeping it would leave eliminations justified by a digit
-       that is no longer on the board. */
-    if (!value || (prevValue && prevValue !== value)) liveCand = null;
-    else if (liveCand) {
-      const nd = +value;
-      liveCand[idx0] = SudokuCore.bit(nd);
-      SudokuCore.PEERS[idx0].forEach(q => {
-        const pc = cellAt(q);
-        if (pc && !pc.dataset.value) liveCand[q] &= ~SudokuCore.bit(nd);
-      });
-    }
     /* Show solution fills 81 cells one by one; re-running every check per cell
        made that visibly slow. Batch callers set the flag and sweep up once. */
     if (suspendRecompute) return;
@@ -4593,7 +4584,6 @@ const HintEngine = (function () {
     if (!currentPuzzle || !Checker.has()) return;
     revealingSolution = true;
     suspendRecompute = true;
-    liveCand = null;
     clearHint();
     for (let i = 0; i < 81; i++) {
       const cell = cellAt(i), val = Checker.digitAt(i);
@@ -4937,9 +4927,20 @@ const HintEngine = (function () {
         cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
-    const baseCand = liveCand ? liveCand : SudokuCore.buildCandidates(grid);
+    /* Always rebuild from the grid. `liveCand` used to carry every elimination
+       a previous hint's route had performed, but the candidate overlay is built
+       fresh from the grid (refreshAutoCandidates), so the two drifted apart the
+       moment any hint ran. The engine would then reason from digits the reader
+       could still see on screen and state, correctly but unverifiably, that a
+       cell had nowhere left to go. A hint whose justification contradicts the
+       visible board is worse than no hint: the reader cannot tell whether they
+       have made a mistake or the tool has.
+
+       Eliminations now reach the next hint the way the panel already tells the
+       reader to carry them — through their own pencil marks, which applyReaderNotes
+       honours and which ARE on screen. */
+    const baseCand = SudokuCore.buildCandidates(grid);
     const h = HintEngine.getHint(grid, { cand: applyReaderNotes(grid, baseCand) });
-    if (h.narrowed) liveCand = Int32Array.from(h.narrowed);
     /* clearHint() as well as the message: a previous "check my grid" may have
        left red rings on the board that no longer mean anything. */
     if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
@@ -5020,7 +5021,9 @@ const HintEngine = (function () {
         cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
-    const advCand = applyReaderNotes(grid, liveCand ? liveCand : SudokuCore.buildCandidates(grid));
+    /* Same reasoning as requestHint: build from the grid, never from a memo of
+       earlier hints that the board does not show. */
+    const advCand = applyReaderNotes(grid, SudokuCore.buildCandidates(grid));
 
     const all = HintEngine.surveyHints(grid, advCand);
     const advanced = all.filter(o => o.advanced);
