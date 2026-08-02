@@ -2751,8 +2751,15 @@ const HintEngine = (function () {
   }
 
   /* ---------------- singles ---------------- */
-  function nakedSingle(g, cand) {
-    for (let i = 0; i < 81; i++) {
+  /* `cells`, when given, restricts the search to those cells. driveToPlacement
+     uses it to ask "did THIS route place something?" instead of "is anything
+     placeable anywhere?". A restricted cell is always a genuinely new single:
+     the route only touches a cell by removing a candidate from it, so a cell
+     now down to one must have held at least two before. */
+  function nakedSingle(g, cand, cells) {
+    const total = cells ? cells.length : 81;
+    for (let k = 0; k < total; k++) {
+      const i = cells ? cells[k] : k;
       if (!g[i] && cnt(cand[i]) === 1) {
         const d = bitsOf(cand[i])[0];
         return {
@@ -2767,8 +2774,16 @@ const HintEngine = (function () {
     return null;
   }
 
-  function hiddenSingle(g, cand) {
-    for (let ui = 0; ui < 27; ui++) {
+  /* `units` restricts the search to those unit indices; `base` is the candidate
+     state before the current route began. Unlike a naked single, a hidden single
+     inside a touched UNIT may have been there all along — the unit qualifies
+     because some cell in it changed, not because this digit did. When `base` is
+     supplied, a digit that was already down to one spot is skipped, so only
+     singles the route actually created are returned. */
+  function hiddenSingle(g, cand, units, base) {
+    const total = units ? units.length : 27;
+    for (let t = 0; t < total; t++) {
+      const ui = units ? units[t] : t;
       const u = UNITS[ui];
       for (let d = 1; d <= 9; d++) {
         let done = false, spot = -1, n = 0;
@@ -2776,6 +2791,14 @@ const HintEngine = (function () {
           const i = u[k];
           if (g[i] === d) { done = true; break; }
           if (!g[i] && (cand[i] & bit(d))) { n++; spot = i; }
+        }
+        if (!done && n === 1 && base) {
+          let was = 0;
+          for (let k = 0; k < u.length; k++) {
+            const i = u[k];
+            if (!g[i] && (base[i] & bit(d))) was++;
+          }
+          if (was <= 1) continue;
         }
         if (!done && n === 1) {
           return {
@@ -2860,7 +2883,17 @@ const HintEngine = (function () {
     for (let ui = 0; ui < 27; ui++) {
       const empt = UNITS[ui].filter(i => !g[i]);
       if (empt.length <= size) continue;
-      for (const combo of combos(empt, size)) {
+      /* Only cells holding at least TWO candidates may FORM the subset. A cell
+         down to one candidate is a naked single, and folding it in produces a
+         degenerate match: {5,9} together with {9} has a two-digit union across
+         two cells, so the size test passes and the reader is told both cells
+         "hold nothing but 5 and 9" — which is false of the second one. The
+         elimination that follows is soundly derived, but from the single, not
+         from any pair. Eliminations still target every empty cell in the unit;
+         only subset membership is restricted. */
+      const src = empt.filter(i => cnt(cand[i]) >= 2);
+      if (src.length < size) continue;
+      for (const combo of combos(src, size)) {
         let m = 0; combo.forEach(i => m |= cand[i]);
         if (cnt(m) !== size) continue;
         const digs = bitsOf(m), el = [];
@@ -2887,7 +2920,13 @@ const HintEngine = (function () {
       const digs = [];
       for (let d = 1; d <= 9; d++) {
         if (u.some(i => g[i] === d)) continue;
-        if (empt.some(i => cand[i] & bit(d))) digs.push(d);
+        /* The mirror of the naked-subset guard: a digit with only ONE possible
+           cell in this unit is a hidden single, not a member of a hidden
+           subset. Admitting it lets one digit's single spot pad out another
+           digit's two, so a hidden single gets announced as a hidden pair. */
+        let spots = 0;
+        for (const i of empt) if (cand[i] & bit(d)) spots++;
+        if (spots >= 2) digs.push(d);
       }
       if (digs.length <= size) continue;
       for (const combo of combos(digs, size)) {
@@ -3552,15 +3591,37 @@ const HintEngine = (function () {
 
   /* Continue past an elimination-only deduction until a digit can be placed.
      Works on a private copy so the reader's grid is never modified. */
-  function driveToPlacement(g0, cand0) {
+  /* `seed` — cells the headline deduction narrowed; `base` — the candidate state
+     before it was applied.
+
+     This walk used to return the first placeable cell ANYWHERE on the board, so
+     a single that was already sitting there before the hint got presented as the
+     technique's payoff: "9 cannot go in R6C5" followed by "therefore R1C5 = 9",
+     two true statements with no connection between them. The route panel is
+     headed "the full route to a placed digit", so an unrelated placement makes
+     the page teach a causal link that is not there.
+
+     Now only cells this route actually narrowed can close it. Where nothing it
+     touched leads anywhere, the hint stays an elimination-only hint rather than
+     borrowing someone else's digit. */
+  function driveToPlacement(g0, cand0, seed, base) {
     const g = Int8Array.from(g0);
     const cand = Int32Array.from(cand0);
     const steps = [];
+    const touched = new Set(seed || []);
+    const unitsTouched = () => {
+      const s = new Set();
+      touched.forEach(i => { s.add((i / 9) | 0); s.add(9 + (i % 9)); s.add(18 + boxOf(i)); });
+      return Array.from(s);
+    };
     /* Guard well above the longest routes in the pool (some Hard grids run
        past 55 steps) so the walk always reaches a placement rather than
        stopping short and dropping the final, hardest deductions. */
     for (let guard = 0; guard < 200; guard++) {
-      const s = nakedSingle(g, cand) || hiddenSingle(g, cand);
+      const live = [];
+      touched.forEach(i => { if (!g[i]) live.push(i); });
+      const s = nakedSingle(g, cand, live) ||
+                hiddenSingle(g, cand, unitsTouched(), base || cand0);
       if (s) {
         steps.push({ tech: s.tech, text: s.l3, focus: s.focus });
         return { place: s.place, steps: steps, cand: cand };
@@ -3569,7 +3630,7 @@ const HintEngine = (function () {
       for (const fn of ELIM_LADDER) {
         const h = fn(g, cand);
         if (h && h.elims && h.elims.length) {
-          h.elims.forEach(e => { cand[e.i] &= ~bit(e.d); });
+          h.elims.forEach(e => { cand[e.i] &= ~bit(e.d); touched.add(e.i); });
           steps.push({ tech: h.tech, text: h.l3, focus: h.focus, elimCells: h.elimCells, elims: h.elims });
           moved = true;
           break;
@@ -3645,7 +3706,7 @@ const HintEngine = (function () {
        ends up with a digit they can actually write down. */
     const work = Int32Array.from(cand);
     hit.elims.forEach(e => { work[e.i] &= ~bit(e.d); });
-    const res = driveToPlacement(grid, work);
+    const res = driveToPlacement(grid, work, hit.elims.map(e => e.i), cand);
     hit.narrowed = res.cand;
     if (res) {
       if (res.chainOnly) {
@@ -3891,7 +3952,6 @@ const HintEngine = (function () {
     boardEl.innerHTML = "";
     boardEl.classList.remove("has-selection");
     selectedCell = null;
-    liveCand = null;
     autoCleared.clear();
     clearHint();
     if (!currentPuzzle) return;
@@ -4199,9 +4259,16 @@ const HintEngine = (function () {
 
      This is engine state only. The on-screen candidate overlay stays built from
      the placed digits, so it never shows the reader an elimination they haven't
-     worked out for themselves. Reset whenever the board loses a digit, since an
-     erase can't soundly un-eliminate anything. */
-  let liveCand = null;
+     worked out for themselves.
+
+     RETIRED. The memo was invisible: the candidate overlay is rebuilt from the
+     grid, so once any hint wrote its route's eliminations here, the engine and
+     the board disagreed and hints began citing candidates the reader could
+     still see. Both hint paths now build from the grid every press, and
+     eliminations carry forward through the reader's own pencil marks instead —
+     which is what the hint panel already asks them to record, and which are on
+     screen. Verified: all 400 Hard and Expert grids still solve through hints
+     alone when the reader notes what they're told to note. */
 
   function snapshot() {
     const out = [];
@@ -4231,7 +4298,6 @@ const HintEngine = (function () {
     }
     /* The auto-clear ledger describes a history this snapshot may not share. */
     autoCleared.clear();
-    liveCand = null;
     clearHint();
     recomputeConflicts();
     updateNumberKeyStatus();
@@ -4422,7 +4488,6 @@ const HintEngine = (function () {
   function setCellValue(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
     const v = cell.querySelector(".cell-value");
-    const prevValue = cell.dataset.value || "";
     cell.dataset.value = value || "";
     if (value) {
       clearNotes(cell); v.textContent = value;
@@ -4434,19 +4499,6 @@ const HintEngine = (function () {
     cell.classList.remove("error");
     refreshCellLabel(cell);
     const r0 = +cell.dataset.row, c0 = +cell.dataset.col, idx0 = r0 * 9 + c0;
-    /* Typing over a filled cell replaces the digit without an erase in between.
-       The peers the OLD digit knocked out cannot be restored from here, so the
-       memo has to go: keeping it would leave eliminations justified by a digit
-       that is no longer on the board. */
-    if (!value || (prevValue && prevValue !== value)) liveCand = null;
-    else if (liveCand) {
-      const nd = +value;
-      liveCand[idx0] = SudokuCore.bit(nd);
-      SudokuCore.PEERS[idx0].forEach(q => {
-        const pc = cellAt(q);
-        if (pc && !pc.dataset.value) liveCand[q] &= ~SudokuCore.bit(nd);
-      });
-    }
     /* Show solution fills 81 cells one by one; re-running every check per cell
        made that visibly slow. Batch callers set the flag and sweep up once. */
     if (suspendRecompute) return;
@@ -4532,7 +4584,6 @@ const HintEngine = (function () {
     if (!currentPuzzle || !Checker.has()) return;
     revealingSolution = true;
     suspendRecompute = true;
-    liveCand = null;
     clearHint();
     for (let i = 0; i < 81; i++) {
       const cell = cellAt(i), val = Checker.digitAt(i);
@@ -4876,9 +4927,20 @@ const HintEngine = (function () {
         cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
-    const baseCand = liveCand ? liveCand : SudokuCore.buildCandidates(grid);
+    /* Always rebuild from the grid. `liveCand` used to carry every elimination
+       a previous hint's route had performed, but the candidate overlay is built
+       fresh from the grid (refreshAutoCandidates), so the two drifted apart the
+       moment any hint ran. The engine would then reason from digits the reader
+       could still see on screen and state, correctly but unverifiably, that a
+       cell had nowhere left to go. A hint whose justification contradicts the
+       visible board is worse than no hint: the reader cannot tell whether they
+       have made a mistake or the tool has.
+
+       Eliminations now reach the next hint the way the panel already tells the
+       reader to carry them — through their own pencil marks, which applyReaderNotes
+       honours and which ARE on screen. */
+    const baseCand = SudokuCore.buildCandidates(grid);
     const h = HintEngine.getHint(grid, { cand: applyReaderNotes(grid, baseCand) });
-    if (h.narrowed) liveCand = Int32Array.from(h.narrowed);
     /* clearHint() as well as the message: a previous "check my grid" may have
        left red rings on the board that no longer mean anything. */
     if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
@@ -4959,7 +5021,9 @@ const HintEngine = (function () {
         cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
-    const advCand = applyReaderNotes(grid, liveCand ? liveCand : SudokuCore.buildCandidates(grid));
+    /* Same reasoning as requestHint: build from the grid, never from a memo of
+       earlier hints that the board does not show. */
+    const advCand = applyReaderNotes(grid, SudokuCore.buildCandidates(grid));
 
     const all = HintEngine.surveyHints(grid, advCand);
     const advanced = all.filter(o => o.advanced);
