@@ -3649,23 +3649,25 @@ const HintEngine = (function () {
   /* Every technique that fires in this position, easiest first, de-duplicated
      by name (the three unique-rectangle variants share one label). Each entry
      carries the ladder index, so a caller can ask for that exact technique. */
-  function surveyList(g, cand, advancedFrom) {
+  function surveyList(g, cand, advancedFrom, advancedTo) {
     /* `advancedFrom` lets the caller say what counts as advanced *here*. The
        harder-pattern button raises it with the tier, so Easy is offered pairs
        and pointing while Expert is offered fish and wings. Omitted, it falls
        back to the fixed rung. */
     const lo = (advancedFrom === undefined || advancedFrom === null)
       ? ADVANCED_FROM : advancedFrom;
+    const hi = (advancedTo === undefined || advancedTo === null)
+      ? ELIM_LADDER.length : advancedTo;
     const out = [];
     for (let i = 0; i < ELIM_LADDER.length; i++) {
       const h = ELIM_LADDER[i](g, cand);
       if (h && !out.some(o => o.tech === h.tech))
-        out.push({ tech: h.tech, index: i, advanced: i >= lo });
+        out.push({ tech: h.tech, index: i, advanced: i >= lo && i <= hi, capped: i <= hi });
     }
     return out;
   }
-  function surveyHints(grid, cand, advancedFrom) {
-    return surveyList(grid, cand ? Int32Array.from(cand) : SudokuCore.buildCandidates(grid), advancedFrom);
+  function surveyHints(grid, cand, advancedFrom, advancedTo) {
+    return surveyList(grid, cand ? Int32Array.from(cand) : SudokuCore.buildCandidates(grid), advancedFrom, advancedTo);
   }
 
   /* Continue past an elimination-only deduction until a digit can be placed.
@@ -5087,12 +5089,20 @@ const HintEngine = (function () {
        Easy needs no elimination technique at all, so its ceiling is -1. */
   const TIER_CEILING = { easy: -1, medium: 2, hard: 4, expert: 99 };
 
-  /* What the harder-pattern button should reach for, per tier — always the rung
-     just past what the tier needs, so the button teaches the next step rather
-     than a fixed idea of "advanced". Easy is shown locked candidates and pairs,
-     Medium triples and the first fish, Hard and Expert the wings and fish.
-     Same indices into ELIM_LADDER as TIER_CEILING. */
-  const TIER_ADVANCED_FROM = { easy: 0, medium: 3, hard: 6, expert: 6 };
+  /* What the harder-pattern button may reach for, per tier: a window, not a
+     floor. The point is to teach the next rung, so the top matters as much as
+     the bottom — an Easy reader offered a swordfish learns nothing. Indices
+     into ELIM_LADDER, same as TIER_CEILING.
+       easy   0-2  locked candidates, naked pair, hidden pair
+       medium 3-6  naked/hidden triple, naked quad, X-Wing
+       hard   6-17 fish and wings — the full advanced set
+       expert 6-17 same */
+  const TIER_ADVANCED = {
+    easy:   { from: 0, to: 2 },
+    medium: { from: 3, to: 6 },
+    hard:   { from: 6, to: 99 },
+    expert: { from: 6, to: 99 }
+  };
 
   function requestHarderPattern() {
     if (!currentPuzzle) return;
@@ -5118,17 +5128,16 @@ const HintEngine = (function () {
        earlier hints that the board does not show. */
     const advCand = applyReaderNotes(grid, SudokuCore.buildCandidates(grid));
 
-    const advFrom = TIER_ADVANCED_FROM[currentLevel] === undefined
-      ? 6 : TIER_ADVANCED_FROM[currentLevel];
-    const all = HintEngine.surveyHints(grid, advCand, advFrom);
+    const win = TIER_ADVANCED[currentLevel] || { from: 6, to: 99 };
+    const all = HintEngine.surveyHints(grid, advCand, win.from, win.to);
     const advanced = all.filter(o => o.advanced);
-    /* Prefer genuinely advanced patterns, but only if there are at least two to
-       rotate between. With a single advanced technique the button would hand
-       back the same name every press — which is exactly what happens on Hard
-       grids, where simple colouring is often the only advanced pattern going.
-       Widening to the full list there gives the rotation something to work
-       with, and everything in it is still harder than the plain hint's step. */
-    const pool = advanced.length >= 2 ? advanced : all;
+    /* Prefer patterns inside the tier's window, but only if there are at least
+       two to rotate between; with one the button would hand back the same name
+       every press. The fallback widens downward only — never past the top of
+       the window — so an Easy reader is never shown a swordfish just because
+       the board happens to support one. */
+    const inReach = all.filter(o => o.capped);
+    const pool = advanced.length >= 2 ? advanced : inReach;
 
     if (!pool.length) {
       clearHint();
@@ -5141,8 +5150,8 @@ const HintEngine = (function () {
       }
       h.noPlacement = !h.place && !h.unlock;
       currentHint = h; hintLevel = 1;
-      setStatus("No pattern is available in this position \u2014 the only step here is a " +
-                h.tech.toLowerCase() + ".", "good");
+      setStatus("No pattern at this level is available in this position \u2014 the only step " +
+                "here is a " + h.tech.toLowerCase() + ".", "good");
       renderHint();
       return;
     }
