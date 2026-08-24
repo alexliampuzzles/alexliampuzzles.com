@@ -3649,17 +3649,23 @@ const HintEngine = (function () {
   /* Every technique that fires in this position, easiest first, de-duplicated
      by name (the three unique-rectangle variants share one label). Each entry
      carries the ladder index, so a caller can ask for that exact technique. */
-  function surveyList(g, cand) {
+  function surveyList(g, cand, advancedFrom) {
+    /* `advancedFrom` lets the caller say what counts as advanced *here*. The
+       harder-pattern button raises it with the tier, so Easy is offered pairs
+       and pointing while Expert is offered fish and wings. Omitted, it falls
+       back to the fixed rung. */
+    const lo = (advancedFrom === undefined || advancedFrom === null)
+      ? ADVANCED_FROM : advancedFrom;
     const out = [];
     for (let i = 0; i < ELIM_LADDER.length; i++) {
       const h = ELIM_LADDER[i](g, cand);
       if (h && !out.some(o => o.tech === h.tech))
-        out.push({ tech: h.tech, index: i, advanced: i >= ADVANCED_FROM });
+        out.push({ tech: h.tech, index: i, advanced: i >= lo });
     }
     return out;
   }
-  function surveyHints(grid, cand) {
-    return surveyList(grid, cand ? Int32Array.from(cand) : SudokuCore.buildCandidates(grid));
+  function surveyHints(grid, cand, advancedFrom) {
+    return surveyList(grid, cand ? Int32Array.from(cand) : SudokuCore.buildCandidates(grid), advancedFrom);
   }
 
   /* Continue past an elimination-only deduction until a digit can be placed.
@@ -5081,6 +5087,13 @@ const HintEngine = (function () {
        Easy needs no elimination technique at all, so its ceiling is -1. */
   const TIER_CEILING = { easy: -1, medium: 2, hard: 4, expert: 99 };
 
+  /* What the harder-pattern button should reach for, per tier — always the rung
+     just past what the tier needs, so the button teaches the next step rather
+     than a fixed idea of "advanced". Easy is shown locked candidates and pairs,
+     Medium triples and the first fish, Hard and Expert the wings and fish.
+     Same indices into ELIM_LADDER as TIER_CEILING. */
+  const TIER_ADVANCED_FROM = { easy: 0, medium: 3, hard: 6, expert: 6 };
+
   function requestHarderPattern() {
     if (!currentPuzzle) return;
     const grid = readGrid(), givens = readGivens();
@@ -5105,7 +5118,9 @@ const HintEngine = (function () {
        earlier hints that the board does not show. */
     const advCand = applyReaderNotes(grid, SudokuCore.buildCandidates(grid));
 
-    const all = HintEngine.surveyHints(grid, advCand);
+    const advFrom = TIER_ADVANCED_FROM[currentLevel] === undefined
+      ? 6 : TIER_ADVANCED_FROM[currentLevel];
+    const all = HintEngine.surveyHints(grid, advCand, advFrom);
     const advanced = all.filter(o => o.advanced);
     /* Prefer genuinely advanced patterns, but only if there are at least two to
        rotate between. With a single advanced technique the button would hand
@@ -5478,4 +5493,3 @@ const HintEngine = (function () {
 
 </body>
 </html>
-
