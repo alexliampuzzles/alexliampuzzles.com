@@ -4426,7 +4426,12 @@ const HintEngine = (function () {
 
   /* Progress is kept per puzzle, so switching away and back doesn't lose work.
      Never written while the solution is on screen. */
-  const progressKey = () => "sudokuProgress:" + currentLevel + ":" + currentPuzzleNumber;
+  /* Companion pages share a domain, so the key must name the book. Without it
+     Hard #17 here and Hard #17 in another title collide in localStorage and a
+     reader sees someone else's digits on this grid. */
+  const BOOK_ID = "400_easy_expert";
+  const progressKey = () =>
+    "sudokuProgress:" + BOOK_ID + ":" + currentLevel + ":" + currentPuzzleNumber;
   function saveProgress() {
     if (revealingSolution || currentMode === "solution" || !currentPuzzle) return;
     try { localStorage.setItem(progressKey(), snapshot()); } catch (e) { /* private mode */ }
@@ -4927,14 +4932,34 @@ const HintEngine = (function () {
     }
     return m;
   }
+  /* Reader notes narrow the candidate set only where they can be trusted to be
+     complete — that is, where the cell was filled from Show Candidates and the
+     reader has since removed digits from it. A cell someone has simply started
+     pencilling is a partial record, not a set of proven eliminations: treating
+     "I wrote only 3" as "5 and 7 are impossible" would let the engine hand back
+     the reader's own guess as a naked single. Partial notes are ignored, so the
+     hint is always derived from the placed grid. */
   function applyReaderNotes(grid, base) {
-    const out = Int32Array.from(base);
-    for (let i = 0; i < 81; i++) {
-      if (grid[i]) continue;
-      const m = notesMaskOf(cellAt(i));
-      if (m) out[i] = base[i] & m;
-    }
-    return out;
+    /* Deliberately returns the computed candidates untouched.
+
+       Pencil marks used to narrow this set, which was unsound in two ways. A
+       cell where someone had written only "3" became a naked single, so the
+       hint handed back the reader's own guess dressed as a deduction. Worse, a
+       partial pair like {3,5} in a cell whose real candidates are {3,5,7} can
+       form a fake naked pair with a genuine {3,5} elsewhere, and the engine
+       would then eliminate 3 and 5 from cells that legitimately hold them —
+       removing a true candidate and walking the reader into a contradiction.
+
+       Notes are a record of thinking in progress, not a set of proven
+       eliminations, and nothing in the page marks which of the two a given cell
+       holds. So hints derive candidates from the placed grid alone. Notes are
+       still read by the note audit, which flags marks that break the rules or
+       rule out the digit that belongs there.
+
+       If a "fill this cell with every candidate, then cross them off" action is
+       added later, cells filled that way could be flagged at their origin and
+       trusted here — that is the only basis on which narrowing is sound. */
+    return Int32Array.from(base);
   }
   /* First cell whose pencil marks rule out the digit that belongs there, or -1.
      Only the Checker consults the answer key; the hint engine never does. */
@@ -5364,24 +5389,33 @@ const HintEngine = (function () {
   }
   function readInitialParams() {
     const url = new URL(window.location.href);
-    const lvl = (url.searchParams.get("level") || "hard").toLowerCase();
+    const lvl = (url.searchParams.get("level") || "easy").toLowerCase();
     const n = parseInt(url.searchParams.get("n") || "1", 10);
     const mode = (url.searchParams.get("mode") || "").toLowerCase();
     return {
-      level: lvl === "expert" ? "expert" : "hard",
+      level: BOOK_FILES[lvl] ? lvl : "easy",
       n: isFinite(n) ? n : 1,
       mode: mode === "solution" ? "solution" : "play"
     };
   }
 
+  /* Bumped on every load request. A tap on another level while a file is still
+     in flight makes the older request stale; it must not paint its puzzle over
+     the newer one. */
+  let loadRequestId = 0;
+
   async function loadPuzzleByNumber(n, mode) {
+    const requestId = ++loadRequestId;
+    const level = currentLevel;
     let list;
     try {
-      list = await ensureBookLoaded(currentLevel);
+      list = await ensureBookLoaded(level);
     } catch (err) {
-      setStatus("Could not load the puzzle file (" + BOOK_FILES[currentLevel] + ").", "bad");
+      if (requestId !== loadRequestId) return;
+      setStatus("Could not load the puzzle file (" + BOOK_FILES[level] + ").", "bad");
       return;
     }
+    if (requestId !== loadRequestId || level !== currentLevel) return;
     n = Math.min(BOOK_COUNT, Math.max(1, n));
     currentPuzzleNumber = n;
     updatePuzzleDisplay(n);
