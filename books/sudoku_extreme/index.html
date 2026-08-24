@@ -4341,7 +4341,9 @@ const HintEngine = (function () {
 
   /* Progress is kept per puzzle, so switching away and back doesn't lose work.
      Never written while the solution is on screen. */
-  const progressKey = () => "sudokuProgress:" + currentLevel + ":" + currentPuzzleNumber;
+  const BOOK_ID = "180_extreme";
+  const progressKey = () =>
+    "sudokuProgress:" + BOOK_ID + ":" + currentLevel + ":" + currentPuzzleNumber;
   function saveProgress() {
     if (revealingSolution || currentMode === "solution" || !currentPuzzle) return;
     try { localStorage.setItem(progressKey(), snapshot()); } catch (e) { /* private mode */ }
