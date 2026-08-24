@@ -1901,7 +1901,7 @@
       transform: translate(-50%, -50%) scale(1.02);
     }
 
-    /* ---------- 400 Hard-to-Expert additions ---------- */
+    /* ---------- 400 Easy-to-Expert additions ---------- */
 
     .level-switch {
       display: inline-flex;
@@ -4337,7 +4337,7 @@ const HintEngine = (function () {
      elimination they licensed cannot always be re-derived once a corner of the
      rectangle has been filled in. Rebuilding candidates from the grid on every
      hint therefore threw those away. Measured against the book: three Expert
-     grids (8, 12 and 154) stalled and needed the reveal button because of it,
+     grids stalled and needed the reveal button because of it,
      and all three finish cleanly once the candidates are carried forward.
 
      This is engine state only. The on-screen candidate overlay stays built from
@@ -4961,20 +4961,6 @@ const HintEngine = (function () {
        trusted here — that is the only basis on which narrowing is sound. */
     return Int32Array.from(base);
   }
-  /* First cell whose pencil marks rule out the digit that belongs there, or -1.
-     Only the Checker consults the answer key; the hint engine never does. */
-  function firstBadNoteCell(grid) {
-    if (!Checker.has()) return -1;
-    for (let i = 0; i < 81; i++) {
-      if (grid[i]) continue;
-      const m = notesMaskOf(cellAt(i));
-      if (!m) continue;
-      const d = +Checker.digitAt(i);
-      if (d && !(m & SudokuCore.bit(d))) return i;
-    }
-    return -1;
-  }
-
   /* Survey the reader's pencil marks for two distinct kinds of mistake:
 
      impossible — a note listing a digit that already appears in that cell's row,
@@ -5024,17 +5010,10 @@ const HintEngine = (function () {
     /* Fold in the reader's own pencil marks so a hint never re-suggests an
        elimination they have already made by hand. Checked for soundness first:
        notes that rule out the true digit would poison every deduction. */
-    const badNote = firstBadNoteCell(grid);
-    if (badNote >= 0) {
-      clearHint();
-      setStatus("Your pencil marks in " + SudokuCore.rc(badNote) + " rule out the digit that " +
-                "belongs there, so any hint based on them would be wrong. Correct or clear that " +
-                "cell's notes, then ask again.", "bad");
-      cellAt(badNote).classList.add("hint-eliminate");
-      if (cellAt(badNote).scrollIntoView)
-        cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
-      return;
-    }
+    /* Notes no longer gate the hint. They stopped feeding the engine when
+       applyReaderNotes was made to ignore them, so the old justification —
+       "any hint based on them would be wrong" — is no longer true. Refusing
+       here only punished a reader for pencilling a cell halfway. */
     /* Always rebuild from the grid. `liveCand` used to carry every elimination
        a previous hint's route had performed, but the candidate overlay is built
        fresh from the grid (refreshAutoCandidates), so the two drifted apart the
@@ -5138,17 +5117,10 @@ const HintEngine = (function () {
 
     /* Same treatment as the plain hint: honour the reader's pencil marks, but
        refuse to reason from notes that have ruled out a true digit. */
-    const badNote = firstBadNoteCell(grid);
-    if (badNote >= 0) {
-      clearHint();
-      setStatus("Your pencil marks in " + SudokuCore.rc(badNote) + " rule out the digit that " +
-                "belongs there, so any hint based on them would be wrong. Correct or clear that " +
-                "cell's notes, then ask again.", "bad");
-      cellAt(badNote).classList.add("hint-eliminate");
-      if (cellAt(badNote).scrollIntoView)
-        cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
-      return;
-    }
+    /* Notes no longer gate the hint. They stopped feeding the engine when
+       applyReaderNotes was made to ignore them, so the old justification —
+       "any hint based on them would be wrong" — is no longer true. Refusing
+       here only punished a reader for pencilling a cell halfway. */
     /* Same reasoning as requestHint: build from the grid, never from a memo of
        earlier hints that the board does not show. */
     const advCand = applyReaderNotes(grid, SudokuCore.buildCandidates(grid));
@@ -5336,19 +5308,27 @@ const HintEngine = (function () {
       if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
-    if (np.missingTrue >= 0) {
-      cellAt(np.missingTrue).classList.add("hint-eliminate");
-      setStatus("Your pencil marks in " + SudokuCore.rc(np.missingTrue) + " rule out the digit that " +
-                "belongs there. Correct or clear that cell\u2019s notes.", "bad");
-      const t = cellAt(np.missingTrue);
-      if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
-      return;
-    }
 
     if (Array.from(grid).every(x => x)) {
       setStatus("Complete and correct.", "good");
       completedByPlaying = true;
       showCompletionMessage();
+      return;
+    }
+    /* Nothing placed is wrong. A cell whose notes omit the digit that belongs
+       there is worth mentioning last and only here: it is a real dead end if
+       the reader has finished pencilling that cell, and nothing at all if they
+       have not, and the page cannot tell which. So it is phrased as a
+       conditional aside rather than an error, and it never pre-empts a placed
+       digit being wrong. */
+    if (np.missingTrue >= 0) {
+      const t = cellAt(np.missingTrue);
+      t.classList.add("hint-eliminate");
+      setStatus("Nothing you have placed is wrong. One thing to look at: your pencil marks in " +
+                SudokuCore.rc(np.missingTrue) + " don\u2019t include the digit that belongs there. " +
+                "If you have finished pencilling that cell, one of those eliminations was a " +
+                "mistake; if you are still filling it in, carry on.", "good");
+      if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
     setStatus("No mistakes so far.", "good");
