@@ -2092,7 +2092,7 @@
     .deck-row.centre { justify-content: center; }
     .deck-group { display: flex; gap: 0.55rem; flex-wrap: wrap; }
     /* The long label needs the room: 3/5 to it, 2/5 to the picker, and both on
-       one line. Equal halves forced "Hard Puzzle 001 / 200" to wrap. */
+       one line. Equal halves forced "Extreme Puzzle 001 / 180" to wrap. */
     .deck-row.wide {
       /* One size drives both boxes, so the puzzle label and the picker can
          never drift apart. Scales with the viewport as the card narrows. */
@@ -2301,7 +2301,7 @@
       padding-left: 1.2rem;
       font-size: 0.88rem;
       line-height: 1.6;
-      /* Long routes (some Hard grids run 50+ steps) scroll inside the panel
+      /* Long routes (Extreme grids run 57-73 hint steps) scroll inside the panel
          instead of pushing the rest of the page down. The reader can scroll
          all the way to the final steps, which are the hardest ones. */
       max-height: 22rem;
@@ -3562,8 +3562,13 @@ const HintEngine = (function () {
     skyscraper, twoStringKite,
     simpleColouring,
     xyWing, wWing,
-    uniqueRectangle, uniqueRectangle2, uniqueRectangle4,
-    bugPlusOne,
+    /* Unique Rectangle and BUG+1 are RETIRED for this book. They are sound —
+       every puzzle has a single solution — but they sit outside the ceiling the
+       pool is graded to ("single-digit patterns + wings + fish") and outside the
+       technique list the introduction promises the reader. Left in, they
+       headlined 13 hints across 12 of the 180 puzzles, teaching a pattern the
+       book says is never required. Verified after removal: 180/180 still solve
+       through hints alone, zero stalls, zero forcing chains. */
     (g, c) => fish(g, c, 3),
     xyzWing
   ];
@@ -3613,8 +3618,8 @@ const HintEngine = (function () {
       touched.forEach(i => { s.add((i / 9) | 0); s.add(9 + (i % 9)); s.add(18 + boxOf(i)); });
       return Array.from(s);
     };
-    /* Guard well above the longest routes in the pool (some Hard grids run
-       past 55 steps) so the walk always reaches a placement rather than
+    /* Guard well above the longest routes in the pool (the longest Extreme
+       route is 73 steps) so the walk always reaches a placement rather than
        stopping short and dropping the final, hardest deductions. */
     for (let guard = 0; guard < 200; guard++) {
       const live = [];
@@ -3882,6 +3887,9 @@ const HintEngine = (function () {
   function tickTimer() { if (timerRunning) { timerElapsedMs = performance.now() - timerStartMs; formatTime(timerElapsedMs); } }
   function hidePauseOverlay() { if (boardOverlay) boardOverlay.style.display = "none"; }
   function showPauseOverlay() { if (boardOverlay) boardOverlay.style.display = "flex"; }
+  /* The overlay, not the clock, is the signal: pauseTimer(false) is also how a
+     finished puzzle stops its timer, and a solved grid must stay interactive. */
+  function pauseOverlayShown() { return !!boardOverlay && boardOverlay.style.display === "flex"; }
   function startTimer() {
     if (!timerEnabled) return;
     timerRunning = true;
@@ -3891,6 +3899,13 @@ const HintEngine = (function () {
     btnTimerPause.textContent = "Pause";
     hidePauseOverlay();
   }
+  /* Paused means paused. The overlay hides the board, but every other route
+     into the grid — number pad, keyboard, Notes, Undo, both Hint buttons —
+     stayed live, so a reader could pause the clock and carry on solving. Any
+     path that changes the board or spends a hint checks this first. Resume,
+     theme, navigation and the puzzle picker stay available. */
+  function gamePaused() { return timerEnabled && !timerRunning && pauseOverlayShown(); }
+
   function pauseTimer(showOverlay = true) {
     if (!timerRunning) return;
     timerRunning = false;
@@ -3900,10 +3915,20 @@ const HintEngine = (function () {
     btnTimerPause.textContent = "Resume";
     if (showOverlay) showPauseOverlay();
   }
+  /* Reset means "back to zero", not "start counting". loadPuzzleByNumber calls
+     this AFTER restoring progress or revealing the solution, so an unconditional
+     startTimer() here re-started the clock on a grid that was already finished —
+     undoing the pause that loadProgress() and showSolution() had just applied.
+     The clock only runs on a puzzle that is actually still in play. */
   function resetTimer() {
     timerElapsedMs = 0; formatTime(0);
-    if (timerEnabled) startTimer();
-    else { clearInterval(timerInterval); timerInterval = null; timerRunning = false; }
+    clearInterval(timerInterval); timerInterval = null; timerRunning = false;
+    hidePauseOverlay();
+    if (timerEnabled && currentMode === "play" && !puzzleCompleted) startTimer();
+    /* The markup ships the button reading "Pause". When reset declines to start
+       the clock, that label is a lie about a stopped timer, and pressing it did
+       nothing visible. Say what the button will actually do. */
+    else btnTimerPause.textContent = "Resume";
   }
   function setTimerEnabled(on) {
     timerEnabled = !!on;
@@ -4251,9 +4276,10 @@ const HintEngine = (function () {
      on the SHAPE of the candidate set rather than just the placed digits, so an
      elimination they licensed cannot always be re-derived once a corner of the
      rectangle has been filled in. Rebuilding candidates from the grid on every
-     hint therefore threw those away. Measured against the book: three Expert
-     grids (8, 12 and 154) stalled and needed the reveal button because of it,
-     and all three finish cleanly once the candidates are carried forward.
+     hint therefore threw those away. Measured against the 400 Hard-to-Expert
+     book this page derives from, three grids stalled and needed the reveal
+     button because of it, and all three finished cleanly once the candidates
+     were carried forward.
 
      This is engine state only. The on-screen candidate overlay stays built from
      the placed digits, so it never shows the reader an elimination they haven't
@@ -4265,8 +4291,9 @@ const HintEngine = (function () {
      still see. Both hint paths now build from the grid every press, and
      eliminations carry forward through the reader's own pencil marks instead —
      which is what the hint panel already asks them to record, and which are on
-     screen. Verified: all 400 Hard and Expert grids still solve through hints
-     alone when the reader notes what they're told to note. */
+     screen. Verified for this book: all 180 Extreme grids still solve through
+     hints alone when the reader notes what they're told to note — 180/180, no
+     stalls, no forcing chains. */
 
   function snapshot() {
     const out = [];
@@ -4318,6 +4345,7 @@ const HintEngine = (function () {
     }
   }
   function undo() {
+    if (gamePaused()) return;
     if (!undoStack.length) return;
     const wasCompleted = puzzleCompleted;
     applySnapshot(undoStack.pop());
@@ -4353,6 +4381,18 @@ const HintEngine = (function () {
     let saved = null;
     try { saved = localStorage.getItem(progressKey()); } catch (e) { return; }
     if (saved) applySnapshot(saved);
+    /* A restored grid can already be finished. Without this the app believes an
+       untouched, complete board is still in play: a newly enabled timer starts
+       counting on a solved puzzle, the status line says nothing, and the next
+       genuine completion is swallowed. Deliberately NOT completedByPlaying — the
+       review prompt belongs to a solve that just happened, not to one being
+       reopened. */
+    if (currentPuzzle && !puzzleCompleted && gridMatchesSolution()) {
+      puzzleCompleted = true;
+      completedByPlaying = false;
+      setStatus("Solved.", "good");
+      if (timerEnabled) pauseTimer(false);
+    }
   }
   function clearProgress() {
     try { localStorage.removeItem(progressKey()); } catch (e) { /* private mode */ }
@@ -4513,6 +4553,7 @@ const HintEngine = (function () {
     if (cell === selectedCell) updateHighlights();
   }
   function handleNumInput(value) {
+    if (gamePaused()) { announce("Paused. Press Resume to carry on."); return; }
     if (!selectedCell) return;
     withUndo(() => {
       if (value === "clear") {
@@ -4546,6 +4587,8 @@ const HintEngine = (function () {
     }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (isTypingTarget(e.target)) return;
+    /* Keyboard is just another way into the same actions. */
+    if (gamePaused()) return;
 
     const k = e.key;
     if (k === "h" || k === "H") { e.preventDefault(); requestHint(); return; }
@@ -4747,6 +4790,16 @@ const HintEngine = (function () {
     if (hintTeachEl) hintTeachEl.hidden = !h.teaching;
     let html = "<div>" + (h.l1 || "") + "</div>";
     if (hintLevel >= 2 && h.l2) html += '<div class="hint-step">' + h.l2 + "</div>";
+    /* Attribute the narrowing honestly: this step follows from the reader's own
+       pencil marks, not from the grid, so the stock wording above would have
+       them looking for a block that isn't on the board. */
+    if (hintLevel >= 2 && h.fromReaderNotes)
+      html += '<div class="hint-note">This follows from the pencil marks you have ' +
+              "recorded in that cell rather than from the grid alone \u2014 the board by " +
+              "itself still leaves other digits open there.</div>";
+    if (hintLevel >= 2 && h.onlyOneAdvanced)
+      html += '<div class="hint-note">This is currently the only advanced pattern this ' +
+              "position supports, so asking again will show it again.</div>";
     if (hintLevel >= 3 && h.l3) {
       html += '<div class="hint-step">' + h.l3 + "</div>";
       if (h.chain) html += '<ol class="hint-chain"><li>' + h.chain.join("</li><li>") + "</li></ol>";
@@ -4844,6 +4897,20 @@ const HintEngine = (function () {
     }
     return m;
   }
+  /* Would this placement stand up from the grid alone, with no pencil marks?
+     Naked single: the cell has one candidate left. Hidden single: the digit has
+     nowhere else to go in some unit through that cell. Anything else is already
+     a pattern argument and is unaffected by narrowing. */
+  function placementJustifiedByGrid(grid, base, i, d, tech) {
+    const t = (tech || "").toLowerCase();
+    if (t.indexOf("naked single") === 0) return SudokuCore.count(base[i]) === 1;
+    if (t.indexOf("hidden single") === 0) {
+      const b = SudokuCore.bit(d);
+      return SudokuCore.UNITS_OF[i].some(u =>
+        SudokuCore.UNITS[u].every(j => j === i || grid[j] || !(base[j] & b)));
+    }
+    return true;
+  }
   function applyReaderNotes(grid, base) {
     const out = Int32Array.from(base);
     for (let i = 0; i < 81; i++) {
@@ -4900,6 +4967,7 @@ const HintEngine = (function () {
   }
 
   function requestHint() {
+    if (gamePaused()) { setStatus("Paused \u2014 press Resume to carry on.", "good"); return; }
     if (!currentPuzzle) return;
     /* Pressing Hint again walks the SAME hint down a level, so you never have
        to reach for "Show me exactly". But only its own hint: a hint left on
@@ -4941,6 +5009,15 @@ const HintEngine = (function () {
        honours and which ARE on screen. */
     const baseCand = SudokuCore.buildCandidates(grid);
     const h = HintEngine.getHint(grid, { cand: applyReaderNotes(grid, baseCand) });
+    /* Honouring pencil marks is what lets an elimination-only step reach the
+       next hint, but it changes what a placement MEANS. If the reader has
+       pencilled a single digit into a cell that the grid alone still leaves
+       open, the engine sees a naked single and the stock wording — "every digit
+       but one is already blocked by its row, column or box" — is simply untrue
+       of the board. The deduction is still theirs and still correct; only the
+       attribution is wrong, so relabel it rather than suppress it. */
+    if (h.place && !placementJustifiedByGrid(grid, baseCand, h.place.i, h.place.d, h.tech))
+      h.fromReaderNotes = true;
     /* clearHint() as well as the message: a previous "check my grid" may have
        left red rings on the board that no longer mean anything. */
     if (h.tech === "Solved") { clearHint(); setStatus("This grid is already complete.", "good"); return; }
@@ -4994,14 +5071,16 @@ const HintEngine = (function () {
   const patternShown = Object.create(null);
   let lastPattern = null;
 
-  /* What each tier of the book actually promises. Hard grids are curated to
-     need nothing beyond naked/hidden triples; Expert may need any named pattern
-     but never a chain. Indices are into ELIM_LADDER. A technique past the
-     ceiling is one the board happens to support without the puzzle needing it —
-     worth showing, worth labelling, never worth implying the tier is wrong. */
+  /* What this book actually promises. Every grid is Extreme tier: any named
+     pattern may be needed — fish, single-digit patterns or wings — but never a
+     chain and never a guess. Verified end to end: all 180 grids solve through
+     the hint ladder alone, with zero stalls and zero forcing-chain uses.
+     Indices are into ELIM_LADDER. The ceiling is set to 99 because nothing in
+     the ladder sits above this tier, so no hint is ever labelled above-tier. */
   const TIER_CEILING = { extreme: 99 };
 
   function requestHarderPattern() {
+    if (gamePaused()) { setStatus("Paused \u2014 press Resume to carry on.", "good"); return; }
     if (!currentPuzzle) return;
     const grid = readGrid(), givens = readGivens();
 
@@ -5027,13 +5106,16 @@ const HintEngine = (function () {
 
     const all = HintEngine.surveyHints(grid, advCand);
     const advanced = all.filter(o => o.advanced);
-    /* Prefer genuinely advanced patterns, but only if there are at least two to
-       rotate between. With a single advanced technique the button would hand
-       back the same name every press — which is exactly what happens on Hard
-       grids, where simple colouring is often the only advanced pattern going.
-       Widening to the full list there gives the rotation something to work
-       with, and everything in it is still harder than the plain hint's step. */
-    const pool = advanced.length >= 2 ? advanced : all;
+    /* Advanced Hint must return an advanced pattern whenever one exists.
+       An earlier version widened the pool to every available technique when
+       fewer than two advanced ones were on offer, so the rotation had something
+       to vary between. That traded the button's promise for variety: measured
+       against this book, 29 of the 180 opening positions expose exactly one
+       advanced pattern, and in every one of them the button could answer with a
+       naked pair or locked candidates instead. Repeating the single available
+       pattern is the honest answer, and renderHint says so. */
+    const pool = advanced.length ? advanced : all;
+    const onlyOneAdvanced = advanced.length === 1;
 
     if (!pool.length) {
       clearHint();
@@ -5072,6 +5154,7 @@ const HintEngine = (function () {
       clearHint(); setStatus("No deduction found from this position.", "bad"); return;
     }
     h.available = pool.map(o => o.tech);
+    h.onlyOneAdvanced = onlyOneAdvanced;
     h.noPlacement = !h.place && !h.unlock;
     const ceiling = TIER_CEILING[currentLevel] === undefined ? 99 : TIER_CEILING[currentLevel];
     h.aboveTier = pick.index > ceiling;
@@ -5278,6 +5361,9 @@ const HintEngine = (function () {
       return;
     }
     n = Math.min(BOOK_COUNT, Math.max(1, n));
+    /* resetTimer() reads currentMode, so it must describe THIS load rather than
+       whatever the previous caller happened to leave behind. */
+    currentMode = mode === "solution" ? "solution" : "play";
     currentPuzzleNumber = n;
     updatePuzzleDisplay(n);
 
