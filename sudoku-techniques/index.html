@@ -1,132 +1,232 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LVF4WGKHE0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LVF4WGKHE0');
+</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Sudoku Solving Techniques Explained | Alex Liam Puzzles</title>
 <meta content="Learn Sudoku solving techniques with clear 9×9 examples, from singles and locked candidates to pairs, triples, X-Wing, Swordfish and the advanced wings." name="description"/>
 <style>
     :root {
-      --bg: #f7faff;
+      /* site palette */
+      --text: #111827;
+      --muted: #6b7280;
       --card: #ffffff;
-      --text: #1f2937;
-      --muted: #5f6b7a;
-      --accent: #1f5fbf;
-      --accent-dark: #173f8a;
-      --accent-soft: #e8f0ff;
-      --border: #d9e3f2;
+      --accent: #f97316;
+      --accent-btn: #ff8f2f;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow-soft: 0 4px 14px rgba(0, 0, 0, 0.08);
+      --chip-bg: #eef2ff;
+      --chip-text: #3730a3;
+      --max-width: 1100px;
+      --section-pad-x: 1.6rem;
+
+      /* diagram colours — functional, unchanged */
       --grid: #1f2937;
       --thin-grid: #9aa7b7;
       --highlight: #fff2b8;
       --remove: #f7caca;
       --keep: #dff5e8;
-      --warning-bg: #fff7e6;
-      --warning-border: #f3c76a;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, Helvetica, sans-serif; line-height: 1.65; background: var(--bg); color: var(--text); }
-    header { background: linear-gradient(135deg, #173f8a, #2f73d8); color: #fff; padding: 56px 20px; text-align: center; }
-    header .brand { font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; margin-bottom: 12px; }
-    header h1 { margin: 0 auto 16px; max-width: 960px; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.12; }
-    header p { max-width: 800px; margin: 0 auto; font-size: 1.08rem; opacity: 0.95; }
-    .header-nav { max-width: 1120px; margin: 0 auto 22px; text-align: left; }
-    .header-nav a {
-      display: inline-block;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 700;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.28);
-      border-radius: 999px;
-      padding: 7px 14px;
-      transition: background 0.2s ease, transform 0.2s ease;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.65;
+      display: flex; align-items: stretch; justify-content: center;
+      padding: 1.25rem 1.25rem 0;
+      color: var(--text);
+      background: linear-gradient(180deg, #f5f7fc 0%, #eef1f8 45%, #e7ebf5 100%);
+      overflow-x: hidden;
     }
-    .header-nav a:hover {
-      background: rgba(255, 255, 255, 0.24);
-      transform: translateY(-1px);
-    }
-    main { width: min(1120px, calc(100% - 32px)); margin: 32px auto 56px; }
-    .intro, .technique, .note, .toc { background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 8px 24px rgba(23, 63, 138, 0.08); }
-    .intro { padding: 28px; margin-bottom: 24px; }
+    .page-shell { max-width: var(--max-width); width: 100%; margin: auto;
+      display: grid; grid-template-rows: auto 1fr auto; gap: 1.8rem; }
+
+    /* HEADER — identical to the rest of the site */
+    header { display: flex; justify-content: space-between; align-items: center;
+      padding: 0.75rem 0 1.75rem; color: var(--muted); font-size: 0.9rem; }
+    .brand { display: flex; align-items: center; gap: 0.8rem; }
+    .logo-img { height: 36px; width: auto; display: block; }
+    .brand-text { display: flex; flex-direction: column; gap: 0.1rem; }
+    .brand-title { font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
+      font-size: 1.14rem; color: #111827; }
+    .brand-sub { font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .header-right { display: flex; align-items: center; gap: 1.2rem; }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.95rem; align-items: center; }
+    .nav-item { position: relative; }
+    .nav-link { text-decoration: none; color: var(--accent); font-weight: 600; }
+    .nav-link:hover { opacity: 0.85; }
+    .nav-link[aria-current="page"] { color: var(--text); text-decoration: underline; text-underline-offset: 5px; }
+    .dropdown-menu { position: absolute; top: 110%; left: 0; min-width: 190px; background: #fff;
+      border: 1px solid rgba(148,163,184,0.5); border-radius: 0.75rem; padding: 0.4rem 0;
+      display: none; flex-direction: column; z-index: 50; box-shadow: 0 18px 30px rgba(0,0,0,0.18); }
+    .dropdown-menu.show { display: flex; }
+    .dropdown-menu a { display: block; text-decoration: none; padding: 0.55rem 0.9rem;
+      font-size: 0.85rem; color: #111827; }
+    .dropdown-menu a:hover { background: #f3f4f6; }
+
+    main { display: flex; flex-direction: column; gap: 1.4rem; padding-bottom: 3rem; }
+    a { color: #1a73e8; }
+    a:hover { color: #0c56c9; }
+
+    /* PAGE TITLE */
+    .page-intro { padding: 0 var(--section-pad-x); }
+    .page-intro h1 { font-size: clamp(1.9rem, 4vw, 2.4rem); line-height: 1.15; margin-bottom: 0.5rem; }
+    .page-intro p { color: var(--muted); max-width: 68ch; }
+
+    /* CARDS */
+    .intro, .technique, .note, .toc {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; box-shadow: var(--shadow-soft); }
+    .intro { padding: 1.4rem 1.5rem; }
     .intro h2, .toc h2 { margin-top: 0; line-height: 1.25; }
-    .toc { padding: 24px 28px; margin-bottom: 28px; }
+    .toc { padding: 1.3rem 1.5rem; }
     .toc ul { columns: 2; column-gap: 48px; padding-left: 20px; margin-bottom: 0; }
-    .toc a { color: var(--accent); text-decoration: none; font-weight: 700; }
+    .toc a { color: #1a73e8; text-decoration: none; font-weight: 600; }
     .toc a:hover { text-decoration: underline; }
-    .level-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 12px; margin-top: 20px; }
-    .level { background: var(--accent-soft); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+    .technique { padding: 1.5rem; }
+    .technique h2 { margin: 0 0 8px; font-size: 1.5rem; color: var(--text); }
+    .technique h2::first-letter { color: var(--accent); }
+    .intro h2, .note h2 { font-size: 1.4rem; }
+
+    .level-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px; margin-top: 20px; }
+    .level { background: #f8fafc; border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
     .level strong { display: block; color: var(--accent); margin-bottom: 4px; }
-    .technique { padding: 28px; margin-bottom: 22px; }
-    .technique h2 { margin: 0 0 8px; font-size: 1.65rem; color: var(--accent-dark); }
+
     .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
-    .badge { display: inline-block; padding: 5px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 0.88rem; font-weight: 700; }
-    .example-layout { display: grid; grid-template-columns: minmax(280px, 390px) 1fr; gap: 22px; align-items: start; margin-top: 18px; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px;
+      background: var(--chip-bg); color: var(--chip-text); font-size: 0.82rem; font-weight: 600; }
+
+    .example-layout { display: grid; grid-template-columns: minmax(280px, 390px) 1fr;
+      gap: 22px; align-items: start; margin-top: 18px; }
     .box { background: #fbfdff; border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
-    .box h3 { margin-top: 0; margin-bottom: 8px; font-size: 1.05rem; }
+    .box h3 { margin-top: 0; margin-bottom: 8px; font-size: 1.02rem; }
+
+    /* DIAGRAMS — unchanged behaviour */
     .sudoku-wrap { overflow-x: auto; padding-bottom: 4px; }
-    table.sudoku { border-collapse: collapse; background: #fff; border: 3px solid var(--grid); margin: 10px 0 10px; table-layout: fixed; }
-    table.sudoku td { width: 36px; height: 36px; border: 1px solid var(--thin-grid); text-align: center; vertical-align: middle; font-weight: 700; font-size: 1.06rem; color: #111827; position: relative; }
+    table.sudoku { border-collapse: collapse; background: #fff; border: 3px solid var(--grid);
+      margin: 10px 0 10px; table-layout: fixed; }
+    table.sudoku td { width: 36px; height: 36px; border: 1px solid var(--thin-grid);
+      text-align: center; vertical-align: middle; font-weight: 700; font-size: 1.06rem;
+      color: #111827; position: relative; }
     table.sudoku tr:nth-child(3n) td { border-bottom: 3px solid var(--grid); }
     table.sudoku tr:last-child td { border-bottom: 0; }
     table.sudoku td:nth-child(3n) { border-right: 3px solid var(--grid); }
     table.sudoku td:last-child { border-right: 0; }
-    .cand { font-size: 0.69rem !important; line-height: 1.08; font-weight: 700; color: #46566a !important; padding: 2px; white-space: normal; }
+    .cand { font-size: 0.69rem !important; line-height: 1.08; font-weight: 700;
+      color: #46566a !important; padding: 2px; white-space: normal; }
     .target { background: var(--highlight); }
     .keep { background: var(--keep); }
     .remove { background: var(--remove); }
     .empty { color: #c7d2df !important; font-weight: 400 !important; }
-    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; font-size: 0.88rem; color: var(--muted); }
+    .cand span.remove { background: var(--remove); color: #8a1f1f; border-radius: 4px;
+      padding: 0 3px; display: inline-block; font-weight: 800; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0;
+      font-size: 0.85rem; color: var(--muted); }
     .legend span { display: inline-flex; align-items: center; gap: 6px; }
-    .swatch { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; display: inline-block; }
+    .swatch { width: 14px; height: 14px; border: 1px solid var(--border);
+      border-radius: 3px; display: inline-block; }
     .swatch.target { background: var(--highlight); }
     .swatch.keep { background: var(--keep); }
     .swatch.remove { background: var(--remove); }
+
     .steps { margin: 12px 0 0; padding-left: 22px; }
     .steps li { margin-bottom: 6px; }
-    .note { padding: 22px 26px; margin: 28px 0; background: var(--warning-bg); border-color: var(--warning-border); }
+    .note { padding: 1.3rem 1.5rem; background: #fff8f0; border-color: #f6d9b5; }
     .tips-list { padding-left: 22px; margin-bottom: 0; }
     .tips-list li { margin-bottom: 8px; }
-    .footer-card { text-align: center; margin-top: 36px; color: var(--muted); }
-    .footer-card a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .notation-note { background: #f1f5f9; border: 1px solid #e2e8f0;
+      border-radius: 12px; padding: 12px 14px; margin-top: 16px; }
+    .intro p, .technique > p, .note p { margin-bottom: 0.7rem; }
 
-    .notation-note {
-      background: var(--accent-soft);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-top: 16px;
-    }
+    /* CTA to the catalogue */
+    .cta { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+      box-shadow: var(--shadow-soft); padding: 1.3rem 1.5rem; }
+    .cta p { color: var(--muted); margin: 0; flex: 1 1 260px; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.6rem 1.1rem; border-radius: 999px; border: 2px solid var(--accent-btn);
+      background: #fff; color: var(--accent-btn); font-weight: 600; text-decoration: none;
+      transition: all 0.15s ease; white-space: nowrap; }
+    .btn-primary:hover { background: var(--accent-btn); color: #fff;
+      box-shadow: 0 8px 22px rgba(255,143,47,0.22); }
+
+    footer { margin-top: 0.5rem; font-size: 0.78rem; color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      border-top: 1px solid rgba(148,163,184,0.5); padding: 0.8rem 0 1.6rem; }
+    .back-to-top { color: var(--muted); text-decoration: none; }
+    .back-to-top:hover { opacity: 0.75; }
 
     @media (max-width: 880px) {
-      .header-nav { text-align: center; margin-bottom: 18px; }
       .toc ul { columns: 1; }
-      .level-strip { grid-template-columns: 1fr; }
       .example-layout { grid-template-columns: 1fr; }
-      .technique, .intro, .toc { padding: 22px; }
+      .technique, .intro, .toc, .note, .cta { padding: 1.1rem; }
       table.sudoku td { width: 32px; height: 32px; font-size: 0.94rem; }
       .cand { font-size: 0.62rem !important; }
     }
+    @media (max-width: 700px) {
+      header { flex-direction: column; align-items: flex-start; gap: 0.9rem; }
+      .header-right { width: 100%; justify-content: space-between; }
+      .nav-links { gap: 1rem; flex-wrap: wrap; }
+    }
     @media (max-width: 520px) {
-      main { width: calc(100% - 16px); }
-      .technique, .intro, .toc { padding: 14px; }
+      body { padding: 1rem; }
+      :root { --section-pad-x: 0.3rem; }
+      .nav-links { font-size: 0.8rem; }
+      .technique, .intro, .toc, .note, .cta { padding: 0.85rem; }
       .box { padding: 12px; }
       table.sudoku td { width: 30px; height: 30px; font-size: 0.9rem; }
       .cand { font-size: 0.58rem !important; }
     }
-    .cand span.remove { background: var(--remove); color: #8a1f1f; border-radius: 4px; padding: 0 3px; display: inline-block; font-weight: 800; }
   </style>
 </head>
-<body>
-<header>
-<div class="header-nav">
-  <a href="https://www.alexliampuzzles.com/" aria-label="Back to Alex Liam Puzzles home page">← Home</a>
-</div>
-<div class="brand">Alex Liam Puzzles</div>
-<h1>Common Sudoku Techniques Explained</h1>
-<p>A simple guide to logic-based Sudoku solving steps, with verified full-grid examples for singles, pairs, triples, locked candidates, fish patterns, single-digit patterns and wings.</p>
-</header>
-<main>
+<body id="top">
+<div class="page-shell">
+  <header>
+    <div class="brand">
+      <img src="/assets/MyLogo.png" alt="Alex Liam Puzzles Logo" class="logo-img">
+      <div class="brand-text">
+        <div class="brand-title">Alex Liam Puzzles</div>
+        <div class="brand-sub">Relaxing logic puzzles</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <nav class="nav-links">
+        <div class="nav-item dropdown">
+          <a href="#" class="nav-link" id="header-printables-toggle">Printables &#9662;</a>
+          <div id="header-printables-menu" class="dropdown-menu">
+            <a href="/printables/warmup-sudoku.html">Warm-Up Sudoku</a>
+            <a href="/printables/easy-sudoku.html">Easy Sudoku</a>
+            <a href="/printables/medium-sudoku.html">Medium Sudoku</a>
+            <a href="/printables/hard-sudoku.html">Hard Sudoku</a>
+            <a href="/printables/expert-sudoku.html">Expert Sudoku</a>
+            <hr style="border:0; height:1px; background:#e5e7eb; margin:6px 0;">
+            <a href="/printables/wordsearch.html"><strong>Word Search Printables</strong></a>
+          </div>
+        </div>
+        <div class="nav-item"><a class="nav-link" href="/sudoku/play/index.html">Play Sudoku</a></div>
+        <div class="nav-item"><a class="nav-link" href="/catalogue/">My Books</a></div>
+        <div class="nav-item"><a class="nav-link" href="/sudoku-techniques/" aria-current="page">Techniques</a></div>
+        <div class="nav-item"><a class="nav-link" href="/#about">About</a></div>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="page-intro">
+      <h1>Common Sudoku Techniques Explained</h1>
+      <p>A simple guide to logic-based Sudoku solving steps, with verified full-grid examples for
+         singles, pairs, triples, locked candidates, fish patterns, single-digit patterns and wings.</p>
+    </section>
+
 <section class="intro">
 <h2>Sudoku is a logic puzzle — not a guessing game</h2>
 <p>A properly constructed Sudoku has exactly one solution, and you never have to guess to find it. The techniques below help you decide which number must go in a cell, or which candidates can safely be removed.</p>
@@ -2155,9 +2255,28 @@
 <p><strong>Some collections are deliberately gentler.</strong> In the compact <em>1000+ Easy to Medium</em>, the <em>1200+ Easy to Hard</em> and the compact <em>1000+ Easy to Expert</em>, the middle of the range follows the familiar mass-market scale: a Medium there is separated from an Easy mainly by how many clues you start with, and still solves with scanning and singles alone. Pick one of those if you want a relaxed solve.</p>
 
 </section>
-    <div class="footer-card">
-      <a href="https://www.alexliampuzzles.com/" aria-label="Back to Alex Liam Puzzles home page">← Home</a>
-    </div>
-</main>
+    <section class="cta">
+      <p>Every technique on this page is one our own puzzles are graded against — pick a book by the
+         level you want to practise.</p>
+      <a class="btn-primary" href="/catalogue/">Browse the puzzle books &rarr;</a>
+    </section>
+  </main>
+  <footer>
+    <div>&copy; <span id="year"></span> Alex Liam Puzzles</div>
+    <div><a href="#top" class="back-to-top">Back to top</a></div>
+  </footer>
+</div>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+  const t = document.getElementById("header-printables-toggle");
+  const m = document.getElementById("header-printables-menu");
+  if (t && m) {
+    t.addEventListener("click", e => { e.preventDefault(); m.classList.toggle("show"); });
+    document.addEventListener("click", e => {
+      if (!t.contains(e.target) && !m.contains(e.target)) m.classList.remove("show");
+    });
+  }
+</script>
 </body>
 </html>
