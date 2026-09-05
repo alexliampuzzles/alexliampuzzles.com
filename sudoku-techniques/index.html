@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Common Sudoku Techniques Explained with Verified Examples | Alex Liam Puzzles</title>
-<meta content="Learn common Sudoku solving techniques with clear, verified full-grid examples: scanning, singles, pairs, triples, pointing, claiming, X-Wing, XY-Wing and Swordfish." name="description"/>
+<title>Sudoku Solving Techniques Explained | Alex Liam Puzzles</title>
+<meta content="Learn Sudoku solving techniques with clear 9×9 examples, from singles and locked candidates to pairs, triples, X-Wing, Swordfish and the advanced wings." name="description"/>
 <style>
     :root {
       --bg: #f7faff;
@@ -54,7 +54,7 @@
     .toc ul { columns: 2; column-gap: 48px; padding-left: 20px; margin-bottom: 0; }
     .toc a { color: var(--accent); text-decoration: none; font-weight: 700; }
     .toc a:hover { text-decoration: underline; }
-    .level-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px; }
+    .level-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 12px; margin-top: 20px; }
     .level { background: var(--accent-soft); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
     .level strong { display: block; color: var(--accent); margin-bottom: 4px; }
     .technique { padding: 28px; margin-bottom: 22px; }
@@ -107,6 +107,13 @@
       table.sudoku td { width: 32px; height: 32px; font-size: 0.94rem; }
       .cand { font-size: 0.62rem !important; }
     }
+    @media (max-width: 520px) {
+      main { width: calc(100% - 16px); }
+      .technique, .intro, .toc { padding: 14px; }
+      .box { padding: 12px; }
+      table.sudoku td { width: 30px; height: 30px; font-size: 0.9rem; }
+      .cand { font-size: 0.58rem !important; }
+    }
     .cand span.remove { background: var(--remove); color: #8a1f1f; border-radius: 4px; padding: 0 3px; display: inline-block; font-weight: 800; }
   </style>
 </head>
@@ -117,12 +124,13 @@
 </div>
 <div class="brand">Alex Liam Puzzles</div>
 <h1>Common Sudoku Techniques Explained</h1>
-<p>A simple guide to logic-based Sudoku solving steps, with verified full-grid examples for singles, pairs, triples, locked candidates, X-Wing, XY-Wing and Swordfish.</p>
+<p>A simple guide to logic-based Sudoku solving steps, with verified full-grid examples for singles, pairs, triples, locked candidates, fish patterns, single-digit patterns and wings.</p>
 </header>
 <main>
 <section class="intro">
 <h2>Sudoku is a logic puzzle — not a guessing game</h2>
-<p>Every well-designed Sudoku puzzle has one unique solution and can be solved by logic. The techniques below help you decide which number must go in a cell, or which candidates can safely be removed.</p>
+<p>A properly constructed Sudoku has exactly one solution, and you never have to guess to find it. The techniques below help you decide which number must go in a cell, or which candidates can safely be removed.</p>
+<p>This page covers the <strong>complete</strong> set of techniques our solver uses to grade the puzzles in Alex Liam Puzzles books. Every puzzle is machine-checked to have exactly one solution that logic can reach, so nothing in any of our books ever comes down to a guess.</p>
 <p><strong>Important:</strong> every example on this page is based on a valid full 9×9 Sudoku state. To keep the diagrams readable, only the candidates relevant to the technique are shown.</p>
 <p>Yellow cells show a direct placement or pivot, green cells show the important pattern, and red candidate digits show the exact candidates that can be removed. The red color is used without a strike-through so the candidate digits remain easy to read.</p><p class="notation-note"><strong>Notation used in the examples:</strong> <strong>r</strong> means row and <strong>c</strong> means column. For example, <strong>r5c3</strong> means row 5, column 3. Rows are counted from top to bottom, and columns are counted from left to right.</p>
 
@@ -133,15 +141,20 @@
 <li><a href="#scanning">Scanning</a></li>
 <li><a href="#naked-single">Naked Single</a></li>
 <li><a href="#hidden-single">Hidden Single</a></li>
+<li><a href="#pointing">Pointing Pair / Triple</a></li>
+<li><a href="#claiming">Claiming / Box-Line Reduction</a></li>
 <li><a href="#naked-pair">Naked Pair</a></li>
 <li><a href="#hidden-pair">Hidden Pair</a></li>
 <li><a href="#naked-triple">Naked Triple</a></li>
 <li><a href="#hidden-triple">Hidden Triple</a></li>
-<li><a href="#pointing">Pointing Pair / Triple</a></li>
-<li><a href="#claiming">Claiming / Box-Line Reduction</a></li>
 <li><a href="#x-wing">X-Wing</a></li>
-<li><a href="#xy-wing">XY-Wing</a></li>
 <li><a href="#swordfish">Swordfish</a></li>
+<li><a href="#skyscraper">Skyscraper</a></li>
+<li><a href="#two-string-kite">Two-String Kite</a></li>
+<li><a href="#empty-rectangle">Empty Rectangle</a></li>
+<li><a href="#xy-wing">XY-Wing</a></li>
+<li><a href="#xyz-wing">XYZ-Wing</a></li>
+<li><a href="#w-wing">W-Wing</a></li>
 <li><a href="#tips">Practical solving tips</a></li>
 </ul>
 </nav>
@@ -151,113 +164,113 @@
 <p>Scanning means checking a row, a column, and a 3×3 box to see which numbers are already used and which position is left.</p>
 <div class="example-layout">
 <div class="box sudoku-wrap">
-<h3>Example: scanning shows where 6 goes in the middle-left box</h3>
+<h3>Example: scanning shows where 5 goes in the middle-right box</h3>
 <table aria-label="Scanning example" class="sudoku">
 <tr>
+<td>5</td>
+<td>2</td>
+<td class="empty">·</td>
+<td>8</td>
+<td>9</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>4</td>
+<td>2</td>
+<td>5</td>
+<td>3</td>
+<td>8</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>8</td>
+<td>7</td>
+<td>3</td>
+<td>6</td>
+<td>4</td>
 <td>1</td>
+<td>9</td>
+<td>2</td>
+<td class="keep">5</td>
+</tr>
+<tr>
+<td class="empty">·</td>
 <td class="empty">·</td>
 <td class="empty">·</td>
 <td>4</td>
 <td class="empty">·</td>
-<td class="empty">·</td>
-<td>7</td>
+<td>6</td>
+<td>3</td>
 <td>8</td>
 <td class="empty">·</td>
 </tr>
 <tr>
-<td>4</td>
 <td class="empty">·</td>
 <td class="empty">·</td>
+<td>2</td>
+<td>3</td>
+<td>8</td>
+<td>9</td>
 <td>7</td>
+<td class="target">5</td>
 <td class="empty">·</td>
+</tr>
+<tr>
 <td class="empty">·</td>
+<td>3</td>
+<td>8</td>
+<td>1</td>
+<td class="empty">·</td>
+<td class="keep">5</td>
 <td class="empty">·</td>
 <td class="empty">·</td>
 <td class="empty">·</td>
 </tr>
 <tr>
-<td>7</td>
+<td class="empty">·</td>
 <td>8</td>
 <td>9</td>
 <td class="empty">·</td>
-<td class="empty">·</td>
 <td>3</td>
+<td>4</td>
 <td class="empty">·</td>
 <td class="empty">·</td>
-<td>6</td>
+<td class="empty">·</td>
 </tr>
 <tr>
 <td>2</td>
 <td class="empty">·</td>
-<td>4</td>
 <td class="empty">·</td>
-<td>6</td>
-<td>7</td>
+<td class="empty">·</td>
+<td>1</td>
 <td>8</td>
+<td>4</td>
 <td>9</td>
-<td>1</td>
+<td>3</td>
 </tr>
 <tr>
-<td>5</td>
-<td class="target">6</td>
-<td class="">7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
 <td>3</td>
 <td>4</td>
 <td class="empty">·</td>
-<td>6</td>
-<td>7</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-</tr>
-<tr>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td class="empty">·</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-</tr>
-<tr>
 <td>9</td>
-<td>1</td>
+<td>6</td>
 <td>2</td>
 <td class="empty">·</td>
-<td>4</td>
 <td class="empty">·</td>
-<td>6</td>
-<td>7</td>
-<td class="empty">·</td>
+<td>8</td>
 </tr>
 </table>
-<div class="legend"><span><i class="swatch target"></i>Solved cell</span></div>
+<div class="legend"><span><i class="swatch keep"></i>The 5s that do the work</span><span><i class="swatch target"></i>Solved cell</span></div>
 </div>
 <div class="box">
 <h3>Why it works</h3>
-<ol class="steps"><li>Look at the middle-left 3×3 box: rows 4–6 and columns 1–3.</li><li>Ask: where can number <strong>6</strong> go in this box?</li><li>Scanning shows that no other cell in the middle-left box can hold <strong>6</strong>, so <strong>r5c2</strong> must be  <strong>6</strong>.</li></ol>
+<ol class="steps"><li>Look at the middle-right 3×3 box: rows 4–6 and columns 7–9. Six of its cells are still empty.</li><li>Row 6 already has a <strong>5</strong> at r6c6, so the whole bottom row of the box is ruled out.</li><li>Column 9 already has a <strong>5</strong> at r3c9, so r4c9 and r5c9 are ruled out too.</li><li>One empty cell survives, so <strong>r5c8</strong> must be the <strong>5</strong>.</li></ol>
 </div>
 </div>
 </section>
@@ -267,113 +280,113 @@
 <p>A naked single happens when one empty cell has only one candidate left.</p>
 <div class="example-layout">
 <div class="box sudoku-wrap">
-<h3>Example: r3c1 has only one candidate</h3>
+<h3>Example: r7c4 has only one candidate</h3>
 <table aria-label="Naked single example" class="sudoku">
 <tr>
-<td>1</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>7</td>
 <td>8</td>
-<td class="empty">·</td>
-</tr>
-<tr>
 <td>4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
+<td>9</td>
+<td>2</td>
+<td>5</td>
+<td>1</td>
 <td>7</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
+<td>3</td>
+<td>6</td>
 </tr>
 <tr>
-<td class="target cand">7</td>
+<td>6</td>
+<td>7</td>
+<td>1</td>
+<td>3</td>
 <td>8</td>
 <td>9</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>3</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>6</td>
-</tr>
-<tr>
 <td>2</td>
-<td class="empty">·</td>
 <td>4</td>
-<td class="empty">·</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
-</tr>
-<tr>
-<td>5</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-<td>3</td>
-<td>4</td>
-<td class="empty">·</td>
-<td>6</td>
-<td>7</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-</tr>
-<tr>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td class="empty">·</td>
-<td>3</td>
-<td class="empty">·</td>
 <td>5</td>
 </tr>
 <tr>
-<td>9</td>
-<td>1</td>
 <td>2</td>
+<td>3</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>2</td>
+<td>6</td>
 <td class="empty">·</td>
 <td>4</td>
 <td class="empty">·</td>
+<td>3</td>
+<td>5</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>8</td>
+<td>6</td>
+<td>1</td>
+<td>3</td>
+<td>9</td>
+<td>2</td>
+<td>7</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>1</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>2</td>
+<td class="empty">·</td>
+<td>4</td>
+<td>6</td>
+<td>8</td>
+</tr>
+<tr>
+<td>1</td>
+<td class="empty">·</td>
+<td>4</td>
+<td class="target cand">8</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td class="empty">·</td>
+<td>2</td>
+<td class="empty">·</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>4</td>
+</tr>
+<tr>
+<td>5</td>
 <td>6</td>
 <td>7</td>
 <td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td>8</td>
+<td class="empty">·</td>
+<td>3</td>
 </tr>
 </table>
 <div class="legend"><span><i class="swatch target"></i>Single candidate</span></div>
 </div>
 <div class="box">
 <h3>Why it works</h3>
-<p>The highlighted cell r3c1 has the candidate list <strong>7</strong>. Since there is only one possibility, the value must be <strong>7</strong>.</p>
+<p>Three units meet at <strong>r7c4</strong>, and between them they use up eight digits: row 7 already holds <strong>1, 2, 3, 4, 5</strong>, column 4 holds <strong>2, 3, 6</strong>, and the box holds <strong>3, 7, 9</strong>. Only <strong>8</strong> is left, so that is the answer — no pattern-hunting needed, just the three lines that cross on the cell.</p>
 </div>
 </div>
 </section>
@@ -383,582 +396,118 @@
 <p>A hidden single happens when a digit appears as a candidate in only one cell of a row, column, or box.</p>
 <div class="example-layout">
 <div class="box sudoku-wrap">
-<h3>Example: digit 5 appears only once in row 1</h3>
+<h3>Example: digit 1 appears only once in row 6 (all four open cells shown)</h3>
 <table aria-label="Hidden single example" class="sudoku">
 <tr>
-<td>1</td>
 <td>2</td>
+<td>8</td>
+<td>7</td>
+<td>9</td>
 <td>3</td>
 <td>4</td>
-<td class="target cand">5 7</td>
-<td class="cand">6 7</td>
-<td class="cand">7</td>
-<td>8</td>
-<td>9</td>
-</tr>
-<tr>
-<td>4</td>
-<td class="empty">·</td>
-<td>6</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
 <td>1</td>
-<td>2</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
 <td>5</td>
 <td>6</td>
 </tr>
 <tr>
-<td class="empty">·</td>
 <td>3</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>6</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>9</td>
 <td>1</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>6</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
 <td>4</td>
-</tr>
-<tr>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
 <td>6</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>3</td>
-<td class="empty">·</td>
 <td>5</td>
 <td class="empty">·</td>
 <td class="empty">·</td>
-<td>8</td>
-<td>9</td>
 <td class="empty">·</td>
-<td>2</td>
+<td>7</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>9</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>4</td>
 </tr>
 <tr>
 <td class="empty">·</td>
 <td>7</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
+<td>5</td>
+<td>4</td>
+<td class="empty">·</td>
+<td>6</td>
+<td>2</td>
 <td class="empty">·</td>
 <td>3</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>9</td>
+<td>2</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>7</td>
+<td>6</td>
 <td>4</td>
 <td>5</td>
 </tr>
 <tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
+<td>4</td>
 <td>3</td>
-<td class="empty">·</td>
-<td>5</td>
 <td>6</td>
-<td class="empty">·</td>
+<td>5</td>
+<td class="target cand">1 2 8 9</td>
+<td class="cand">2 8</td>
+<td class="cand">8 9</td>
+<td>7</td>
+<td class="cand">8 9</td>
+</tr>
+<tr>
+<td>9</td>
+<td>5</td>
+<td>1</td>
 <td>8</td>
+<td>4</td>
+<td>3</td>
+<td>7</td>
+<td>6</td>
+<td>2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>6</td>
+<td>5</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>6</td>
+<td>4</td>
+<td>8</td>
+<td>2</td>
+<td>7</td>
+<td>9</td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
 </tr>
 </table>
 <div class="legend"><span><i class="swatch target"></i>Hidden single cell</span></div>
 </div>
 <div class="box">
 <h3>Why it works</h3>
-<p>In row 1, the digit <strong>5</strong> appears as a candidate only at <strong>r1c5</strong>. The cell still has other candidates, so it is <em>not</em> a naked single — but it is a hidden single, so r1c5 must be <strong>5</strong>.</p>
-</div>
-</div>
-</section>
-<section class="technique" id="naked-pair">
-<h2>4. Naked Pair</h2>
-<div class="badge-row"><span class="badge">Intermediate</span><span class="badge">Candidate elimination</span></div>
-<p>A naked pair appears when two cells in the same unit contain the same two candidates, and no others.</p>
-<div class="example-layout">
-<div class="box sudoku-wrap">
-<h3>Example: a naked pair in column 4</h3>
-<table aria-label="Naked pair example" class="sudoku">
-<tr>
-<td>1</td>
-<td class="empty">·</td>
-<td>3</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-</tr>
-<tr>
-<td>4</td>
-<td>5</td>
-<td class="empty">·</td>
-<td class="keep cand">7 8</td>
-<td class="empty">·</td>
-<td>9</td>
-<td>1</td>
-<td class="empty">·</td>
-<td>3</td>
-</tr>
-<tr>
-<td>7</td>
-<td class="empty">·</td>
-<td>9</td>
-<td>1</td>
-<td>2</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-<td>6</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>5</td>
-<td>6</td>
-<td class="empty">·</td>
-<td class="keep cand">7 8</td>
-<td>9</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-<td>3</td>
-<td>4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>7</td>
-</tr>
-<tr>
-<td>3</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>6</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>7</td>
-<td>8</td>
-<td class="cand">3 9</td>
-<td class="empty">·</td>
-<td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>5</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>1</td>
-<td class="empty">·</td>
-<td class="cand">3 <span class="remove">7</span> 9</td>
-<td>4</td>
-<td>5</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-</tr>
-</table>
-<div class="legend"><span><i class="swatch keep"></i>The naked pair</span><span><i class="swatch remove"></i>Candidates removed</span></div>
-</div>
-<div class="box">
-<h3>Why it works</h3>
-<p>Cells <strong>r2c4</strong> and <strong>r5c4</strong> are both <strong>{7, 8}</strong>. These two cells must contain 7 and 8 in some order. Therefore, in column 4, the candidates <strong>7</strong> and <strong>8</strong> can be removed from any other unsolved cell that contains them — here, remove <strong>7</strong> from <strong>r9c4</strong>.</p>
-</div>
-</div>
-</section>
-<section class="technique" id="hidden-pair">
-<h2>5. Hidden Pair</h2>
-<div class="badge-row"><span class="badge">Intermediate</span><span class="badge">Candidate cleanup</span></div>
-<p>A hidden pair happens when two digits can appear only in the same two cells of a row, column, or box.</p>
-<div class="example-layout">
-<div class="box sudoku-wrap">
-<h3>Example: digits 1 and 2 are hidden in row 9</h3>
-<table aria-label="Hidden pair example" class="sudoku">
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>5</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
-</tr>
-<tr>
-<td>7</td>
-<td class="empty">·</td>
-<td>9</td>
-<td>1</td>
-<td>2</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>3</td>
-<td>4</td>
-<td class="empty">·</td>
-<td>6</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
-<td>2</td>
-<td class="empty">·</td>
-<td>4</td>
-</tr>
-<tr>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-<td>9</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
-<td>4</td>
-<td>5</td>
-</tr>
-<tr>
-<td>9</td>
-<td class="keep cand">1 2 <span class="remove">5</span> <span class="remove">6</span></td>
-<td class="keep cand">1 2 <span class="remove">3</span> <span class="remove">5</span> <span class="remove">6</span></td>
-<td class="cand">3 5 6</td>
-<td>4</td>
-<td class="cand">5 6</td>
-<td class="cand">6</td>
-<td>7</td>
-<td>8</td>
-</tr>
-</table>
-<div class="legend"><span><i class="swatch keep"></i>Cells containing the hidden pair</span></div>
-</div>
-<div class="box">
-<h3>Why it works</h3>
-<p>In row 9, digits <strong>1</strong> and <strong>2</strong> appear only in <strong>r9c2</strong> and <strong>r9c3</strong>. These two cells must contain 1 and 2 in some order. Therefore, the extra candidates can be removed from those cells: remove <strong>5 and 6</strong> from r9c2, and remove <strong>3, 5, and 6</strong> from r9c3.</p>
-</div>
-</div>
-</section>
-<section class="technique" id="naked-triple">
-<h2>6. Naked Triple</h2>
-<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Candidate elimination</span></div>
-<p>A naked triple occurs when three cells in the same unit use only three digits between them.</p>
-<div class="example-layout">
-<div class="box sudoku-wrap">
-<h3>Example: a naked triple in row 9</h3>
-<table aria-label="Naked triple example" class="sudoku">
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>6</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>9</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
-</tr>
-<tr>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-</tr>
-<tr>
-<td>5</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>1</td>
-<td class="empty">·</td>
-<td>3</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>9</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>5</td>
-<td class="empty">·</td>
-<td>7</td>
-</tr>
-<tr>
-<td>3</td>
-<td>4</td>
-<td>5</td>
-<td class="empty">·</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-</tr>
-<tr>
-<td>9</td>
-<td class="cand">1</td>
-<td>2</td>
-<td class="keep cand">3 4 5</td>
-<td class="keep cand">3 4 5</td>
-<td class="keep cand">3 4 5</td>
-<td>6</td>
-<td class="cand"><span class="remove">4</span> 7</td>
-<td>8</td>
-</tr>
-</table>
-<div class="legend"><span><i class="swatch keep"></i>Cells of the naked triple</span><span><i class="swatch remove"></i>Candidates removed</span></div>
-</div>
-<div class="box">
-<h3>Why it works</h3>
-<p>The three highlighted cells in row 9 use only the digits <strong>3, 4, and 5</strong>. Those three digits must occupy those three cells. Therefore, in the rest of row 9, only the overlapping candidates can be removed: remove <strong>4</strong> from <strong>r9c8</strong>.</p>
-</div>
-</div>
-</section>
-<section class="technique" id="hidden-triple">
-<h2>7. Hidden Triple</h2>
-<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Candidate cleanup</span></div>
-<p>A hidden triple happens when three digits can appear only in the same three cells of a unit.</p>
-<div class="example-layout">
-<div class="box sudoku-wrap">
-<h3>Example: digits 2, 3, and 6 are hidden in row 2</h3>
-<table aria-label="Hidden triple example" class="sudoku">
-<tr>
-<td>1</td>
-<td class="empty">·</td>
-<td>3</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>4</td>
-<td>5</td>
-<td class="keep cand">2 6</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>1</td>
-<td class="keep cand">2 3 <span class="remove">8</span> <span class="remove">9</span></td>
-<td class="keep cand">3 6 <span class="remove">9</span></td>
-</tr>
-<tr>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>2</td>
-<td class="empty">·</td>
-<td>4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-</tr>
-<tr>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td class="empty">·</td>
-<td>9</td>
-<td class="empty">·</td>
-<td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>3</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td class="empty">·</td>
-<td>2</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>7</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>5</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-<td>6</td>
-<td class="empty">·</td>
-<td>8</td>
-</tr>
-</table>
-<div class="legend"><span><i class="swatch keep"></i>Cells containing the hidden triple</span></div>
-</div>
-<div class="box">
-<h3>Why it works</h3>
-<p>In row 2, the digits <strong>2, 3, and 6</strong> appear only in <strong>r2c3</strong>, <strong>r2c8</strong>, and <strong>r2c9</strong>. This is a proper hidden triple: 2 appears in r2c3/r2c8, 3 appears in r2c8/r2c9, and 6 appears in r2c3/r2c9. Those three cells must contain 2, 3, and 6 in some order. Therefore, remove the extra candidates: remove <strong>8</strong> and <strong>9</strong> from <strong>r2c8</strong>, and remove <strong>9</strong> from <strong>r2c9</strong>.</p>
+<p>Row 6 has four cells left. Three of them — r6c6, r6c7 and r6c9 — cannot take a <strong>1</strong> at all, so the row's 1 has nowhere to go but <strong>r6c5</strong>. That cell still holds four candidates <strong>{1, 2, 8, 9}</strong>, so it is nowhere near a naked single; the 1 is <em>hidden</em> among them. Looking at the row as a whole, rather than at one cell, is what finds it.</p>
 </div>
 </div>
 </section>
 <section class="technique" id="pointing">
-<h2>8. Pointing Pair / Pointing Triple</h2>
+<h2>4. Pointing Pair / Pointing Triple</h2>
 <div class="badge-row"><span class="badge">Intermediate</span><span class="badge">Box-to-line elimination</span></div>
 <p>A pointing pair or pointing triple occurs when all candidates for a digit inside a 3×3 box lie on the same row or column.</p>
 <div class="example-layout">
@@ -1074,7 +623,7 @@
 </div>
 </section>
 <section class="technique" id="claiming">
-<h2>9. Claiming / Box-Line Reduction</h2>
+<h2>5. Claiming / Box-Line Reduction</h2>
 <div class="badge-row"><span class="badge">Intermediate</span><span class="badge">Line-to-box elimination</span></div>
 <p>Claiming is the reverse of pointing. If all candidates for a digit in a row or column lie inside one 3×3 box, that digit can be removed from the rest of the box.</p>
 <div class="example-layout">
@@ -1189,240 +738,588 @@
 </div>
 </div>
 </section>
+<section class="technique" id="naked-pair">
+<h2>6. Naked Pair</h2>
+<div class="badge-row"><span class="badge">Intermediate</span><span class="badge">Candidate elimination</span></div>
+<p>A naked pair appears when two cells in the same unit contain the same two candidates, and no others.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: a naked pair in column 3 (all five open cells shown)</h3>
+<table aria-label="Naked pair example" class="sudoku">
+<tr>
+<td class="empty">·</td>
+<td>6</td>
+<td class="cand">1 3</td>
+<td>2</td>
+<td>4</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>9</td>
+<td>8</td>
+</tr>
+<tr>
+<td>4</td>
+<td class="empty">·</td>
+<td class="cand"><span class="remove">2</span> 3 9</td>
+<td>1</td>
+<td>5</td>
+<td>8</td>
+<td>6</td>
+<td>7</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>7</td>
+<td class="empty">·</td>
+<td class="keep cand">2 8</td>
+<td>6</td>
+<td>9</td>
+<td>3</td>
+<td>1</td>
+<td class="empty">·</td>
+<td>4</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>6</td>
+<td>7</td>
+<td>2</td>
+<td>9</td>
+<td>8</td>
+<td>1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>7</td>
+<td>5</td>
+<td>4</td>
+<td>8</td>
+<td>1</td>
+<td>9</td>
+<td>3</td>
+<td>6</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="cand">1 <span class="remove">8</span> 9</td>
+<td>3</td>
+<td>6</td>
+<td>5</td>
+<td>2</td>
+<td>4</td>
+<td>7</td>
+</tr>
+<tr>
+<td>9</td>
+<td class="empty">·</td>
+<td>4</td>
+<td>8</td>
+<td>3</td>
+<td>6</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>3</td>
+<td>7</td>
+<td>5</td>
+<td>1</td>
+<td>2</td>
+<td>4</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>1</td>
+<td class="keep cand">2 8</td>
+<td>9</td>
+<td>7</td>
+<td>4</td>
+<td class="empty">·</td>
+<td>6</td>
+<td class="empty">·</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>The naked pair</span><span><i class="swatch remove"></i>Candidates removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>Cells <strong>r3c3</strong> and <strong>r9c3</strong> are both exactly <strong>{2, 8}</strong>. Whichever way round they go, the two of them use up the 2 and the 8 of column 3 between them — so no other cell in that column can be either digit.</p><p>Remove <strong>2</strong> from <strong>r2c3</strong> and <strong>8</strong> from <strong>r6c3</strong>. r1c3 keeps both its candidates: it never held a 2 or an 8 to begin with.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="hidden-pair">
+<h2>7. Hidden Pair</h2>
+<div class="badge-row"><span class="badge">Intermediate</span><span class="badge">Candidate cleanup</span></div>
+<p>A hidden pair happens when two digits can appear only in the same two cells of a row, column, or box.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: digits 3 and 9 are hidden in column 9 (all five open cells shown)</h3>
+<table aria-label="Hidden pair example" class="sudoku">
+<tr>
+<td>5</td>
+<td>2</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>8</td>
+<td>3</td>
+<td>1</td>
+<td>9</td>
+<td class="cand">4 7</td>
+</tr>
+<tr>
+<td>9</td>
+<td>3</td>
+<td>8</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>2</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>6</td>
+</tr>
+<tr>
+<td>7</td>
+<td>4</td>
+<td>1</td>
+<td>9</td>
+<td>5</td>
+<td>6</td>
+<td>3</td>
+<td>2</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3</td>
+<td>8</td>
+<td class="empty">·</td>
+<td>5</td>
+<td>2</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>6</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>8</td>
+<td>6</td>
+<td>1</td>
+<td>4</td>
+<td class="empty">·</td>
+<td class="keep cand">3 <span class="remove">5</span> 9</td>
+</tr>
+<tr>
+<td>1</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>3</td>
+<td>9</td>
+<td class="empty">·</td>
+<td>2</td>
+<td>8</td>
+<td class="cand">5 7</td>
+</tr>
+<tr>
+<td>4</td>
+<td>9</td>
+<td>3</td>
+<td>6</td>
+<td>7</td>
+<td>5</td>
+<td>8</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td class="empty">·</td>
+<td>7</td>
+<td>2</td>
+<td class="empty">·</td>
+<td>8</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="keep cand">3 <span class="remove">4</span> <span class="remove">5</span> 9</td>
+</tr>
+<tr>
+<td>8</td>
+<td class="empty">·</td>
+<td>2</td>
+<td class="empty">·</td>
+<td>3</td>
+<td>9</td>
+<td>6</td>
+<td>7</td>
+<td class="cand">4 5</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>Cells containing the hidden pair</span><span><i class="swatch remove"></i>Candidates removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>In column 9, the digits <strong>3</strong> and <strong>9</strong> appear in only two cells: <strong>r5c9</strong> and <strong>r8c9</strong>. Two digits needing two cells fills both of them, so nothing else can live there.</p><p>Strip the extras: remove <strong>5</strong> from r5c9, and <strong>4</strong> and <strong>5</strong> from r8c9. Both cells become <strong>{3, 9}</strong> — a naked pair that was there all along, just buried under spare candidates.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="naked-triple">
+<h2>8. Naked Triple</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Candidate elimination</span></div>
+<p>A naked triple occurs when three cells in the same unit use only three digits between them.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: a naked triple in row 9</h3>
+<table aria-label="Naked triple example" class="sudoku">
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>8</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>4</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>1</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>4</td>
+<td>5</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>4</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>8</td>
+<td class="empty">·</td>
+<td>1</td>
+</tr>
+<tr>
+<td>5</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>1</td>
+<td class="empty">·</td>
+<td>3</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>7</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>5</td>
+</tr>
+<tr>
+<td>9</td>
+<td class="cand">1</td>
+<td>2</td>
+<td class="keep cand">3 4 5</td>
+<td class="keep cand">3 4 5</td>
+<td class="keep cand">3 4 5</td>
+<td>6</td>
+<td class="cand"><span class="remove">4</span> 7</td>
+<td>8</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>Cells of the naked triple</span><span><i class="swatch remove"></i>Candidates removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>The three highlighted cells in row 9 use only the digits <strong>3, 4, and 5</strong>. Those three digits must occupy those three cells. Therefore, in the rest of row 9, only the overlapping candidates can be removed: remove <strong>4</strong> from <strong>r9c8</strong>.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="hidden-triple">
+<h2>9. Hidden Triple</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Candidate cleanup</span></div>
+<p>A hidden triple happens when three digits can appear only in the same three cells of a unit.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: digits 2, 3, and 6 are hidden in row 2</h3>
+<table aria-label="Hidden triple example" class="sudoku">
+<tr>
+<td>1</td>
+<td class="empty">·</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td class="keep cand">2 6</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>1</td>
+<td class="keep cand">2 3 <span class="remove">8</span> <span class="remove">9</span></td>
+<td class="keep cand">3 6 <span class="remove">9</span></td>
+</tr>
+<tr>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td class="empty">·</td>
+<td>2</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>5</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>2</td>
+<td class="empty">·</td>
+<td>4</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>7</td>
+<td>8</td>
+<td class="empty">·</td>
+<td>1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td>2</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>8</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td class="empty">·</td>
+<td>2</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>7</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>2</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>5</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>5</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>8</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>Cells containing the hidden triple</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>In row 2, the digits <strong>2, 3, and 6</strong> appear only in <strong>r2c3</strong>, <strong>r2c8</strong>, and <strong>r2c9</strong>. This is a proper hidden triple: 2 appears in r2c3/r2c8, 3 appears in r2c8/r2c9, and 6 appears in r2c3/r2c9. Those three cells must contain 2, 3, and 6 in some order. Therefore, remove the extra candidates: remove <strong>8</strong> and <strong>9</strong> from <strong>r2c8</strong>, and remove <strong>9</strong> from <strong>r2c9</strong>.</p>
+</div>
+</div>
+</section>
 <section class="technique" id="x-wing">
 <h2>10. X-Wing</h2>
 <div class="badge-row"><span class="badge">Advanced</span><span class="badge">Pattern elimination</span></div>
 <p>An X-Wing forms when a candidate appears in exactly two cells in one row, and the same two columns repeat in another row.</p>
 <div class="example-layout">
 <div class="box sudoku-wrap">
-<h3>Example: X-Wing on candidate 5</h3>
+<h3>Example: X-Wing on candidate 5 (every cell that can still hold a 5 is marked)</h3>
 <table aria-label="X-Wing example" class="sudoku">
 <tr>
-<td>1</td>
-<td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>5</td>
+<td>3</td>
 <td>6</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
+<td>4</td>
+<td>9</td>
+<td>1</td>
+<td class="cand">5</td>
+<td class="cand"><span class="remove">5</span></td>
+<td class="cand">5</td>
+<td>7</td>
 </tr>
 <tr>
-<td>4</td>
+<td>8</td>
 <td class="keep cand">5</td>
+<td>1</td>
+<td>4</td>
+<td>7</td>
+<td>3</td>
+<td class="keep cand">5</td>
+<td>6</td>
+<td>9</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="cand"><span class="remove">5</span></td>
+<td class="cand">5</td>
+<td>6</td>
+<td class="cand">5</td>
+<td>8</td>
+<td>1</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
 <td class="empty">·</td>
 <td class="empty">·</td>
 <td>8</td>
-<td>9</td>
+<td>3</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>6</td>
+<td>4</td>
+<td>5</td>
+</tr>
+<tr>
+<td>5</td>
+<td>3</td>
+<td>2</td>
 <td>1</td>
-<td class="keep cand">5</td>
+<td>6</td>
+<td>4</td>
+<td>7</td>
+<td>9</td>
+<td>8</td>
+</tr>
+<tr>
+<td>6</td>
+<td>4</td>
+<td class="empty">·</td>
+<td>8</td>
+<td class="cand">5</td>
+<td class="cand">5</td>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="cand"><span class="remove">5</span></td>
+<td class="cand">5</td>
+<td>7</td>
+<td>4</td>
+<td>6</td>
+<td class="cand"><span class="remove">5</span></td>
+<td class="cand">5</td>
 <td>3</td>
 </tr>
 <tr>
-<td>7</td>
+<td>4</td>
 <td class="keep cand">5</td>
-<td>9</td>
-<td class="empty">·</td>
+<td>3</td>
 <td>2</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
+<td>8</td>
+<td>1</td>
 <td class="keep cand">5</td>
+<td>7</td>
 <td>6</td>
 </tr>
 <tr>
-<td>2</td>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="cand">1 3 <span class="remove">5</span> 6 9</td>
 <td>7</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-<td class="empty">·</td>
-<td>4</td>
-</tr>
-<tr>
 <td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
 <td>6</td>
-<td>7</td>
-</tr>
-<tr>
+<td>5</td>
 <td>3</td>
-<td>4</td>
-<td>5</td>
-<td class="empty">·</td>
-<td>7</td>
-<td>8</td>
 <td>9</td>
-<td>1</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>3</td>
-<td class="cand">2 4 <span class="remove">5</span></td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
 <td>4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>7</td>
-<td>8</td>
+<td>1</td>
+<td>2</td>
 </tr>
 </table>
 <div class="legend"><span><i class="swatch keep"></i>Corners of the X-Wing</span><span><i class="swatch remove"></i>Candidates removed</span></div>
 </div>
 <div class="box">
 <h3>Why it works</h3>
-<p>Candidate <strong>5</strong> appears in exactly two positions in row 2 and row 3, and those positions line up in column 2 and column 8. This creates an X-Wing. Therefore, candidate 5 can be removed from the other cells in those two columns: remove <strong>5</strong> from <strong>r5c2</strong> and <strong>r8c8</strong>.</p>
-</div>
-</div>
-</section>
-<section class="technique" id="xy-wing">
-<h2>11. XY-Wing</h2>
-<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Chain-based elimination</span></div>
-<p>An XY-Wing uses three bi-value cells: a pivot with candidates {X,Y}, and two wings with {X,Z} and {Y,Z}.</p>
-<div class="example-layout">
-<div class="box sudoku-wrap">
-<h3>Example: pivot r5c6 with two wings</h3>
-<table aria-label="XY-Wing example" class="sudoku">
-<tr>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-</tr>
-<tr>
-<td>4</td>
-<td class="empty">·</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
-</tr>
-<tr>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
-<td>2</td>
-<td class="keep cand">3 4</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>6</td>
-</tr>
-<tr>
-<td>2</td>
-<td>3</td>
-<td class="empty">·</td>
-<td>5</td>
-<td class="empty">·</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td>1</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
-<td class="target cand">1 4</td>
-<td>2</td>
-<td>3</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>9</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td class="keep cand">1 3</td>
-<td class="cand">1 2 <span class="remove">3</span> 4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-</tr>
-<tr>
-<td class="empty">·</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td class="empty">·</td>
-<td>8</td>
-<td class="empty">·</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<td>6</td>
-<td>7</td>
-<td class="empty">·</td>
-<td>9</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-<td>3</td>
-<td>4</td>
-<td class="empty">·</td>
-</tr>
-<tr>
-<td>9</td>
-<td class="empty">·</td>
-<td>2</td>
-<td>3</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td class="empty">·</td>
-<td class="empty">·</td>
-</tr>
-</table>
-<div class="legend"><span><i class="swatch target"></i>Pivot cell</span><span><i class="swatch keep"></i>Wing cells</span><span><i class="swatch remove"></i>Candidates removed</span></div>
-</div>
-<div class="box">
-<h3>Why it works</h3>
-<p>The pivot cell <strong>r5c6</strong> has candidates <strong>{1, 4}</strong>. One wing is <strong>r3c6</strong> with <strong>{3, 4}</strong>, and the other wing is <strong>r6c5</strong> with <strong>{1, 3}</strong>. No matter whether the pivot becomes 1 or 4, one of the wings must become <strong>3</strong>. Therefore, any cell that sees both wings cannot contain 3: remove <strong>3</strong> from <strong>r6c6</strong>.</p>
+<p>In <strong>row 2</strong>, digit <strong>5</strong> fits only in <strong>r2c2</strong> or <strong>r2c7</strong>, and in <strong>row 8</strong> only in <strong>r8c2</strong> or <strong>r8c7</strong> — the same two columns. The four corners form a rectangle, and the two 5s must sit on opposite corners of it. Either way, one of them lands in column 2 and the other in column 7.</p><p>Those two columns are therefore spoken for. Every other cell in them loses the 5: remove it from <strong>r1c7</strong>, <strong>r3c2</strong>, <strong>r7c2</strong> and <strong>r7c7</strong>.</p>
 </div>
 </div>
 </section>
 <section class="technique" id="swordfish">
-<h2>12. Swordfish</h2>
+<h2>11. Swordfish</h2>
 <div class="badge-row"><span class="badge">Advanced</span><span class="badge">Large pattern elimination</span></div>
 <p>A Swordfish is a larger version of an X-Wing. A candidate is restricted to the same three columns across three different rows (or the same three rows across three columns).</p>
 <div class="example-layout">
@@ -1537,8 +1434,704 @@
 </div>
 </div>
 </section>
+<section class="technique" id="skyscraper">
+<h2>12. Skyscraper</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Single-digit pattern</span></div>
+<p>A Skyscraper works on one digit at a time. Two rows in which the digit has only two possible cells share one column — and that shared column can hold the digit only once.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: Skyscraper on candidate 3 (every cell that can still hold a 3 is marked)</h3>
+<table aria-label="Skyscraper example" class="sudoku">
+<tr>
+<td>3</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>2</td>
+<td>9</td>
+<td>4</td>
+<td>1</td>
+<td>7</td>
+<td>6</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>5</td>
+<td>4</td>
+</tr>
+<tr>
+<td>4</td>
+<td>7</td>
+<td>9</td>
+<td>1</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>3</td>
+<td>8</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td class="cand">3</td>
+<td class="cand">3</td>
+<td>7</td>
+<td class="cand"><span class="remove">3</span></td>
+<td>1</td>
+<td>8</td>
+<td>4</td>
+<td>9</td>
+</tr>
+<tr>
+<td>9</td>
+<td class="keep cand">3</td>
+<td>4</td>
+<td>8</td>
+<td>2</td>
+<td class="target cand">3</td>
+<td>5</td>
+<td>1</td>
+<td>7</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1</td>
+<td>7</td>
+<td>5</td>
+<td>4</td>
+<td>9</td>
+<td>2</td>
+<td>6</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1</td>
+<td class="keep cand">3</td>
+<td>2</td>
+<td>6</td>
+<td class="target cand">3</td>
+<td>7</td>
+<td>4</td>
+<td>9</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>5</td>
+<td>4</td>
+<td>6</td>
+<td>9</td>
+<td>8</td>
+<td>2</td>
+<td>7</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>9</td>
+<td class="cand">3</td>
+<td>4</td>
+<td>1</td>
+<td class="cand"><span class="remove">3</span></td>
+<td>6</td>
+<td>2</td>
+<td class="empty">·</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>Base cells (shared column)</span><span><i class="swatch target"></i>Roof cells</span><span><i class="swatch remove"></i>Candidates removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>In <strong>row 5</strong>, digit <strong>3</strong> fits only in <strong>r5c2</strong> or <strong>r5c6</strong>. In <strong>row 7</strong>, only in <strong>r7c2</strong> or <strong>r7c5</strong>. Both rows include <strong>column 2</strong>, and a column holds each digit once — so r5c2 and r7c2 cannot both be 3. At least one of the two roof cells, <strong>r5c6</strong> or <strong>r7c5</strong>, must therefore be the 3. Any cell that sees <em>both</em> roofs can be cleared: remove <strong>3</strong> from <strong>r4c5</strong> and <strong>r9c6</strong>.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="two-string-kite">
+<h2>13. Two-String Kite</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Single-digit pattern</span></div>
+<p>A Two-String Kite links a row and a column that each have only two places left for the same digit, when one cell of each lands in the same 3×3 box.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: Two-String Kite on candidate 2 (every cell that can still hold a 2 is marked)</h3>
+<table aria-label="Two-String Kite example" class="sudoku">
+<tr>
+<td>4</td>
+<td>7</td>
+<td class="cand">2</td>
+<td class="empty">·</td>
+<td>9</td>
+<td class="cand">2</td>
+<td>5</td>
+<td>1</td>
+<td>6</td>
+</tr>
+<tr>
+<td>6</td>
+<td class="cand">2</td>
+<td class="cand"><span class="remove">2</span></td>
+<td class="empty">·</td>
+<td class="target cand">2</td>
+<td>1</td>
+<td>9</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>9</td>
+<td>4</td>
+<td>6</td>
+<td>5</td>
+<td>2</td>
+<td>7</td>
+<td>8</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4</td>
+<td>6</td>
+<td>5</td>
+<td>1</td>
+<td>7</td>
+<td>3</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td>9</td>
+<td>1</td>
+<td>3</td>
+<td>2</td>
+<td>8</td>
+<td>4</td>
+<td>6</td>
+<td>5</td>
+<td>7</td>
+</tr>
+<tr>
+<td>5</td>
+<td>8</td>
+<td>7</td>
+<td>9</td>
+<td>3</td>
+<td>6</td>
+<td>4</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td class="empty">·</td>
+<td>1</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>9</td>
+<td>8</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>7</td>
+<td class="cand">2</td>
+<td>4</td>
+<td class="empty">·</td>
+<td class="keep cand">2</td>
+<td>8</td>
+<td>1</td>
+<td>9</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>8</td>
+<td>9</td>
+<td class="target cand">2</td>
+<td>1</td>
+<td>4</td>
+<td class="keep cand">2</td>
+<td>7</td>
+<td>6</td>
+<td class="empty">·</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>The two cells sharing a box</span><span><i class="swatch target"></i>The far ends</span><span><i class="swatch remove"></i>Candidate removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>In <strong>row 9</strong>, digit <strong>2</strong> fits only in <strong>r9c3</strong> or <strong>r9c6</strong>. In <strong>column 5</strong>, only in <strong>r2c5</strong> or <strong>r8c5</strong>. The cells <strong>r9c6</strong> and <strong>r8c5</strong> sit in the same box, so they cannot both be 2. That forces the 2 to the far end of one string or the other: <strong>r9c3</strong> or <strong>r2c5</strong>. <strong>r2c3</strong> sees both far ends, so remove <strong>2</strong> from it.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="empty-rectangle">
+<h2>14. Empty Rectangle</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Single-digit pattern</span></div>
+<p>An Empty Rectangle appears when the candidates for a digit inside one box all lie on a single row and a single column of that box, forming an L around their crossing point.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: Empty Rectangle on candidate 2 (every cell that can still hold a 2 is marked)</h3>
+<table aria-label="Empty Rectangle example" class="sudoku">
+<tr>
+<td>6</td>
+<td>8</td>
+<td>1</td>
+<td class="cand">2</td>
+<td>3</td>
+<td class="cand">2</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>7</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>2</td>
+<td>7</td>
+<td>1</td>
+<td>5</td>
+<td>3</td>
+<td>6</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5</td>
+<td>7</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>6</td>
+<td>8</td>
+<td>9</td>
+<td class="target cand">2</td>
+<td>1</td>
+<td class="target cand">2</td>
+<td>3</td>
+<td>5</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>4</td>
+<td class="empty">·</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td>5</td>
+<td>3</td>
+<td>9</td>
+<td class="cand">2</td>
+<td>7</td>
+<td class="cand">2</td>
+<td>6</td>
+<td class="cand">2</td>
+<td>1</td>
+</tr>
+<tr>
+<td class="cand">2</td>
+<td class="empty">·</td>
+<td>6</td>
+<td>1</td>
+<td class="keep cand">2</td>
+<td>7</td>
+<td>8</td>
+<td>5</td>
+<td>3</td>
+</tr>
+<tr>
+<td class="cand">2</td>
+<td>7</td>
+<td>3</td>
+<td>5</td>
+<td>8</td>
+<td>4</td>
+<td class="cand">2</td>
+<td class="cand">2</td>
+<td>6</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1</td>
+<td>5</td>
+<td class="keep cand">2</td>
+<td>6</td>
+<td class="keep cand">2</td>
+<td class="cand"><span class="remove">2</span></td>
+<td>7</td>
+<td>4</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>The L inside the box</span><span><i class="swatch target"></i>The two-cell link</span><span><i class="swatch remove"></i>Candidate removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>In the <strong>bottom-middle box</strong>, digit <strong>2</strong> fits only in <strong>r9c4</strong>, <strong>r9c6</strong> and <strong>r7c5</strong> — all of them on <strong>row 9</strong> or <strong>column 5</strong>, which cross at r9c5. Now look at <strong>row 4</strong>: the 2 there is either at <strong>r4c5</strong> or <strong>r4c7</strong>.</p><ol class="steps"><li>If <strong>r4c5</strong> is 2, column 5 is used up, so the box's 2 must sit on row 9 — and then r9c7, on row 9 outside the box, cannot be 2.</li><li>If <strong>r4c7</strong> is 2, then r9c7 cannot be 2 either, because they share column 7.</li></ol><p>Both branches agree, so remove <strong>2</strong> from <strong>r9c7</strong>.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="xy-wing">
+<h2>15. XY-Wing</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Chain-based elimination</span></div>
+<p>An XY-Wing uses three bi-value cells: a pivot with candidates {X,Y}, and two wings with {X,Z} and {Y,Z}.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: pivot r5c6 with two wings</h3>
+<table aria-label="XY-Wing example" class="sudoku">
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td>4</td>
+<td class="empty">·</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>1</td>
+<td>2</td>
+<td class="keep cand">3 4</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>6</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>1</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td class="target cand">1 4</td>
+<td>2</td>
+<td>3</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="keep cand">1 3</td>
+<td class="cand">1 2 <span class="remove">3</span> 4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>8</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>7</td>
+<td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>3</td>
+<td>4</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>9</td>
+<td class="empty">·</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch target"></i>Pivot cell</span><span><i class="swatch keep"></i>Wing cells</span><span><i class="swatch remove"></i>Candidates removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>The pivot cell <strong>r5c6</strong> has candidates <strong>{1, 4}</strong>. One wing is <strong>r3c6</strong> with <strong>{3, 4}</strong>, and the other wing is <strong>r6c5</strong> with <strong>{1, 3}</strong>. No matter whether the pivot becomes 1 or 4, one of the wings must become <strong>3</strong>. Therefore, any cell that sees both wings cannot contain 3: remove <strong>3</strong> from <strong>r6c6</strong>.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="xyz-wing">
+<h2>16. XYZ-Wing</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Chain-based elimination</span></div>
+<p>An XYZ-Wing is an XY-Wing whose pivot keeps a third candidate. The pivot holds {X, Y, Z} and the two wings hold {X, Z} and {Y, Z}.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: pivot r8c7 with wings in the same column and box</h3>
+<table aria-label="XYZ-Wing example" class="sudoku">
+<tr>
+<td class="empty">·</td>
+<td>1</td>
+<td>7</td>
+<td>6</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>9</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2</td>
+<td>5</td>
+<td>7</td>
+<td>4</td>
+<td>9</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>7</td>
+<td>6</td>
+<td>5</td>
+</tr>
+<tr>
+<td>7</td>
+<td>6</td>
+<td>8</td>
+<td>4</td>
+<td class="empty">·</td>
+<td>5</td>
+<td class="keep cand">2 3</td>
+<td>9</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>4</td>
+<td>3</td>
+<td>9</td>
+<td>8</td>
+<td class="empty">·</td>
+<td>5</td>
+<td class="empty">·</td>
+<td>6</td>
+</tr>
+<tr>
+<td>9</td>
+<td>5</td>
+<td>2</td>
+<td>1</td>
+<td>6</td>
+<td class="empty">·</td>
+<td>4</td>
+<td class="empty">·</td>
+<td>8</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>6</td>
+<td>5</td>
+<td>7</td>
+<td>4</td>
+<td class="cand">1 <span class="remove">2</span> 3</td>
+<td class="empty">·</td>
+<td>9</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>9</td>
+<td>4</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>6</td>
+<td class="target cand">2 3 8</td>
+<td>5</td>
+<td>7</td>
+</tr>
+<tr>
+<td>5</td>
+<td>7</td>
+<td>1</td>
+<td>3</td>
+<td>9</td>
+<td class="empty">·</td>
+<td>6</td>
+<td class="keep cand">2 8</td>
+<td>4</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch target"></i>Pivot cell</span><span><i class="swatch keep"></i>Wing cells</span><span><i class="swatch remove"></i>Candidate removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p>The pivot <strong>r8c7</strong> holds <strong>{2, 3, 8}</strong>. Its wings are <strong>r4c7</strong> with <strong>{2, 3}</strong> (same column) and <strong>r9c8</strong> with <strong>{2, 8}</strong> (same box). Run through the pivot's three options: if it is 3 the first wing must be 2; if it is 8 the second wing must be 2; if it is 2, it is the 2 itself. So one of these three cells is always the <strong>2</strong>. Unlike an XY-Wing, the target must see <em>all three</em> cells, pivot included: <strong>r7c7</strong> does, so remove <strong>2</strong> from it.</p>
+</div>
+</div>
+</section>
+<section class="technique" id="w-wing">
+<h2>17. W-Wing</h2>
+<div class="badge-row"><span class="badge">Advanced</span><span class="badge">Chain-based elimination</span></div>
+<p>A W-Wing uses two cells that hold the same two candidates and do not see each other, joined by a row, column or box in which one of those digits has only two places left.</p>
+<div class="example-layout">
+<div class="box sudoku-wrap">
+<h3>Example: two {4, 6} cells joined by a strong link on 4 in row 3</h3>
+<table aria-label="W-Wing example" class="sudoku">
+<tr>
+<td>9</td>
+<td>2</td>
+<td class="keep cand">4 6</td>
+<td class="empty">·</td>
+<td class="cand">1 <span class="remove">6</span></td>
+<td>8</td>
+<td>3</td>
+<td>5</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td class="cand">4 5 <span class="remove">6</span></td>
+<td class="empty">·</td>
+<td>9</td>
+<td class="keep cand">4 6</td>
+<td>8</td>
+<td>2</td>
+<td class="empty">·</td>
+</tr>
+<tr>
+<td class="target cand">4 5</td>
+<td>7</td>
+<td>8</td>
+<td class="cand">2 5</td>
+<td>3</td>
+<td class="target cand">2 4</td>
+<td>6</td>
+<td>1</td>
+<td>9</td>
+</tr>
+<tr>
+<td>8</td>
+<td>4</td>
+<td>1</td>
+<td>3</td>
+<td>2</td>
+<td>5</td>
+<td>7</td>
+<td>9</td>
+<td>6</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5</td>
+<td>3</td>
+<td>6</td>
+<td>7</td>
+<td>9</td>
+<td>4</td>
+<td>8</td>
+<td>1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>6</td>
+<td>9</td>
+<td>8</td>
+<td>4</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>5</td>
+</tr>
+<tr>
+<td>6</td>
+<td>8</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>7</td>
+<td>9</td>
+<td>4</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1</td>
+<td>9</td>
+<td>7</td>
+<td>4</td>
+<td>8</td>
+<td>3</td>
+<td>5</td>
+<td>6</td>
+<td>2</td>
+</tr>
+<tr>
+<td class="empty">·</td>
+<td>3</td>
+<td class="empty">·</td>
+<td>9</td>
+<td class="empty">·</td>
+<td class="empty">·</td>
+<td>1</td>
+<td>7</td>
+<td>8</td>
+</tr>
+</table>
+<div class="legend"><span><i class="swatch keep"></i>The matching pair of cells</span><span><i class="swatch target"></i>The two-cell link on 4</span><span><i class="swatch remove"></i>Candidates removed</span></div>
+</div>
+<div class="box">
+<h3>Why it works</h3>
+<p><strong>r1c3</strong> and <strong>r2c6</strong> both hold exactly <strong>{4, 6}</strong>, and they do not see each other. In <strong>row 3</strong>, digit <strong>4</strong> has only two places left: <strong>r3c1</strong> and <strong>r3c6</strong> — one of them is the 4. r3c1 shares a box with r1c3, and r3c6 shares column 6 with r2c6.</p><ol class="steps"><li>If <strong>r3c1</strong> is 4, then r1c3 cannot be 4, so it is <strong>6</strong>.</li><li>If <strong>r3c6</strong> is 4, then r2c6 cannot be 4, so it is <strong>6</strong>.</li></ol><p>Either way, one of the two matching cells is the 6. Any cell seeing both can be cleared: remove <strong>6</strong> from <strong>r1c5</strong> and <strong>r2c3</strong>.</p>
+</div>
+</div>
+</section>
 <section class="technique" id="tips">
-<h2>13. Practical solving tips</h2>
+<h2>18. Practical solving tips</h2>
 <div class="badge-row"><span class="badge">All levels</span><span class="badge">Useful habits</span></div>
 <ul class="tips-list">
 <li><strong>Start with scanning and singles.</strong> They solve a surprising amount of the grid.</li>
@@ -1550,7 +2143,17 @@
 </section>
 <section class="note">
 <h2 style="margin-top:0;">A quick note on difficulty</h2>
-<p>Difficulty is not determined by the number of clues alone. Two puzzles can start with a similar number of givens but require very different solving techniques. In general, easier puzzles are solved mostly with scanning and singles, while harder puzzles need better candidate management and more advanced logical patterns.</p>
+<p>Difficulty is not determined by the number of clues alone. Two puzzles can start with a similar number of givens but require very different solving techniques. Most of our books use the technique ladder below, and each puzzle is placed on it by the same solver that verifies it.</p>
+<div class="level-strip">
+<div class="level"><strong>Easy</strong>Scanning, naked singles and hidden singles.</div>
+<div class="level"><strong>Medium</strong>Adds locked candidates (pointing and claiming) and naked or hidden pairs.</div>
+<div class="level"><strong>Hard</strong>Adds naked and hidden triples, and asks for far more of the same work.</div>
+<div class="level"><strong>Expert</strong>Adds the advanced patterns: the fish (X-Wing, Swordfish), the single-digit patterns (Skyscraper, Two-String Kite, Empty Rectangle) and the wings (XY-, XYZ- and W-Wing).</div>
+<div class="level"><strong>Extreme</strong>The same patterns, but a grid only counts as Extreme when it forces <em>several different</em> ones — typically five distinct advanced patterns in a single puzzle, rather than the same trick repeated.</div>
+</div>
+<p>A puzzle's level is the <em>cheapest</em> set of techniques that solves it, not whichever pattern happens to be noticed first. A grid that genuinely needs a pair is never filed as Easy — which is why a Medium on this ladder can feel a step firmer than the Medium you may be used to.</p>
+<p><strong>Some collections are deliberately gentler.</strong> In the compact <em>1000+ Easy to Medium</em>, the <em>1200+ Easy to Hard</em> and the compact <em>1000+ Easy to Expert</em>, the middle of the range follows the familiar mass-market scale: a Medium there is separated from an Easy mainly by how many clues you start with, and still solves with scanning and singles alone. Pick one of those if you want a relaxed solve.</p>
+
 </section>
     <div class="footer-card">
       <a href="https://www.alexliampuzzles.com/" aria-label="Back to Alex Liam Puzzles home page">← Home</a>
