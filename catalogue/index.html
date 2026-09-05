@@ -253,6 +253,15 @@
          patterns in the same grid. Books marked <em>relaxed pace</em> follow the gentler mass-market scale instead.</p>
       <p style="margin-bottom:0"><a href="/sudoku-techniques/">Read the full techniques guide →</a></p>
     </section>
+
+    <section class="panel">
+      <h2>The Sudoku Challenge Series</h2>
+      <p>Most of the books above belong to one series on Amazon, which lists every volume on a single page.</p>
+      <p style="margin-bottom:0">
+        <a id="series-link" href="https://www.amazon.com/dp/B0DJ6S2S8F?binding=paperback&amp;ref=dbs_dp_rwt_sb_pc_tpbk"
+           target="_blank" rel="noopener noreferrer">Browse the whole series on Amazon →</a>
+      </p>
+    </section>
   </main>
 
   <footer>
@@ -269,21 +278,24 @@
    puzzles: leave as null when the count is not stated on the cover
    ------------------------------------------------------------------ */
 const BOOKS = [
-  { asin:"B0HGC4HH93", title:"2027 Sudoku · Easy to Expert",           trim:"8.5x11", pages:123, puzzles:null, tiers:["easy","medium","hard","expert"], rank:1 },
-  { asin:"B0HBZ686RP", title:"2027 Sudoku · Hard to Expert",           trim:"8.5x11", pages:123, puzzles:null, tiers:["hard","expert"],                 rank:2 },
-  { asin:"B0HCVTYQKZ", title:"2027 Sudoku · Easy to Medium",           trim:"8.5x11", pages:123, puzzles:null, tiers:["easy","medium"],                 rank:3 },
-  { asin:"B0HGZ2M9ZR", title:"Extreme Sudoku",                          trim:"8.5x11", pages:192, puzzles:null, tiers:["extreme"],                       rank:4 },
-  { asin:"B0H4DBYL27", title:"The 2027 Sudoku Challenge",               trim:"8.5x11", pages:123, puzzles:null, tiers:["easy","medium","hard","expert"], largePrint:true, rank:5 },
-  { asin:"B0G3VRZP4V", title:"1800 Sudoku · Easy to Expert",            trim:"8.5x11", pages:208, puzzles:1800, tiers:["easy","medium","hard","expert"], rank:6 },
-  { asin:"B0GPMTQYT5", title:"2000+ Sudoku · Easy to Hard",             trim:"8.5x11", pages:172, puzzles:2000, tiers:["easy","medium","hard"],          rank:7 },
+  { asin:"B0HBZ686RP", title:"2027 Sudoku · Hard to Expert",           trim:"8.5x11", pages:123, puzzles:400,  tiers:["hard","expert"],                 rank:1 },
+  { asin:"B0HCVTYQKZ", title:"2027 Sudoku · Easy to Medium",           trim:"8.5x11", pages:123, puzzles:400,  tiers:["easy","medium"],                 rank:2 },
+  { asin:"B0HGC4HH93", title:"2027 Sudoku · Easy to Expert",           trim:"8.5x11", pages:123, puzzles:400,  tiers:["easy","medium","hard","expert"], rank:3 },
+  { asin:"B0G3VRZP4V", title:"1800 Sudoku · Easy to Expert",            trim:"8.5x11", pages:208, puzzles:1800, tiers:["easy","medium","hard","expert"], rank:4 },
+  { asin:"B0GRQ3YTBG", title:"1000+ Sudoku Compact · Easy to Medium",   trim:"6x9",    pages:171, puzzles:1000, tiers:["easy","medium"], relaxed:true, rank:5 },
+  { asin:"B0GSQDLX6R", title:"1000+ Sudoku Compact · Hard to Expert",   trim:"6x9",    pages:171, puzzles:1000, tiers:["hard","expert"],                 rank:6 },
+  { asin:"B0GSFHH1VS", title:"1000+ Sudoku Compact · Easy to Expert",   trim:"6x9",    pages:171, puzzles:1000, tiers:["easy","medium","hard","expert"], relaxed:true, rank:7 },
   { asin:"B0GF7L2MJZ", title:"1200+ Sudoku · Easy to Hard",             trim:"8.5x11", pages:173, puzzles:1200, tiers:["easy","medium","hard"], relaxed:true, rank:8 },
-  { asin:"B0GD6L4Q3V", title:"Easy Sudoku · Large Print for Seniors",   trim:"8.5x11", pages:143, puzzles:120,  tiers:["easy"], largePrint:true, rank:9 },
-  { asin:"B0GSFHH1VS", title:"1000+ Sudoku Compact · Easy to Expert",   trim:"6x9",    pages:171, puzzles:1000, tiers:["easy","medium","hard","expert"], relaxed:true, rank:10 },
-  { asin:"B0GRQ3YTBG", title:"1000+ Sudoku Compact · Easy to Medium",   trim:"6x9",    pages:171, puzzles:1000, tiers:["easy","medium"], relaxed:true, rank:11 },
-  { asin:"B0GSQDLX6R", title:"1000+ Sudoku Compact · Hard to Expert",   trim:"6x9",    pages:171, puzzles:1000, tiers:["hard","expert"],                 rank:12 },
-  { asin:"B0G6KDFKVC", title:"500+ Sudoku Compact · Easy to Hard",      trim:"6x9",    pages:129, puzzles:500,  tiers:["easy","medium","hard"],          rank:13 },
-  { asin:"B0G2GKK97Y", title:"420 Easy Sudoku · Compact",               trim:"6x9",    pages:108, puzzles:420,  tiers:["easy"],                          rank:14 }
+  { asin:"B0H4DBYL27", title:"The 2027 Sudoku Challenge",               trim:"8.5x11", pages:123, puzzles:400,  tiers:["easy","medium","hard","expert"], largePrint:true, rank:9 },
+  { asin:"B0GD6L4Q3V", title:"Easy Sudoku · Large Print for Seniors",   trim:"8.5x11", pages:143, puzzles:120,  tiers:["easy"], largePrint:true, rank:10 },
+  { asin:"B0HGZ2M9ZR", title:"Extreme Sudoku",                          trim:"8.5x11", pages:192, puzzles:180,  tiers:["extreme"],                       rank:11 },
+  { asin:"B0GPMTQYT5", title:"2000+ Sudoku · Easy to Hard",             trim:"8.5x11", pages:172, puzzles:2000, tiers:["easy","medium","hard"],          rank:12 },
+  { asin:"B0G2GKK97Y", title:"420 Easy Sudoku · Compact",               trim:"6x9",    pages:108, puzzles:420,  tiers:["easy"],                          rank:13 },
+  { asin:"B0G6KDFKVC", title:"500+ Sudoku Compact · Easy to Hard",      trim:"6x9",    pages:129, puzzles:500,  tiers:["easy","medium","hard"],          rank:14 }
 ];
+
+/* "Browse the whole series" link — the domain follows the store selector below */
+const SERIES_PATH = "/dp/B0DJ6S2S8F?binding=paperback&ref=dbs_dp_rwt_sb_pc_tpbk";
 
 /* Amazon Attribution tags, once you generate them: "B0XXXXXXXX": "maas=...&ref_=aa_maas" */
 const ATTRIBUTION = {};
@@ -363,6 +375,8 @@ function render() {
 
   grid.innerHTML = "";
   list.forEach(b => grid.appendChild(card(b)));
+  const series = document.getElementById("series-link");
+  if (series) series.href = "https://www.amazon." + store + SERIES_PATH;
   document.getElementById("empty-note").hidden = list.length > 0;
   document.getElementById("result-count").textContent =
     list.length + (list.length === 1 ? " book" : " books");
