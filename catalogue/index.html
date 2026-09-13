@@ -304,7 +304,7 @@ const TIER_LABEL = { easy:"Easy", medium:"Medium", hard:"Hard", expert:"Expert",
 const TIER_ANCHOR = { easy:"#hidden-single", medium:"#pointing", hard:"#naked-triple",
                       expert:"#x-wing", extreme:"#w-wing" };
 
-const state = { format:"all", tier:"all", sort:"recommended", print:"all" };
+const state = { format:"all", tier:"all", sort:"recommended" };
 
 /* ---- store detection: KDP print titles share one ASIN across marketplaces ---- */
 const LOCALE_STORE = { GB:"co.uk", UK:"co.uk", CA:"ca", DE:"de", AT:"de", CH:"de", FR:"fr",
@@ -368,8 +368,9 @@ function render() {
   const grid = document.getElementById("grid");
   let list = BOOKS.filter(b =>
     (state.format === "all" || b.trim === state.format) &&
-    (state.tier === "all" || b.tiers.includes(state.tier)) &&
-    (state.print === "all" || b.largePrint === true));
+    (state.tier === "all" || (Array.isArray(state.tier)
+        ? state.tier.some(t => b.tiers.includes(t))
+        : b.tiers.includes(state.tier))));
   if (state.sort === "puzzles") list = list.slice().sort((a, b) => (b.puzzles || 0) - (a.puzzles || 0));
   else if (state.sort === "pages") list = list.slice().sort((a, b) => b.pages - a.pages);
   else list = list.slice().sort((a, b) => a.rank - b.rank);
@@ -388,7 +389,6 @@ document.querySelectorAll(".chip[data-filter]").forEach(btn => {
   btn.addEventListener("click", () => {
     const f = btn.dataset.filter;
     state[f] = btn.dataset.value;
-    state.print = "all";   /* the big-print preset has no chip of its own — any explicit filter clears it */
     document.querySelectorAll(`.chip[data-filter="${f}"]`)
       .forEach(o => o.setAttribute("aria-pressed", String(o === btn)));
     render();
@@ -397,18 +397,21 @@ document.querySelectorAll(".chip[data-filter]").forEach(btn => {
 
 /* ---- presets ---- */
 const PRESETS = {
-  relaxed:   { format:"all",   tier:"easy",    sort:"recommended", print:"all" },
-  challenge: { format:"all",   tier:"expert",  sort:"recommended", print:"all" },
-  print:     { format:"all",   tier:"all",     sort:"recommended", print:"yes" },
-  travel:    { format:"6x9",   tier:"all",     sort:"recommended", print:"all" },
-  most:      { format:"all",   tier:"all",     sort:"puzzles",     print:"all" }
+  relaxed:   { format:"all",    tier:"easy",                  sort:"recommended" },
+  challenge: { format:"all",    tier:["expert","extreme"],    sort:"recommended" },
+  print:     { format:"8.5x11", tier:"all",                   sort:"recommended" },
+  travel:    { format:"6x9",    tier:"all",                   sort:"recommended" },
+  most:      { format:"all",    tier:"all",                   sort:"puzzles" }
 };
 document.querySelectorAll(".chip[data-preset]").forEach(btn => {
   btn.addEventListener("click", () => {
     Object.assign(state, PRESETS[btn.dataset.preset]);
     ["format", "tier", "sort"].forEach(f => {
+      const v = state[f];
       document.querySelectorAll(`.chip[data-filter="${f}"]`).forEach(o =>
-        o.setAttribute("aria-pressed", String(o.dataset.value === state[f])));
+        o.setAttribute("aria-pressed", String(Array.isArray(v)
+          ? v.includes(o.dataset.value)
+          : o.dataset.value === v)));
     });
     render();
     document.getElementById("grid").scrollIntoView({ behavior: "smooth", block: "start" });
