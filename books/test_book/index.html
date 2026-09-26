@@ -12,33 +12,33 @@
   </script>
 
   <meta charset="UTF-8">
-  <title>400 Sudoku Hard to Expert &ndash; Solutions, Online Play &amp; Hints | Official Companion Page</title>
+  <title>800 Sudoku Easy to Expert &ndash; Solutions, Online Play &amp; Hints | Official Companion Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Official companion page for the 400 Sudoku Hard to Expert book. Play any puzzle online, check your grid for mistakes, get step-by-step hints, or view solutions by puzzle number.">
+  <meta name="description" content="Official companion page for the 800 Sudoku Easy to Expert book. Play any puzzle online, check your grid for mistakes, get step-by-step hints, or view solutions by puzzle number.">
 
-  <meta property="og:title" content="400 Sudoku Hard to Expert &ndash; Official Companion Page">
-  <meta property="og:description" content="Play, check and get hints for all 400 puzzles from the Hard to Expert Sudoku book.">
+  <meta property="og:title" content="800 Sudoku Easy to Expert &ndash; Official Companion Page">
+  <meta property="og:description" content="Play, check and get hints for all 800 puzzles from the Easy to Expert Sudoku book.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.alexliampuzzles.com/books/sudoku_400_hard_expert/">
+  <meta property="og:url" content="https://www.alexliampuzzles.com/books/sudoku_800_ee/">
   <meta property="og:image" content="https://www.alexliampuzzles.com/assets/social-onlineplay-preview.png">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="400 Sudoku Hard to Expert &ndash; Play, Check &amp; Hints">
+  <meta name="twitter:title" content="800 Sudoku Easy to Expert &ndash; Play, Check &amp; Hints">
   <meta name="twitter:description" content="Companion page with online play, mistake checking and graduated hints.">
   <meta name="twitter:image" content="https://www.alexliampuzzles.com/assets/social-onlineplay-preview.png">
 
-  <link rel="canonical" href="https://www.alexliampuzzles.com/books/sudoku_400_hard_expert/">
+  <link rel="canonical" href="https://www.alexliampuzzles.com/books/sudoku_800_ee/">
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Game",
-    "name": "400 Sudoku Hard to Expert \u2013 Companion Player",
-    "description": "Play, check and get hints for the 400 Hard and Expert Sudoku puzzles from the book. Every puzzle has a single valid solution.",
+    "name": "800 Sudoku Easy to Expert \u2013 Companion Player",
+    "description": "Play, check and get hints for the 800 Easy, Medium, Hard and Expert Sudoku puzzles from the book. Every puzzle has a single valid solution.",
     "genre": "Puzzle",
     "applicationCategory": "Game",
     "operatingSystem": "All",
-    "url": "https://www.alexliampuzzles.com/books/sudoku_400_hard_expert/"
+    "url": "https://www.alexliampuzzles.com/books/sudoku_800_ee/"
   }
   </script>
 
@@ -734,6 +734,27 @@
       padding: 0.1rem 0.3rem;
     }
     .review-dismiss:hover { color: var(--text); }
+
+    /* Always-visible review card. Quiet by design: secondary to the solving
+       tools. DOM order puts it between the hint card and Book Puzzle Helper,
+       which is where it lands on mobile; on desktop it moves to the bottom. */
+    .review-card .side-card-inner { display: flex; flex-direction: column; gap: 0.55rem; }
+    .review-card .side-heading { margin-bottom: 0; display: flex; align-items: center; gap: 0.45rem; }
+    .review-star { color: var(--accent); font-size: 1.05em; line-height: 1; }
+    .review-card-text { font-size: 0.92rem; line-height: 1.5; color: var(--text-muted); }
+    body.theme-light .review-card-text { color: #334155; }
+    .review-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.9rem; }
+    .review-card-actions .btn { font-weight: 600; }
+    a.js-review-link, a.js-review-link:hover { text-decoration: none; }
+    .review-stores { font-size: 0.8rem; color: var(--text-muted); }
+    .review-stores summary { cursor: pointer; list-style: none; text-decoration: underline; text-underline-offset: 2px; }
+    .review-stores summary::-webkit-details-marker { display: none; }
+    .review-stores-list { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; margin-top: 0.45rem; }
+    .review-stores-list a { color: var(--accent); text-decoration: none; }
+    .review-stores-list a:hover { text-decoration: underline; }
+    @media (min-width: 881px) {
+      .side-column > .review-card { order: 1; }
+    }
 
     .completion-overlay {
       position: absolute;
@@ -1901,7 +1922,7 @@
       transform: translate(-50%, -50%) scale(1.02);
     }
 
-    /* ---------- 400 Hard-to-Expert additions ---------- */
+    /* ---------- 800 Easy-to-Expert additions ---------- */
 
     .level-switch {
       display: inline-flex;
@@ -2092,7 +2113,7 @@
     .deck-row.centre { justify-content: center; }
     .deck-group { display: flex; gap: 0.55rem; flex-wrap: wrap; }
     /* The long label needs the room: 3/5 to it, 2/5 to the picker, and both on
-       one line. Equal halves forced "Hard Puzzle 001 / 200" to wrap. */
+       one line. Equal halves forced "Medium Puzzle 001 / 200" to wrap. */
     .deck-row.wide {
       /* One size drives both boxes, so the puzzle label and the picker can
          never drift apart. Scales with the viewport as the card narrows. */
@@ -2364,12 +2385,7 @@
           </div>
         
           <div class="nav-item">
-            <a class="nav-link"
-               href="https://www.amazon.com/author/alex_liam"
-               target="_blank"
-               rel="noopener noreferrer">
-              My Books
-            </a>
+            <a class="nav-link" href="/catalogue/">My Books</a>
           </div>
         </nav>
 
@@ -2388,16 +2404,18 @@
       <div class="board-card-inner">
         <div class="deck">
           <div class="deck-row split">
-            <div class="board-title">400 Sudoku Hard to Expert</div>
+            <div class="board-title">800 Sudoku Easy to Expert</div>
             <div class="level-switch" role="group" aria-label="Book section">
-              <button type="button" data-level="hard" class="active">Hard</button>
+              <button type="button" data-level="easy" class="active">Easy</button>
+              <button type="button" data-level="medium">Medium</button>
+              <button type="button" data-level="hard">Hard</button>
               <button type="button" data-level="expert">Expert</button>
             </div>
           </div>
 
           <div class="deck-row wide">
             <div id="puzzle-display" class="puzzle-display framed-display">
-              <span id="puzzle-display-level">Hard</span> Puzzle
+              <span id="puzzle-display-level">Easy</span> Puzzle
               <span id="puzzle-display-num">001</span> / 200
             </div>
             <div id="puzzle-selection" class="puzzle-selection framed-display">
@@ -2506,15 +2524,33 @@
                Asks only for an honest review and is never tied to any feature. -->
           <div id="review-prompt" class="review-prompt" role="status" aria-live="polite">
             <button id="review-dismiss" class="review-dismiss" type="button" aria-label="Dismiss">&times;</button>
-            <div class="review-prompt-title">Nice solving!</div>
+            <div class="review-prompt-title">Nicely solved.</div>
             <p class="review-prompt-text">
-              Hope this companion is helping you get more out of the book. You&rsquo;re welcome to leave
-              an <b>honest review on Amazon</b> and share your experience &mdash; reviews help other
-              puzzlers decide whether the book is right for them.
+              If you have a minute, an honest Amazon review helps other Sudoku solvers decide
+              if this book is right for them.
             </p>
-            <a id="review-link" class="btn btn-outline review-link"
-               href="https://www.amazon.com/dp/B0HBZ686RP" target="_blank" rel="noopener">Leave a review</a>
+            <a id="review-link" class="btn btn-outline review-link js-review-link" data-placement="completion"
+               href="https://www.amazon.com/review/create-review?asin=B0HJFJ3417" target="_blank" rel="noopener">Write a review on <span class="js-review-store">Amazon.com</span></a>
           </div>
+        </div>
+      </aside>
+
+      <!-- Always-visible review card. Neutral wording, the same for every
+           reader, never tied to any feature. -->
+      <aside class="side-card review-card" aria-labelledby="review-card-heading">
+        <div class="side-card-inner">
+          <h2 id="review-card-heading" class="side-heading"><span class="review-star" aria-hidden="true">&#9733;</span> Share your thoughts on the book</h2>
+          <p class="review-card-text">
+            An honest Amazon review helps other Sudoku solvers decide if this book is right for them.
+          </p>
+          <div class="review-card-actions">
+            <a class="btn btn-outline js-review-link" data-placement="card"
+               href="https://www.amazon.com/review/create-review?asin=B0HJFJ3417" target="_blank" rel="noopener">Write a review on <span class="js-review-store">Amazon.com</span></a>
+          </div>
+          <details class="review-stores">
+            <summary>Other Amazon stores</summary>
+            <div id="review-stores-list" class="review-stores-list"></div>
+          </details>
         </div>
       </aside>
 
@@ -2522,7 +2558,7 @@
         <div class="side-card-inner">
           <h2 class="side-heading">Book Puzzle Helper</h2>
           <p class="side-sub">
-            Pick <b>Hard</b> or <b>Expert</b>, then choose a puzzle number (1&ndash;200) matching the book.
+            Pick <b>Easy</b>, <b>Medium</b>, <b>Hard</b> or <b>Expert</b>, then choose a puzzle number (1&ndash;200) matching the book.
             Either <b>Solve</b> it here or tap <b>Show solution</b>.
           </p>
 
@@ -2557,11 +2593,11 @@
         <div class="side-card-inner">
           <div class="side-section-title">Full PDF Solutions</div>
           <p class="side-sub" style="margin-top:0.5rem;">
-            Download all 400 solutions (Hard and Expert) in one printable PDF.
+            Download all 800 solutions (Easy, Medium, Hard and Expert) in one printable PDF.
           </p>
 
           <a class="btn btn-outline pdf-btn"
-             href="/books/sudoku_400_hard_expert/data/solutions_all.pdf"
+             href="/books/sudoku_800_easy_expert/data/solutions_all.pdf"
              target="_blank" rel="noopener">
             Download Solutions PDF
           </a>
@@ -3102,6 +3138,77 @@ const HintEngine = (function () {
     return null;
   }
 
+  /* Empty rectangle. Inside one box every candidate for d lies in a single row
+     plus a single column, forming an L whose corner is the hinge. Paired with a
+     conjugate link elsewhere in the grid, that forces d into one end and clears
+     it from the opposite corner. Sits with the skyscraper and the kite: a
+     single-digit pattern, not a chain, so it never asks anyone to guess. */
+  function emptyRectangle(g, cand) {
+    const hasC = (i, d) => !g[i] && (cand[i] & bit(d));
+    for (let d = 1; d <= 9; d++) {
+      for (let b = 0; b < 9; b++) {
+        const br = 3 * Math.floor(b / 3), bc = 3 * (b % 3);
+        const cells = [];
+        for (let a = 0; a < 3; a++) for (let e = 0; e < 3; e++) {
+          const i = (br + a) * 9 + bc + e;
+          if (hasC(i, d)) cells.push(i);
+        }
+        if (cells.length < 2) continue;
+        for (let a = 0; a < 3; a++) for (let e = 0; e < 3; e++) {
+          const r = br + a, c = bc + e;
+          if (!cells.every(i => Math.floor(i / 9) === r || (i % 9) === c)) continue;
+          /* A pure line is just locked candidates; the L needs both arms. */
+          if (!cells.some(i => Math.floor(i / 9) !== r)) continue;
+          if (!cells.some(i => (i % 9) !== c)) continue;
+
+          for (let cc = 0; cc < 9; cc++) {
+            if (Math.floor(cc / 3) === Math.floor(bc / 3)) continue;
+            const col = [];
+            for (let rr = 0; rr < 9; rr++) if (hasC(rr * 9 + cc, d)) col.push(rr);
+            if (col.length !== 2 || col.indexOf(r) < 0) continue;
+            const r3 = col[0] === r ? col[1] : col[0];
+            const t = r3 * 9 + c;
+            if (boxOf(t) === b) continue;
+            const real = realElims(cand, g, [{ i: t, d: d }]);
+            if (real.length) return {
+              tech: 'Empty rectangle', focus: cells.concat([r * 9 + cc, r3 * 9 + cc]),
+              elimCells: real.map(x => x.i), nudgeUnits: [18 + b],
+              l1: 'Look at where <code>' + d + '</code> can go inside one box.',
+              l2: 'In this box every ' + d + ' sits in one row and one column, which pairs up with a two-cell column elsewhere.',
+              l3: 'Every <code>' + d + '</code> in box ' + (b + 1) + ' lies in row ' + (r + 1) +
+                  ' or column ' + (c + 1) + '. Column ' + (cc + 1) + ' holds ' + d +
+                  ' in just two cells, one of them in row ' + (r + 1) + '. Either way round, ' + d +
+                  ' lands where it clears ' + elimText(real) + '.',
+              elims: real
+            };
+          }
+          for (let rr = 0; rr < 9; rr++) {
+            if (Math.floor(rr / 3) === Math.floor(br / 3)) continue;
+            const row = [];
+            for (let c2 = 0; c2 < 9; c2++) if (hasC(rr * 9 + c2, d)) row.push(c2);
+            if (row.length !== 2 || row.indexOf(c) < 0) continue;
+            const c3 = row[0] === c ? row[1] : row[0];
+            const t = r * 9 + c3;
+            if (boxOf(t) === b) continue;
+            const real = realElims(cand, g, [{ i: t, d: d }]);
+            if (real.length) return {
+              tech: 'Empty rectangle', focus: cells.concat([rr * 9 + c, rr * 9 + c3]),
+              elimCells: real.map(x => x.i), nudgeUnits: [18 + b],
+              l1: 'Look at where <code>' + d + '</code> can go inside one box.',
+              l2: 'In this box every ' + d + ' sits in one row and one column, which pairs up with a two-cell row elsewhere.',
+              l3: 'Every <code>' + d + '</code> in box ' + (b + 1) + ' lies in row ' + (r + 1) +
+                  ' or column ' + (c + 1) + '. Row ' + (rr + 1) + ' holds ' + d +
+                  ' in just two cells, one of them in column ' + (c + 1) + '. Either way round, ' + d +
+                  ' lands where it clears ' + elimText(real) + '.',
+              elims: real
+            };
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   /* ---------------- uniqueness ---------------- */
   function uniqueRectangle(g, cand) {
     for (let r1 = 0; r1 < 9; r1++) for (let r2 = r1 + 1; r2 < 9; r2++)
@@ -3560,7 +3667,7 @@ const HintEngine = (function () {
     (g, c) => nakedSubset(g, c, 4),
     /* ---- everything from here down counts as "advanced" ---- */
     (g, c) => fish(g, c, 2),
-    skyscraper, twoStringKite,
+    skyscraper, twoStringKite, emptyRectangle,
     simpleColouring,
     xyWing, wWing,
     uniqueRectangle, uniqueRectangle2, uniqueRectangle4,
@@ -3576,17 +3683,25 @@ const HintEngine = (function () {
   /* Every technique that fires in this position, easiest first, de-duplicated
      by name (the three unique-rectangle variants share one label). Each entry
      carries the ladder index, so a caller can ask for that exact technique. */
-  function surveyList(g, cand) {
+  function surveyList(g, cand, advancedFrom, advancedTo) {
+    /* `advancedFrom` lets the caller say what counts as advanced *here*. The
+       harder-pattern button raises it with the tier, so Easy is offered pairs
+       and pointing while Expert is offered fish and wings. Omitted, it falls
+       back to the fixed rung. */
+    const lo = (advancedFrom === undefined || advancedFrom === null)
+      ? ADVANCED_FROM : advancedFrom;
+    const hi = (advancedTo === undefined || advancedTo === null)
+      ? ELIM_LADDER.length : advancedTo;
     const out = [];
     for (let i = 0; i < ELIM_LADDER.length; i++) {
       const h = ELIM_LADDER[i](g, cand);
       if (h && !out.some(o => o.tech === h.tech))
-        out.push({ tech: h.tech, index: i, advanced: i >= ADVANCED_FROM });
+        out.push({ tech: h.tech, index: i, advanced: i >= lo && i <= hi, capped: i <= hi });
     }
     return out;
   }
-  function surveyHints(grid, cand) {
-    return surveyList(grid, cand ? Int32Array.from(cand) : SudokuCore.buildCandidates(grid));
+  function surveyHints(grid, cand, advancedFrom, advancedTo) {
+    return surveyList(grid, cand ? Int32Array.from(cand) : SudokuCore.buildCandidates(grid), advancedFrom, advancedTo);
   }
 
   /* Continue past an elimination-only deduction until a digit can be placed.
@@ -3783,6 +3898,8 @@ const HintEngine = (function () {
 
   /* ---------- Book data ---------- */
   const BOOK_FILES = {
+    easy:   "data/classic_easy.json",
+    medium: "data/classic_medium.json",
     hard:   "data/classic_hard.json",
     expert: "data/classic_expert.json"
   };
@@ -3855,7 +3972,7 @@ const HintEngine = (function () {
   });
 
   /* ---------- State ---------- */
-  let currentLevel = "hard";
+  let currentLevel = "easy";
   let currentMode = "play";
   let currentPuzzleNumber = 1;
   let currentPuzzle = null;
@@ -4197,14 +4314,113 @@ const HintEngine = (function () {
   }
   btnAutoCand.addEventListener("click", () => setAutoCandidates(!autoCandOn));
 
-  /* Review prompt dismiss. */
-  (function () {
+  /* =====================================================================
+     Review links + analytics.
+     Every review link goes straight to Amazon's review form, on the store
+     the reader most likely bought from (browser language, with the time zone
+     as tie-breaker for plain English). Readers can pick another store.
+     ===================================================================== */
+  const REVIEW_ASIN = "B0HJFJ3417";
+  const REVIEW_STORES = [
+    { id: "com",    host: "www.amazon.com",    label: "US (.com)", name: "Amazon.com" },
+    { id: "co.uk",  host: "www.amazon.co.uk",  label: "UK", name: "Amazon.co.uk" },
+    { id: "de",     host: "www.amazon.de",     label: "Germany", name: "Amazon.de" },
+    { id: "fr",     host: "www.amazon.fr",     label: "France", name: "Amazon.fr" },
+    { id: "it",     host: "www.amazon.it",     label: "Italy", name: "Amazon.it" },
+    { id: "es",     host: "www.amazon.es",     label: "Spain", name: "Amazon.es" },
+    { id: "nl",     host: "www.amazon.nl",     label: "Netherlands", name: "Amazon.nl" },
+    { id: "ca",     host: "www.amazon.ca",     label: "Canada", name: "Amazon.ca" },
+    { id: "com.au", host: "www.amazon.com.au", label: "Australia", name: "Amazon.com.au" },
+    { id: "co.jp",  host: "www.amazon.co.jp",  label: "Japan", name: "Amazon.co.jp" }
+  ];
+  const reviewUrl = st => "https://" + st.host + "/review/create-review?asin=" + REVIEW_ASIN;
+  const storeById = id => REVIEW_STORES.find(x => x.id === id) || REVIEW_STORES[0];
+
+  function track(name, params) {
+    try { if (typeof gtag === "function") gtag("event", name, params || {}); } catch (e) {}
+  }
+
+  function detectStore() {
+    let tz = "";
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    const langs = (navigator.languages && navigator.languages.length)
+      ? navigator.languages : [navigator.language || "en-US"];
+    const lang = String(langs[0] || "en-US").toLowerCase();
+    const [base, region] = lang.split("-");
+    if (region === "gb" || region === "ie") return "co.uk";
+    if (region === "ca") return "ca";
+    if (region === "au" || region === "nz") return "com.au";
+    if (base === "de") return "de";
+    if (base === "fr") return "fr";
+    if (base === "it") return "it";
+    if (base === "es" && (!region || region === "es")) return "es";
+    if (base === "nl" && region !== "be") return "nl";
+    if (base === "ja") return "co.jp";
+    /* Many UK/Canadian/Australian browsers report plain en-US. */
+    if (base === "en") {
+      if (/^Europe\/(London|Dublin)$/.test(tz)) return "co.uk";
+      if (/^(Australia|Pacific\/Auckland)/.test(tz)) return "com.au";
+      if (/^America\/(Toronto|Vancouver|Edmonton|Winnipeg|Halifax|St_Johns|Regina|Moncton|Montreal)$/.test(tz)) return "ca";
+    }
+    return "com";
+  }
+
+  let reviewStore = storeById(detectStore());
+  function applyReviewStore() {
+    document.querySelectorAll(".js-review-link").forEach(a => { a.href = reviewUrl(reviewStore); });
+    document.querySelectorAll(".js-review-store").forEach(el => { el.textContent = reviewStore.name; });
+  }
+  (function initReviewLinks() {
+    applyReviewStore();
+    const list = document.getElementById("review-stores-list");
+    if (list) {
+      REVIEW_STORES.forEach(st => {
+        const a = document.createElement("a");
+        a.href = reviewUrl(st);
+        a.target = "_blank"; a.rel = "noopener";
+        a.textContent = st.label;
+        a.addEventListener("click", () => {
+          reviewStore = st;
+          applyReviewStore();
+          track("review_click", { placement: "store_picker", store: st.id, detected_store: detectStore() });
+        });
+        list.appendChild(a);
+      });
+    }
+    document.querySelectorAll(".js-review-link").forEach(a => {
+      a.addEventListener("click", () => {
+        track("review_click", { placement: a.dataset.placement || "unknown", store: reviewStore.id });
+      });
+    });
     const rd = document.getElementById("review-dismiss");
     if (rd) rd.addEventListener("click", () => {
       const el = document.getElementById("review-prompt");
       if (el) el.classList.remove("show");
+      track("review_dismiss", { placement: "completion" });
     });
   })();
+
+  (function trackReviewCardView() {
+    const card = document.querySelector(".review-card");
+    if (!card || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting && e.intersectionRatio >= 0.5)) {
+        io.disconnect();
+        track("review_card_view", { store: reviewStore.id });
+      }
+    }, { threshold: [0.5] });
+    io.observe(card);
+  })();
+
+  /* One companion_used event per puzzle per visit: the first time the reader
+     takes a hint, checks the grid or views the solution on it. */
+  const companionUsedOn = new Set();
+  function markCompanionUsed(action) {
+    const id = currentLevel + "-" + currentPuzzleNumber;
+    if (companionUsedOn.has(id)) return;
+    companionUsedOn.add(id);
+    track("companion_used", { puzzle_id: id, level: currentLevel, action: action });
+  }
 
   function toggleNote(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
@@ -4254,7 +4470,7 @@ const HintEngine = (function () {
      elimination they licensed cannot always be re-derived once a corner of the
      rectangle has been filled in. Rebuilding candidates from the grid on every
      hint therefore threw those away. Measured against the book: three Expert
-     grids (8, 12 and 154) stalled and needed the reveal button because of it,
+     grids stalled and needed the reveal button because of it,
      and all three finish cleanly once the candidates are carried forward.
 
      This is engine state only. The on-screen candidate overlay stays built from
@@ -4267,7 +4483,7 @@ const HintEngine = (function () {
      still see. Both hint paths now build from the grid every press, and
      eliminations carry forward through the reader's own pencil marks instead —
      which is what the hint panel already asks them to record, and which are on
-     screen. Verified: all 400 Hard and Expert grids still solve through hints
+     screen. Verified: all 800 Easy, Medium, Hard and Expert grids still solve through hints
      alone when the reader notes what they're told to note. */
 
   function snapshot() {
@@ -4343,7 +4559,12 @@ const HintEngine = (function () {
 
   /* Progress is kept per puzzle, so switching away and back doesn't lose work.
      Never written while the solution is on screen. */
-  const progressKey = () => "sudokuProgress:" + currentLevel + ":" + currentPuzzleNumber;
+  /* Companion pages share a domain, so the key must name the book. Without it
+     Hard #17 here and Hard #17 in another title collide in localStorage and a
+     reader sees someone else's digits on this grid. */
+  const BOOK_ID = "800_easy_expert";
+  const progressKey = () =>
+    "sudokuProgress:" + BOOK_ID + ":" + currentLevel + ":" + currentPuzzleNumber;
   function saveProgress() {
     if (revealingSolution || currentMode === "solution" || !currentPuzzle) return;
     try { localStorage.setItem(progressKey(), snapshot()); } catch (e) { /* private mode */ }
@@ -4440,20 +4661,34 @@ const HintEngine = (function () {
     if (completedByPlaying) maybeShowReviewPrompt();
   }
 
-  /* Review prompt: neutral, honest, shown after a genuine solve.
+  /* Completion prompt: neutral, honest, shown after a genuine online solve.
 
-     Deliberately a plain in-memory flag, reset when a new puzzle loads. An
-     earlier version stored "shown" in sessionStorage to survive reloads, but
-     sessionStorage lives for the whole tab: once the key was written the very
-     first time, every later solve read it back and returned early, so the
-     prompt never appeared again until the tab was closed. Any stale key from
-     that version is now inert, since nothing reads it. */
+     The always-visible review card carries the standing request, so this
+     one appears at most once every 14 days per book (a timestamp in
+     localStorage). If storage is blocked, it falls back to once per page
+     load. reviewPromptShown is still reset per puzzle so the same puzzle
+     never shows it twice; the timestamp is what stops repeats across puzzles.
+     (The key is new; the old sessionStorage key is never read.) */
+  const REVIEW_PROMPT_KEY = "reviewPromptLastShown:" + BOOK_ID;
+  const REVIEW_PROMPT_GAP_MS = 14 * 24 * 60 * 60 * 1000;
   let reviewPromptShown = false;
+  let reviewPromptShownThisVisit = false;
+  function reviewPromptAllowed() {
+    if (reviewPromptShownThisVisit) return false;
+    try {
+      const last = parseInt(localStorage.getItem(REVIEW_PROMPT_KEY) || "0", 10);
+      return !(last && Date.now() - last < REVIEW_PROMPT_GAP_MS);
+    } catch (e) { return true; }
+  }
   function maybeShowReviewPrompt() {
     if (reviewPromptShown) return;
     reviewPromptShown = true;
+    if (!reviewPromptAllowed()) return;
+    reviewPromptShownThisVisit = true;
+    try { localStorage.setItem(REVIEW_PROMPT_KEY, String(Date.now())); } catch (e) {}
     const el = document.getElementById("review-prompt");
     if (el) el.classList.add("show");
+    track("review_completion_view", { store: reviewStore.id });
   }
   function gridMatchesSolution() {
     if (!Checker.has()) return false;
@@ -4801,7 +5036,7 @@ const HintEngine = (function () {
        Hard grid. */
     if (h.teaching && h.aboveTier)
       html += '<div class="hint-available">This pattern sits above the ' +
-              (currentLevel === "expert" ? "Expert" : "Hard") + ' tier \u2014 the puzzle can be ' +
+              levelLabel(currentLevel) + ' tier \u2014 the puzzle can be ' +
               'finished without it. It simply happens to work here, which makes this a comfortable ' +
               'place to practise it.</div>';
 
@@ -4844,29 +5079,35 @@ const HintEngine = (function () {
     }
     return m;
   }
+  /* Reader notes narrow the candidate set only where they can be trusted to be
+     complete — that is, where the cell was filled from Show Candidates and the
+     reader has since removed digits from it. A cell someone has simply started
+     pencilling is a partial record, not a set of proven eliminations: treating
+     "I wrote only 3" as "5 and 7 are impossible" would let the engine hand back
+     the reader's own guess as a naked single. Partial notes are ignored, so the
+     hint is always derived from the placed grid. */
   function applyReaderNotes(grid, base) {
-    const out = Int32Array.from(base);
-    for (let i = 0; i < 81; i++) {
-      if (grid[i]) continue;
-      const m = notesMaskOf(cellAt(i));
-      if (m) out[i] = base[i] & m;
-    }
-    return out;
-  }
-  /* First cell whose pencil marks rule out the digit that belongs there, or -1.
-     Only the Checker consults the answer key; the hint engine never does. */
-  function firstBadNoteCell(grid) {
-    if (!Checker.has()) return -1;
-    for (let i = 0; i < 81; i++) {
-      if (grid[i]) continue;
-      const m = notesMaskOf(cellAt(i));
-      if (!m) continue;
-      const d = +Checker.digitAt(i);
-      if (d && !(m & SudokuCore.bit(d))) return i;
-    }
-    return -1;
-  }
+    /* Deliberately returns the computed candidates untouched.
 
+       Pencil marks used to narrow this set, which was unsound in two ways. A
+       cell where someone had written only "3" became a naked single, so the
+       hint handed back the reader's own guess dressed as a deduction. Worse, a
+       partial pair like {3,5} in a cell whose real candidates are {3,5,7} can
+       form a fake naked pair with a genuine {3,5} elsewhere, and the engine
+       would then eliminate 3 and 5 from cells that legitimately hold them —
+       removing a true candidate and walking the reader into a contradiction.
+
+       Notes are a record of thinking in progress, not a set of proven
+       eliminations, and nothing in the page marks which of the two a given cell
+       holds. So hints derive candidates from the placed grid alone. Notes are
+       still read by the note audit, which flags marks that break the rules or
+       rule out the digit that belongs there.
+
+       If a "fill this cell with every candidate, then cross them off" action is
+       added later, cells filled that way could be flagged at their origin and
+       trusted here — that is the only basis on which narrowing is sound. */
+    return Int32Array.from(base);
+  }
   /* Survey the reader's pencil marks for two distinct kinds of mistake:
 
      impossible — a note listing a digit that already appears in that cell's row,
@@ -4901,6 +5142,7 @@ const HintEngine = (function () {
 
   function requestHint() {
     if (!currentPuzzle) return;
+    markCompanionUsed("hint");
     /* Pressing Hint again walks the SAME hint down a level, so you never have
        to reach for "Show me exactly". But only its own hint: a hint left on
        screen by Advanced Hint used to swallow the press and keep unfolding the
@@ -4916,17 +5158,10 @@ const HintEngine = (function () {
     /* Fold in the reader's own pencil marks so a hint never re-suggests an
        elimination they have already made by hand. Checked for soundness first:
        notes that rule out the true digit would poison every deduction. */
-    const badNote = firstBadNoteCell(grid);
-    if (badNote >= 0) {
-      clearHint();
-      setStatus("Your pencil marks in " + SudokuCore.rc(badNote) + " rule out the digit that " +
-                "belongs there, so any hint based on them would be wrong. Correct or clear that " +
-                "cell's notes, then ask again.", "bad");
-      cellAt(badNote).classList.add("hint-eliminate");
-      if (cellAt(badNote).scrollIntoView)
-        cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
-      return;
-    }
+    /* Notes no longer gate the hint. They stopped feeding the engine when
+       applyReaderNotes was made to ignore them, so the old justification —
+       "any hint based on them would be wrong" — is no longer true. Refusing
+       here only punished a reader for pencilling a cell halfway. */
     /* Always rebuild from the grid. `liveCand` used to carry every elimination
        a previous hint's route had performed, but the candidate overlay is built
        fresh from the grid (refreshAutoCandidates), so the two drifted apart the
@@ -4994,15 +5229,36 @@ const HintEngine = (function () {
   const patternShown = Object.create(null);
   let lastPattern = null;
 
-  /* What each tier of the book actually promises. Hard grids are curated to
-     need nothing beyond naked/hidden triples; Expert may need any named pattern
-     but never a chain. Indices are into ELIM_LADDER. A technique past the
-     ceiling is one the board happens to support without the puzzle needing it —
-     worth showing, worth labelling, never worth implying the tier is wrong. */
-  const TIER_CEILING = { hard: 4, expert: 99 };
+  /* What each tier of the book actually promises. Easy grids need only
+     singles; Medium nothing beyond locked candidates and pairs; Hard nothing
+     beyond naked/hidden triples; Expert may need any named pattern but never a
+     chain. A technique past the ceiling is one the board happens to support
+     without the puzzle needing it — worth showing, worth labelling, never
+     worth implying the tier is wrong. */
+  /* Indices into ELIM_LADDER:
+       0 locked candidates | 1 naked pair | 2 hidden pair | 3 naked triple
+       4 hidden triple | 5 naked quad | 6+ advanced (X-Wing and beyond).
+       Easy needs no elimination technique at all, so its ceiling is -1. */
+  const TIER_CEILING = { easy: -1, medium: 2, hard: 4, expert: 99 };
+
+  /* What the harder-pattern button may reach for, per tier: a window, not a
+     floor. The point is to teach the next rung, so the top matters as much as
+     the bottom — an Easy reader offered a swordfish learns nothing. Indices
+     into ELIM_LADDER, same as TIER_CEILING.
+       easy   0-2  locked candidates, naked pair, hidden pair
+       medium 3-6  naked/hidden triple, naked quad, X-Wing
+       hard   6-17 fish and wings — the full advanced set
+       expert 6-17 same */
+  const TIER_ADVANCED = {
+    easy:   { from: 0, to: 2 },
+    medium: { from: 3, to: 6 },
+    hard:   { from: 6, to: 99 },
+    expert: { from: 6, to: 99 }
+  };
 
   function requestHarderPattern() {
     if (!currentPuzzle) return;
+    markCompanionUsed("advanced_hint");
     const grid = readGrid(), givens = readGivens();
 
     const v = Validator.check(grid, givens);
@@ -5010,30 +5266,26 @@ const HintEngine = (function () {
 
     /* Same treatment as the plain hint: honour the reader's pencil marks, but
        refuse to reason from notes that have ruled out a true digit. */
-    const badNote = firstBadNoteCell(grid);
-    if (badNote >= 0) {
-      clearHint();
-      setStatus("Your pencil marks in " + SudokuCore.rc(badNote) + " rule out the digit that " +
-                "belongs there, so any hint based on them would be wrong. Correct or clear that " +
-                "cell's notes, then ask again.", "bad");
-      cellAt(badNote).classList.add("hint-eliminate");
-      if (cellAt(badNote).scrollIntoView)
-        cellAt(badNote).scrollIntoView({ block: "nearest", inline: "nearest" });
-      return;
-    }
+    /* Notes no longer gate the hint. They stopped feeding the engine when
+       applyReaderNotes was made to ignore them, so the old justification —
+       "any hint based on them would be wrong" — is no longer true. Refusing
+       here only punished a reader for pencilling a cell halfway. */
     /* Same reasoning as requestHint: build from the grid, never from a memo of
        earlier hints that the board does not show. */
     const advCand = applyReaderNotes(grid, SudokuCore.buildCandidates(grid));
 
-    const all = HintEngine.surveyHints(grid, advCand);
+    const win = TIER_ADVANCED[currentLevel] || { from: 6, to: 99 };
+    const all = HintEngine.surveyHints(grid, advCand, win.from, win.to);
     const advanced = all.filter(o => o.advanced);
-    /* Prefer genuinely advanced patterns, but only if there are at least two to
-       rotate between. With a single advanced technique the button would hand
-       back the same name every press — which is exactly what happens on Hard
-       grids, where simple colouring is often the only advanced pattern going.
-       Widening to the full list there gives the rotation something to work
-       with, and everything in it is still harder than the plain hint's step. */
-    const pool = advanced.length >= 2 ? advanced : all;
+    /* Prefer patterns inside the tier's window. A single available pattern is
+       still the right answer for a button called Advanced Hint — repeating one
+       genuine X-wing beats handing back a naked pair for the sake of variety,
+       which is what the old two-pattern minimum did. Only when the window is
+       empty does the fallback widen, and it widens downward only — never past
+       the top of the window — so an Easy reader is never shown a swordfish
+       just because the board happens to support one. */
+    const inReach = all.filter(o => o.capped);
+    const pool = advanced.length ? advanced : inReach;
 
     if (!pool.length) {
       clearHint();
@@ -5046,8 +5298,8 @@ const HintEngine = (function () {
       }
       h.noPlacement = !h.place && !h.unlock;
       currentHint = h; hintLevel = 1;
-      setStatus("No pattern is available in this position \u2014 the only step here is a " +
-                h.tech.toLowerCase() + ".", "good");
+      setStatus("No pattern at this level is available in this position \u2014 the only step " +
+                "here is a " + h.tech.toLowerCase() + ".", "good");
       renderHint();
       return;
     }
@@ -5171,6 +5423,7 @@ const HintEngine = (function () {
 
   function checkGrid() {
     if (!currentPuzzle) return;
+    markCompanionUsed("check_grid");
     clearHint();
     /* Clears any stale red, then re-flags genuine rule breaches. */
     recomputeConflicts();
@@ -5207,19 +5460,27 @@ const HintEngine = (function () {
       if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
-    if (np.missingTrue >= 0) {
-      cellAt(np.missingTrue).classList.add("hint-eliminate");
-      setStatus("Your pencil marks in " + SudokuCore.rc(np.missingTrue) + " rule out the digit that " +
-                "belongs there. Correct or clear that cell\u2019s notes.", "bad");
-      const t = cellAt(np.missingTrue);
-      if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
-      return;
-    }
 
     if (Array.from(grid).every(x => x)) {
       setStatus("Complete and correct.", "good");
       completedByPlaying = true;
       showCompletionMessage();
+      return;
+    }
+    /* Nothing placed is wrong. A cell whose notes omit the digit that belongs
+       there is worth mentioning last and only here: it is a real dead end if
+       the reader has finished pencilling that cell, and nothing at all if they
+       have not, and the page cannot tell which. So it is phrased as a
+       conditional aside rather than an error, and it never pre-empts a placed
+       digit being wrong. */
+    if (np.missingTrue >= 0) {
+      const t = cellAt(np.missingTrue);
+      t.classList.add("hint-eliminate");
+      setStatus("Nothing you have placed is wrong. One thing to look at: your pencil marks in " +
+                SudokuCore.rc(np.missingTrue) + " don\u2019t include the digit that belongs there. " +
+                "If you have finished pencilling that cell, one of those eliminations was a " +
+                "mistake; if you are still filling it in, carry on.", "good");
+      if (t.scrollIntoView) t.scrollIntoView({ block: "nearest", inline: "nearest" });
       return;
     }
     setStatus("No mistakes so far.", "good");
@@ -5236,7 +5497,8 @@ const HintEngine = (function () {
   const puzzleDisplayLevelEl = document.getElementById("puzzle-display-level");
   const levelButtons = document.querySelectorAll(".level-switch button");
 
-  const levelLabel = l => l === "expert" ? "Expert" : "Hard";
+  const LEVEL_LABELS = { easy: "Easy", medium: "Medium", hard: "Hard", expert: "Expert" };
+  const levelLabel = l => LEVEL_LABELS[l] || "Easy";
 
   function fillSelector() {
     selectEl.innerHTML = "";
@@ -5259,24 +5521,33 @@ const HintEngine = (function () {
   }
   function readInitialParams() {
     const url = new URL(window.location.href);
-    const lvl = (url.searchParams.get("level") || "hard").toLowerCase();
+    const lvl = (url.searchParams.get("level") || "easy").toLowerCase();
     const n = parseInt(url.searchParams.get("n") || "1", 10);
     const mode = (url.searchParams.get("mode") || "").toLowerCase();
     return {
-      level: lvl === "expert" ? "expert" : "hard",
+      level: BOOK_FILES[lvl] ? lvl : "easy",
       n: isFinite(n) ? n : 1,
       mode: mode === "solution" ? "solution" : "play"
     };
   }
 
+  /* Bumped on every load request. A tap on another level while a file is still
+     in flight makes the older request stale; it must not paint its puzzle over
+     the newer one. */
+  let loadRequestId = 0;
+
   async function loadPuzzleByNumber(n, mode) {
+    const requestId = ++loadRequestId;
+    const level = currentLevel;
     let list;
     try {
-      list = await ensureBookLoaded(currentLevel);
+      list = await ensureBookLoaded(level);
     } catch (err) {
-      setStatus("Could not load the puzzle file (" + BOOK_FILES[currentLevel] + ").", "bad");
+      if (requestId !== loadRequestId) return;
+      setStatus("Could not load the puzzle file (" + BOOK_FILES[level] + ").", "bad");
       return;
     }
+    if (requestId !== loadRequestId || level !== currentLevel) return;
     n = Math.min(BOOK_COUNT, Math.max(1, n));
     currentPuzzleNumber = n;
     updatePuzzleDisplay(n);
@@ -5298,7 +5569,7 @@ const HintEngine = (function () {
     /* Work in progress survives a reload, a tab close, and hopping to the
        solution and back. Nothing is written to storage while the solution is
        on screen, so looking never overwrites solving. */
-    if (mode === "solution") showSolution();
+    if (mode === "solution") { showSolution(); markCompanionUsed("solution"); }
     else loadProgress();
     updateUndoButtons();
     if (timerEnabled) resetTimer();
