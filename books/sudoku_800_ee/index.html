@@ -735,6 +735,27 @@
     }
     .review-dismiss:hover { color: var(--text); }
 
+    /* Always-visible review card. Quiet by design: secondary to the solving
+       tools. DOM order puts it between the hint card and Book Puzzle Helper,
+       which is where it lands on mobile; on desktop it moves to the bottom. */
+    .review-card .side-card-inner { display: flex; flex-direction: column; gap: 0.55rem; }
+    .review-card .side-heading { margin-bottom: 0; display: flex; align-items: center; gap: 0.45rem; }
+    .review-star { color: var(--accent); font-size: 1.05em; line-height: 1; }
+    .review-card-text { font-size: 0.92rem; line-height: 1.5; color: var(--text-muted); }
+    body.theme-light .review-card-text { color: #334155; }
+    .review-card-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.9rem; }
+    .review-card-actions .btn { font-weight: 600; }
+    a.js-review-link, a.js-review-link:hover { text-decoration: none; }
+    .review-stores { font-size: 0.8rem; color: var(--text-muted); }
+    .review-stores summary { cursor: pointer; list-style: none; text-decoration: underline; text-underline-offset: 2px; }
+    .review-stores summary::-webkit-details-marker { display: none; }
+    .review-stores-list { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; margin-top: 0.45rem; }
+    .review-stores-list a { color: var(--accent); text-decoration: none; }
+    .review-stores-list a:hover { text-decoration: underline; }
+    @media (min-width: 881px) {
+      .side-column > .review-card { order: 1; }
+    }
+
     .completion-overlay {
       position: absolute;
       inset: 0.4rem;
@@ -2503,15 +2524,33 @@
                Asks only for an honest review and is never tied to any feature. -->
           <div id="review-prompt" class="review-prompt" role="status" aria-live="polite">
             <button id="review-dismiss" class="review-dismiss" type="button" aria-label="Dismiss">&times;</button>
-            <div class="review-prompt-title">Nice solving!</div>
+            <div class="review-prompt-title">Nicely solved.</div>
             <p class="review-prompt-text">
-              Hope this companion is helping you get more out of the book. You&rsquo;re welcome to leave
-              an <b>honest review on Amazon</b> and share your experience &mdash; reviews help other
-              puzzlers decide whether the book is right for them.
+              If you have a minute, an honest Amazon review helps other Sudoku solvers decide
+              if this book is right for them.
             </p>
-            <a id="review-link" class="btn btn-outline review-link"
-               href="https://www.amazon.com/dp/B0HJFJ3417" target="_blank" rel="noopener">Leave a review</a>
+            <a id="review-link" class="btn btn-outline review-link js-review-link" data-placement="completion"
+               href="https://www.amazon.com/review/create-review?asin=B0HJFJ3417" target="_blank" rel="noopener">Write a review on <span class="js-review-store">Amazon.com</span></a>
           </div>
+        </div>
+      </aside>
+
+      <!-- Always-visible review card. Neutral wording, the same for every
+           reader, never tied to any feature. -->
+      <aside class="side-card review-card" aria-labelledby="review-card-heading">
+        <div class="side-card-inner">
+          <h2 id="review-card-heading" class="side-heading"><span class="review-star" aria-hidden="true">&#9733;</span> Share your thoughts on the book</h2>
+          <p class="review-card-text">
+            An honest Amazon review helps other Sudoku solvers decide if this book is right for them.
+          </p>
+          <div class="review-card-actions">
+            <a class="btn btn-outline js-review-link" data-placement="card"
+               href="https://www.amazon.com/review/create-review?asin=B0HJFJ3417" target="_blank" rel="noopener">Write a review on <span class="js-review-store">Amazon.com</span></a>
+          </div>
+          <details class="review-stores">
+            <summary>Other Amazon stores</summary>
+            <div id="review-stores-list" class="review-stores-list"></div>
+          </details>
         </div>
       </aside>
 
@@ -4275,14 +4314,113 @@ const HintEngine = (function () {
   }
   btnAutoCand.addEventListener("click", () => setAutoCandidates(!autoCandOn));
 
-  /* Review prompt dismiss. */
-  (function () {
+  /* =====================================================================
+     Review links + analytics.
+     Every review link goes straight to Amazon's review form, on the store
+     the reader most likely bought from (browser language, with the time zone
+     as tie-breaker for plain English). Readers can pick another store.
+     ===================================================================== */
+  const REVIEW_ASIN = "B0HJFJ3417";
+  const REVIEW_STORES = [
+    { id: "com",    host: "www.amazon.com",    label: "US (.com)", name: "Amazon.com" },
+    { id: "co.uk",  host: "www.amazon.co.uk",  label: "UK", name: "Amazon.co.uk" },
+    { id: "de",     host: "www.amazon.de",     label: "Germany", name: "Amazon.de" },
+    { id: "fr",     host: "www.amazon.fr",     label: "France", name: "Amazon.fr" },
+    { id: "it",     host: "www.amazon.it",     label: "Italy", name: "Amazon.it" },
+    { id: "es",     host: "www.amazon.es",     label: "Spain", name: "Amazon.es" },
+    { id: "nl",     host: "www.amazon.nl",     label: "Netherlands", name: "Amazon.nl" },
+    { id: "ca",     host: "www.amazon.ca",     label: "Canada", name: "Amazon.ca" },
+    { id: "com.au", host: "www.amazon.com.au", label: "Australia", name: "Amazon.com.au" },
+    { id: "co.jp",  host: "www.amazon.co.jp",  label: "Japan", name: "Amazon.co.jp" }
+  ];
+  const reviewUrl = st => "https://" + st.host + "/review/create-review?asin=" + REVIEW_ASIN;
+  const storeById = id => REVIEW_STORES.find(x => x.id === id) || REVIEW_STORES[0];
+
+  function track(name, params) {
+    try { if (typeof gtag === "function") gtag("event", name, params || {}); } catch (e) {}
+  }
+
+  function detectStore() {
+    let tz = "";
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    const langs = (navigator.languages && navigator.languages.length)
+      ? navigator.languages : [navigator.language || "en-US"];
+    const lang = String(langs[0] || "en-US").toLowerCase();
+    const [base, region] = lang.split("-");
+    if (region === "gb" || region === "ie") return "co.uk";
+    if (region === "ca") return "ca";
+    if (region === "au" || region === "nz") return "com.au";
+    if (base === "de") return "de";
+    if (base === "fr") return "fr";
+    if (base === "it") return "it";
+    if (base === "es" && (!region || region === "es")) return "es";
+    if (base === "nl" && region !== "be") return "nl";
+    if (base === "ja") return "co.jp";
+    /* Many UK/Canadian/Australian browsers report plain en-US. */
+    if (base === "en") {
+      if (/^Europe\/(London|Dublin)$/.test(tz)) return "co.uk";
+      if (/^(Australia|Pacific\/Auckland)/.test(tz)) return "com.au";
+      if (/^America\/(Toronto|Vancouver|Edmonton|Winnipeg|Halifax|St_Johns|Regina|Moncton|Montreal)$/.test(tz)) return "ca";
+    }
+    return "com";
+  }
+
+  let reviewStore = storeById(detectStore());
+  function applyReviewStore() {
+    document.querySelectorAll(".js-review-link").forEach(a => { a.href = reviewUrl(reviewStore); });
+    document.querySelectorAll(".js-review-store").forEach(el => { el.textContent = reviewStore.name; });
+  }
+  (function initReviewLinks() {
+    applyReviewStore();
+    const list = document.getElementById("review-stores-list");
+    if (list) {
+      REVIEW_STORES.forEach(st => {
+        const a = document.createElement("a");
+        a.href = reviewUrl(st);
+        a.target = "_blank"; a.rel = "noopener";
+        a.textContent = st.label;
+        a.addEventListener("click", () => {
+          reviewStore = st;
+          applyReviewStore();
+          track("review_click", { placement: "store_picker", store: st.id, detected_store: detectStore() });
+        });
+        list.appendChild(a);
+      });
+    }
+    document.querySelectorAll(".js-review-link").forEach(a => {
+      a.addEventListener("click", () => {
+        track("review_click", { placement: a.dataset.placement || "unknown", store: reviewStore.id });
+      });
+    });
     const rd = document.getElementById("review-dismiss");
     if (rd) rd.addEventListener("click", () => {
       const el = document.getElementById("review-prompt");
       if (el) el.classList.remove("show");
+      track("review_dismiss", { placement: "completion" });
     });
   })();
+
+  (function trackReviewCardView() {
+    const card = document.querySelector(".review-card");
+    if (!card || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting && e.intersectionRatio >= 0.5)) {
+        io.disconnect();
+        track("review_card_view", { store: reviewStore.id });
+      }
+    }, { threshold: [0.5] });
+    io.observe(card);
+  })();
+
+  /* One companion_used event per puzzle per visit: the first time the reader
+     takes a hint, checks the grid or views the solution on it. */
+  const companionUsedOn = new Set();
+  function markCompanionUsed(action) {
+    const id = currentLevel + "-" + currentPuzzleNumber;
+    if (companionUsedOn.has(id)) return;
+    companionUsedOn.add(id);
+    track("companion_used", { puzzle_id: id, level: currentLevel, action: action });
+  }
 
   function toggleNote(cell, value) {
     if (!cell || cell.classList.contains("given")) return;
@@ -4523,20 +4661,34 @@ const HintEngine = (function () {
     if (completedByPlaying) maybeShowReviewPrompt();
   }
 
-  /* Review prompt: neutral, honest, shown after a genuine solve.
+  /* Completion prompt: neutral, honest, shown after a genuine online solve.
 
-     Deliberately a plain in-memory flag, reset when a new puzzle loads. An
-     earlier version stored "shown" in sessionStorage to survive reloads, but
-     sessionStorage lives for the whole tab: once the key was written the very
-     first time, every later solve read it back and returned early, so the
-     prompt never appeared again until the tab was closed. Any stale key from
-     that version is now inert, since nothing reads it. */
+     The always-visible review card carries the standing request, so this
+     one appears at most once every 14 days per book (a timestamp in
+     localStorage). If storage is blocked, it falls back to once per page
+     load. reviewPromptShown is still reset per puzzle so the same puzzle
+     never shows it twice; the timestamp is what stops repeats across puzzles.
+     (The key is new; the old sessionStorage key is never read.) */
+  const REVIEW_PROMPT_KEY = "reviewPromptLastShown:" + BOOK_ID;
+  const REVIEW_PROMPT_GAP_MS = 14 * 24 * 60 * 60 * 1000;
   let reviewPromptShown = false;
+  let reviewPromptShownThisVisit = false;
+  function reviewPromptAllowed() {
+    if (reviewPromptShownThisVisit) return false;
+    try {
+      const last = parseInt(localStorage.getItem(REVIEW_PROMPT_KEY) || "0", 10);
+      return !(last && Date.now() - last < REVIEW_PROMPT_GAP_MS);
+    } catch (e) { return true; }
+  }
   function maybeShowReviewPrompt() {
     if (reviewPromptShown) return;
     reviewPromptShown = true;
+    if (!reviewPromptAllowed()) return;
+    reviewPromptShownThisVisit = true;
+    try { localStorage.setItem(REVIEW_PROMPT_KEY, String(Date.now())); } catch (e) {}
     const el = document.getElementById("review-prompt");
     if (el) el.classList.add("show");
+    track("review_completion_view", { store: reviewStore.id });
   }
   function gridMatchesSolution() {
     if (!Checker.has()) return false;
@@ -4990,6 +5142,7 @@ const HintEngine = (function () {
 
   function requestHint() {
     if (!currentPuzzle) return;
+    markCompanionUsed("hint");
     /* Pressing Hint again walks the SAME hint down a level, so you never have
        to reach for "Show me exactly". But only its own hint: a hint left on
        screen by Advanced Hint used to swallow the press and keep unfolding the
@@ -5105,6 +5258,7 @@ const HintEngine = (function () {
 
   function requestHarderPattern() {
     if (!currentPuzzle) return;
+    markCompanionUsed("advanced_hint");
     const grid = readGrid(), givens = readGivens();
 
     const v = Validator.check(grid, givens);
@@ -5269,6 +5423,7 @@ const HintEngine = (function () {
 
   function checkGrid() {
     if (!currentPuzzle) return;
+    markCompanionUsed("check_grid");
     clearHint();
     /* Clears any stale red, then re-flags genuine rule breaches. */
     recomputeConflicts();
@@ -5414,7 +5569,7 @@ const HintEngine = (function () {
     /* Work in progress survives a reload, a tab close, and hopping to the
        solution and back. Nothing is written to storage while the solution is
        on screen, so looking never overwrites solving. */
-    if (mode === "solution") showSolution();
+    if (mode === "solution") { showSolution(); markCompanionUsed("solution"); }
     else loadProgress();
     updateUndoButtons();
     if (timerEnabled) resetTimer();
