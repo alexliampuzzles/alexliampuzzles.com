@@ -4998,6 +4998,9 @@ const HintEngine = (function () {
      ceiling is one the board happens to support without the puzzle needing it —
      worth showing, worth labelling, never worth implying the tier is wrong. */
   const TIER_CEILING = { medium: 2, hard: 4, expert: 99 };
+  /* Hardest ELIM_LADDER index the Advanced Hint button may pick, per tier.
+     0 locked candidates, 1-2 pairs, 3-4 triples. Tiers not listed are uncapped. */
+  const ADV_POOL_MAX = { medium: 4 };
 
   function requestHarderPattern() {
     if (!currentPuzzle) return;
@@ -5023,8 +5026,13 @@ const HintEngine = (function () {
        earlier hints that the board does not show. */
     const advCand = applyReaderNotes(grid, SudokuCore.buildCandidates(grid));
 
-    const all = HintEngine.surveyHints(grid, advCand);
-    const advanced = all.filter(o => o.advanced);
+    /* Medium readers are taught the book's own techniques, plus one step up
+       (triples) to grow into. Wings, fish and colouring are left to the Hard
+       and Expert pages, where they belong. */
+    const surveyed = HintEngine.surveyHints(grid, advCand);
+    const capped = ADV_POOL_MAX[currentLevel] !== undefined;
+    const all = capped ? surveyed.filter(o => o.index <= ADV_POOL_MAX[currentLevel]) : surveyed;
+    const advanced = capped ? all : all.filter(o => o.advanced);
     /* Prefer genuinely advanced patterns, but only if there are at least two to
        rotate between. With a single advanced technique the button would hand
        back the same name every press — which is exactly what happens on Hard
