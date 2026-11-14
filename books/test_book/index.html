@@ -2047,6 +2047,86 @@
     /* ---------- Online play additions ---------- */
     .board-title span.badge { font-variant-numeric: tabular-nums; }
     .status-line .hint-inline-btn { margin-left: 0.15rem; }
+
+    .board-header { flex-wrap: wrap; row-gap: 0.3rem; }
+    .solved-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* Completion: the overlay itself lets clicks through, the box takes them. */
+    .completion-box {
+      position: relative;
+      pointer-events: auto;
+      max-width: 300px;
+      padding: 1.1rem 1.4rem 1rem;
+    }
+    .completion-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+    }
+    .completion-actions .btn { width: 100%; min-height: 44px; font-weight: 600; }
+    .completion-books {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .completion-books:hover { color: var(--accent); }
+    .completion-close {
+      position: absolute;
+      top: 0.25rem;
+      right: 0.35rem;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .completion-close:hover { color: var(--text); }
+
+    /* Hint slot under the tool row: empty on wide screens. */
+    .hint-slot:empty { display: none; }
+    .hint-slot .status-line:empty { display: none; }
+    .hint-slot .status-line { margin-top: 0.7rem; }
+
+    /* Phones: the hint panel lives under the grid, so its intro card is
+       replaced by a short note in "How this works". */
+    .mobile-only { display: none; }
+    @media (max-width: 880px) {
+      .side-card.hint-card { display: none; }
+      .mobile-only { display: block; }
+    }
+    .timer-pause:disabled { opacity: 0.55; cursor: default; }
+
+    /* ---------- Touch targets on phones and tablets ---------- */
+    @media (max-width: 880px) {
+      .tool-row .btn,
+      .pad .num-key,
+      .pad .num-key-erase,
+      .pad .btn-notes,
+      .pad-undo,
+      #dropdown-toggle,
+      #btn-mistakes,
+      .hint-more .btn { min-height: 44px; }
+      .btn-difficulty { min-height: 40px; }
+      .helper-pill { min-height: 40px; }
+      .timer-pause { min-height: 32px; }
+      .hint-slot .hint-panel {
+        max-height: 42vh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+    }
     @media (max-width: 620px) { .tool-row .btn { flex: 1 1 30%; } }
   </style>
 </head>
@@ -2082,12 +2162,7 @@
         </div>
 
         <div class="nav-item">
-          <a class="nav-link"
-             href="https://www.amazon.com/author/alex_liam"
-             target="_blank"
-             rel="noopener noreferrer">
-            My Books
-          </a>
+          <a class="nav-link" href="/catalogue/">My Books</a>
         </div>
       </nav>
 
@@ -2105,6 +2180,7 @@
             Online Sudoku
             <span id="puzzle-badge" class="badge">Easy</span>
           </div>
+          <div id="solved-count" class="solved-count" aria-live="polite"></div>
         </div>
 
         <!-- top bar: Puzzle menu + Show mistakes -->
@@ -2171,9 +2247,15 @@
           </div>
 
           <div id="completion-overlay" class="completion-overlay" aria-hidden="true">
-            <div class="completion-box">
-              <div class="completion-title">&#127881; Congratulations!</div>
-              <div class="completion-text">You solved this puzzle.</div>
+            <div class="completion-box" role="dialog" aria-labelledby="completion-title">
+              <button id="completion-close" class="completion-close" type="button" aria-label="Close and view the grid">&times;</button>
+              <div id="completion-title" class="completion-title">&#127881; Congratulations!</div>
+              <div id="completion-text" class="completion-text">You solved this puzzle.</div>
+              <div class="completion-actions">
+                <button id="btn-next" class="btn btn-primary" type="button">Next puzzle</button>
+                <button id="btn-share" class="btn btn-outline" type="button">Share this puzzle</button>
+              </div>
+              <a id="completion-books" class="completion-books" href="/catalogue/">Enjoyed it? More puzzles in the Alex Liam books &rarr;</a>
             </div>
           </div>
 
@@ -2208,11 +2290,15 @@
           <button id="btn-check-grid" class="btn btn-outline pill" type="button" aria-label="Check grid">
             <span class="lbl-full">Check Grid</span><span class="lbl-short">Check</span></button>
         </div>
+
+        <!-- On phones the status line and hint panel move here, right under the
+             controls, so the explanation and the highlighted cells share a screen. -->
+        <div id="hint-slot" class="hint-slot"></div>
       </div>
     </section>
 
     <div class="side-column">
-      <aside class="side-card">
+      <aside class="side-card hint-card">
         <div class="side-card-inner">
           <h2 class="side-heading">Stuck? Get a hint</h2>
           <p class="side-sub">
@@ -2245,6 +2331,14 @@
             Each board is a valid Sudoku with a single solution, generated and checked by my solver.
             Every level can be finished by logic alone &mdash; no guessing.
           </p>
+
+          <div class="mobile-only">
+            <div class="side-section-title">How hints work</div>
+            <p class="side-sub">
+              Each press of <b>Hint</b> shows a little more of the easiest next step, worked out from
+              <b>your</b> grid &mdash; not the answer key. <b>Candidates</b> pencils in every possible digit.
+            </p>
+          </div>
 
           <div>
             <div class="side-section-title">Difficulty</div>
@@ -3625,6 +3719,15 @@ const HintEngine = (function () {
   const hintTechEl = document.getElementById("hint-tech");
   const hintBodyEl = document.getElementById("hint-body");
   const statusLine = document.getElementById("status-line");
+  const solvedCountEl = document.getElementById("solved-count");
+  const completionTextEl = document.getElementById("completion-text");
+  const btnNext = document.getElementById("btn-next");
+  const btnShare = document.getElementById("btn-share");
+  const btnCompletionClose = document.getElementById("completion-close");
+  const completionBooks = document.getElementById("completion-books");
+  const hintSlot = document.getElementById("hint-slot");
+  const hintHome = statusLine.parentNode;           // the side card, on wide screens
+  const boardWrapper = document.querySelector(".board-wrapper");
 
   let wrongTooltipTimeout = null;
   function showWrongTooltip() {
@@ -3657,6 +3760,9 @@ const HintEngine = (function () {
 
   let timerEnabled = false, timerRunning = false;
   let timerStartMs = 0, timerElapsedMs = 0, timerInterval = null;
+  /* The solve time, fixed when a puzzle is finished. null when the timer was
+     off at that moment, so there is no honest time to show. */
+  let finalTimeMs = null;
 
   /* ---------- Analytics: one event per puzzle per tool ---------- */
   function track(name, params) {
@@ -3669,6 +3775,45 @@ const HintEngine = (function () {
     track("play_tool_used", { level: currentDifficulty, puzzle: currentIndex + 1, action: action });
   }
 
+  /* ---------- Solved history ----------
+     Kept per level as short hashes of the puzzle string, not pool positions,
+     so the record stays right even if a pool file is regenerated. */
+  function hashPuzzle(s) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+    return (h >>> 0).toString(36);
+  }
+  const solvedKey = level => "sudokuPlay:v1:solved:" + level;
+  function getSolved(level) {
+    try {
+      const a = JSON.parse(localStorage.getItem(solvedKey(level)) || "[]");
+      return new Set(Array.isArray(a) ? a : []);
+    } catch (e) { return new Set(); }
+  }
+  function markSolved(level, puzzleStr) {
+    const set = getSolved(level);
+    set.add(hashPuzzle(puzzleStr));
+    try { localStorage.setItem(solvedKey(level), JSON.stringify(Array.from(set))); } catch (e) {}
+  }
+  /* Only hashes that match a puzzle in the current pool are counted. */
+  function solvedCount(level) {
+    const list = PUZZLES[level];
+    if (!list) return 0;
+    const set = getSolved(level);
+    let n = 0;
+    for (const p of list) if (set.has(hashPuzzle(p.puzzle))) n++;
+    return n;
+  }
+  function updateSolvedCount() {
+    if (!solvedCountEl || !PUZZLES[currentDifficulty]) return;
+    solvedCountEl.textContent = levelLabel(currentDifficulty) + ": " +
+      solvedCount(currentDifficulty) + " / " + PUZZLES[currentDifficulty].length + " solved";
+  }
+  const TIMER_PREF_KEY = "sudokuPlay:v1:timer";
+  function currentElapsed() {
+    return timerRunning ? performance.now() - timerStartMs : timerElapsedMs;
+  }
+
   /* ---------- Timer ---------- */
   function formatTime(ms) {
     const t = Math.floor(ms / 1000);
@@ -3679,7 +3824,8 @@ const HintEngine = (function () {
   function hidePauseOverlay() { if (boardOverlay) boardOverlay.style.display = "none"; }
   function showPauseOverlay() { if (boardOverlay) boardOverlay.style.display = "flex"; }
   function startTimer() {
-    if (!timerEnabled) return;
+    /* A finished puzzle's time is final: neither Resume button may restart it. */
+    if (!timerEnabled || puzzleCompleted) return;
     timerRunning = true;
     timerStartMs = performance.now() - timerElapsedMs;
     clearInterval(timerInterval);
@@ -3696,6 +3842,20 @@ const HintEngine = (function () {
     btnTimerPause.textContent = "Resume";
     if (showOverlay) showPauseOverlay();
   }
+  /* Stop the clock for good on a solved or revealed puzzle. */
+  function freezeTimer() {
+    if (timerRunning) pauseTimer(false);
+    finalTimeMs = timerEnabled ? timerElapsedMs : null;
+    hidePauseOverlay();
+    btnTimerPause.disabled = true;
+    btnTimerPause.textContent = "Done";
+  }
+  function unfreezeTimer() {
+    finalTimeMs = null;
+    formatTime(timerElapsedMs);          // replaces a "--:--" placeholder
+    btnTimerPause.disabled = false;
+    btnTimerPause.textContent = timerRunning ? "Pause" : "Resume";
+  }
   function resetTimer() {
     timerElapsedMs = 0; formatTime(0);
     if (timerEnabled) startTimer();
@@ -3705,6 +3865,16 @@ const HintEngine = (function () {
     timerEnabled = !!on;
     timerToggle.checked = timerEnabled;
     timerContainer.style.display = timerEnabled ? "flex" : "none";
+    /* On a finished puzzle the switch only shows or hides the final time;
+       it never resets or restarts it. */
+    if (puzzleCompleted) {
+      hidePauseOverlay();
+      if (finalTimeMs !== null) formatTime(finalTimeMs);
+      else timerTimeEl.textContent = "--:--";
+      btnTimerPause.disabled = true;
+      btnTimerPause.textContent = "Done";
+      return;
+    }
     if (!timerEnabled) {
       clearInterval(timerInterval); timerInterval = null; timerRunning = false;
       timerElapsedMs = 0; formatTime(0); hidePauseOverlay();
@@ -3715,7 +3885,25 @@ const HintEngine = (function () {
     if (timerRunning) pauseTimer(true); else startTimer();
   });
   if (btnResumeBig) btnResumeBig.addEventListener("click", () => { hidePauseOverlay(); if (timerEnabled) startTimer(); });
-  timerToggle.addEventListener("change", () => setTimerEnabled(timerToggle.checked));
+  timerToggle.addEventListener("change", () => {
+    setTimerEnabled(timerToggle.checked);
+    try { localStorage.setItem(TIMER_PREF_KEY, timerEnabled ? "1" : "0"); } catch (e) {}
+    saveProgress();
+  });
+  /* Restore a saved clock: enabled or not, the elapsed time, and whether it
+     was paused when the page was left. */
+  function restoreTimer(t) {
+    if (!t || !t.on) { setTimerEnabled(false); return; }
+    timerEnabled = true;
+    timerToggle.checked = true;
+    timerContainer.style.display = "flex";
+    timerRunning = false;
+    clearInterval(timerInterval); timerInterval = null;
+    timerElapsedMs = Math.max(0, +t.ms || 0);
+    formatTime(timerElapsedMs);
+    if (t.paused) { btnTimerPause.textContent = "Resume"; showPauseOverlay(); }
+    else startTimer();
+  }
 
   /* ---------- Board ---------- */
   function boxClasses(r, c) {
@@ -4077,6 +4265,7 @@ const HintEngine = (function () {
       hideCompletion();
       setStatus("");
       if (timerEnabled && !timerRunning) startTimer();
+      unfreezeTimer();
     }
     updateUndoButtons();
     saveProgress();
@@ -4094,10 +4283,16 @@ const HintEngine = (function () {
     try {
       localStorage.setItem(PLAY_KEY, JSON.stringify({
         level: currentDifficulty, index: currentIndex,
-        puzzle: currentPuzzle.puzzle, snap: snapshot()
+        puzzle: currentPuzzle.puzzle, snap: snapshot(),
+        timer: { on: timerEnabled, ms: Math.round(currentElapsed()), paused: timerEnabled && !timerRunning }
       }));
     } catch (e) { /* private mode */ }
   }
+  /* The clock moves without the board changing, so save on the way out too. */
+  window.addEventListener("pagehide", saveProgress);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") saveProgress();
+  });
   function clearProgress() {
     try { localStorage.removeItem(PLAY_KEY); } catch (e) {}
   }
@@ -4163,6 +4358,7 @@ const HintEngine = (function () {
     }
   }
   function showCompletion() {
+    if (btnNext) btnNext.textContent = "Next " + levelLabel(currentDifficulty) + " puzzle";
     if (completionOverlay) {
       completionOverlay.style.display = "flex";
       completionOverlay.setAttribute("aria-hidden", "false");
@@ -4177,11 +4373,23 @@ const HintEngine = (function () {
   function showCompletionMessage() {
     if (puzzleCompleted) return;
     puzzleCompleted = true;
-    setStatus("Solved. Nicely done.", "good");
+    freezeTimer();
+    const name = levelLabel(currentDifficulty) + " #" + (currentIndex + 1);
+    if (completionTextEl)
+      completionTextEl.textContent = "You solved " + name +
+        (timerEnabled ? " in " + timerTimeEl.textContent : "") + ".";
+    markSolved(currentDifficulty, currentPuzzle.puzzle);
+    updateSolvedCount();
+    setStatus("Solved. Nicely done. ", "good");
+    const nb = document.createElement("button");
+    nb.type = "button"; nb.className = "hint-inline-btn";
+    nb.textContent = "Next " + levelLabel(currentDifficulty) + " puzzle";
+    nb.addEventListener("click", () => nextPuzzle("status"));
+    statusLine.appendChild(nb);
     showCompletion();
-    if (timerEnabled) pauseTimer(false);
     clearProgress();
-    track("play_solved", { level: currentDifficulty, puzzle: currentIndex + 1 });
+    track("play_solved", { level: currentDifficulty, puzzle: currentIndex + 1,
+                           seconds: timerEnabled ? Math.round(timerElapsedMs / 1000) : null });
   }
   function gridMatchesSolution() {
     if (!Checker.has()) return false;
@@ -4337,7 +4545,13 @@ const HintEngine = (function () {
     undoStack.length = 0;
     updateUndoButtons();
     clearProgress();
-    setStatus("Solution shown. Pick a difficulty to start a new puzzle.", "good");
+    freezeTimer();
+    setStatus("Solution shown. ", "good");
+    const nb = document.createElement("button");
+    nb.type = "button"; nb.className = "hint-inline-btn";
+    nb.textContent = "Next " + levelLabel(currentDifficulty) + " puzzle";
+    nb.addEventListener("click", () => nextPuzzle("after_solution"));
+    statusLine.appendChild(nb);
     if (timerEnabled) pauseTimer(false);
   }
 
@@ -4496,8 +4710,34 @@ const HintEngine = (function () {
     if (selectedCell) updateHighlights();
     paintHint(h, hintLevel);
     focusHintCell(h, hintLevel);
-    if (window.innerWidth <= 880 && hintPanel.scrollIntoView)
-      hintPanel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    if (isNarrow()) revealHintPanel();
+  }
+
+  /* ---------- Phones: hint panel next to the grid ----------
+     On narrow screens the side column stacks below the whole board card, so
+     the status line and hint panel are moved into a slot right under the
+     tool row. Scrolling then shows as much of the panel as fits while never
+     pushing the top of the grid off the screen. */
+  const narrowMq = window.matchMedia("(max-width: 880px)");
+  const isNarrow = () => narrowMq.matches;
+  function placeHintPanel() {
+    const target = isNarrow() ? hintSlot : hintHome;
+    if (statusLine.parentNode !== target) target.appendChild(statusLine);
+    if (hintPanel.parentNode !== target) target.appendChild(hintPanel);
+  }
+  if (narrowMq.addEventListener) narrowMq.addEventListener("change", placeHintPanel);
+  else if (narrowMq.addListener) narrowMq.addListener(placeHintPanel);
+  placeHintPanel();
+  function revealHintPanel() {
+    requestAnimationFrame(() => {
+      const panel = hintPanel.classList.contains("show") ? hintPanel : statusLine;
+      const over = panel.getBoundingClientRect().bottom - window.innerHeight + 8;
+      const room = boardWrapper.getBoundingClientRect().top - 8;
+      const by = Math.min(over, room);
+      /* An absolute target, so repeated taps during a smooth scroll don't
+         add up and overshoot past the top of the grid. */
+      if (by > 0) window.scrollTo({ top: window.scrollY + by, behavior: "smooth" });
+    });
   }
 
   /* A last-resort message with a one-digit reveal attached. */
@@ -4712,7 +4952,7 @@ const HintEngine = (function () {
      paint its puzzle over a newer one. */
   let loadRequestId = 0;
 
-  async function loadPuzzle(level, index, snap) {
+  async function loadPuzzle(level, index, snap, timerState) {
     const requestId = ++loadRequestId;
     let list;
     try {
@@ -4725,10 +4965,21 @@ const HintEngine = (function () {
     }
     if (requestId !== loadRequestId) return;
 
+    let allDone = false;
     if (typeof index !== "number" || index < 0 || index >= list.length) {
-      /* Random, but never the same puzzle twice in a row. */
-      do { index = Math.floor(Math.random() * list.length); }
-      while (list.length > 1 && level === currentDifficulty && index === currentIndex);
+      /* Random among the puzzles not yet solved on this device, never the one
+         just played. Once every puzzle is solved, any but the last one. */
+      const solved = getSolved(level);
+      const notLast = i => !(level === currentDifficulty && i === currentIndex);
+      let pool = [];
+      for (let i = 0; i < list.length; i++)
+        if (notLast(i) && !solved.has(hashPuzzle(list[i].puzzle))) pool.push(i);
+      if (!pool.length) {
+        allDone = true;
+        for (let i = 0; i < list.length; i++) if (notLast(i)) pool.push(i);
+        if (!pool.length) pool = [0];
+      }
+      index = pool[Math.floor(Math.random() * pool.length)];
     }
 
     currentDifficulty = level;
@@ -4736,6 +4987,7 @@ const HintEngine = (function () {
     currentPuzzle = list[index];
     Checker.load(currentPuzzle.solution);
     puzzleCompleted = false;
+    unfreezeTimer();
     toolsUsedOn = new Set();
     hideCompletion();
     setStatus("");
@@ -4745,10 +4997,88 @@ const HintEngine = (function () {
     updateUndoButtons();
     syncDifficultyButtons();
     updateBadge();
+    updateSolvedCount();
+    if (allDone)
+      setStatus("You have solved all " + list.length + " " + levelLabel(level) +
+                " puzzles on this device \u2014 from here on, puzzles repeat.", "good");
     try { localStorage.setItem(PLAY_LEVEL_KEY, level); } catch (e) {}
+    setPuzzleUrl();
+    if (timerState) restoreTimer(timerState);
+    else if (timerEnabled) resetTimer();
     saveProgress();
-    if (timerEnabled) resetTimer();
   }
+
+  /* ---------- Shareable links: ?level=hard&id=<fingerprint> ----------
+     The id is a fingerprint of the puzzle itself, so a link keeps opening the
+     same puzzle if the pool files are reordered or regenerated, and even if
+     the puzzle moves to another level. Old ?n= links are still read. The
+     canonical tag still points at the plain page. */
+  function puzzleUrl() {
+    const u = new URL(window.location.href);
+    u.search = "";
+    u.hash = "";
+    u.searchParams.set("level", currentDifficulty);
+    u.searchParams.set("id", hashPuzzle(currentPuzzle.puzzle));
+    return u.toString();
+  }
+  function setPuzzleUrl() {
+    try { history.replaceState(null, "", puzzleUrl()); } catch (e) {}
+  }
+  function readUrlPuzzle() {
+    try {
+      const u = new URL(window.location.href);
+      const level = (u.searchParams.get("level") || "").toLowerCase().replace("-", "");
+      const id = (u.searchParams.get("id") || "").toLowerCase().replace(/[^0-9a-z]/g, "");
+      const n = parseInt(u.searchParams.get("n") || "", 10);
+      if (!DATA_FILES[level]) return null;
+      if (id) return { level: level, id: id };
+      if (n >= 1) return { level: level, index: n - 1 };
+    } catch (e) {}
+    return null;
+  }
+  /* Find a linked puzzle: its own level first, then the others. */
+  async function resolveUrlPuzzle(ref) {
+    if (!ref.id) {
+      const list = await ensurePuzzlesLoaded(ref.level);
+      return ref.index < list.length ? { level: ref.level, index: ref.index } : null;
+    }
+    const order = [ref.level].concat(Object.keys(DATA_FILES).filter(l => l !== ref.level));
+    for (const level of order) {
+      let list;
+      try { list = await ensurePuzzlesLoaded(level); } catch (e) { continue; }
+      const index = list.findIndex(p => hashPuzzle(p.puzzle) === ref.id);
+      if (index >= 0) return { level: level, index: index };
+    }
+    return null;
+  }
+
+  async function sharePuzzle() {
+    const url = puzzleUrl();
+    const text = "Can you solve " + levelLabel(currentDifficulty) + " Sudoku #" + (currentIndex + 1) + "?";
+    track("play_share", { level: currentDifficulty, puzzle: currentIndex + 1 });
+    if (navigator.share) {
+      try { await navigator.share({ title: "Alex Liam Puzzles \u2013 Sudoku", text: text, url: url }); return; }
+      catch (e) { if (e && e.name === "AbortError") return; }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setStatus("Link copied \u2014 send it to a friend to play the same puzzle.", "good");
+      if (btnShare) { btnShare.textContent = "Link copied"; setTimeout(() => { btnShare.textContent = "Share this puzzle"; }, 2000); }
+    } catch (e) {
+      window.prompt("Copy this link to share the puzzle:", url);
+    }
+  }
+
+  function nextPuzzle(source) {
+    track("play_next", { level: currentDifficulty, from: source || "completion" });
+    clearProgress();
+    loadPuzzle(currentDifficulty);
+  }
+  if (btnNext) btnNext.addEventListener("click", () => nextPuzzle("completion"));
+  if (btnShare) btnShare.addEventListener("click", sharePuzzle);
+  if (btnCompletionClose) btnCompletionClose.addEventListener("click", hideCompletion);
+  if (completionBooks) completionBooks.addEventListener("click", () =>
+    track("play_catalogue_click", { level: currentDifficulty, placement: "completion" }));
 
   /* Starting a new puzzle throws away the current one, so ask first if there
      is unfinished work on the board. */
@@ -4811,23 +5141,62 @@ const HintEngine = (function () {
     else if (btn.dataset.action === "restart") restartCurrentPuzzle();
   });
 
-  /* ---------- Boot ---------- */
-  setTimerEnabled(false);
+  /* ---------- Boot ----------
+     Order: a puzzle named in the URL, then the saved puzzle in progress,
+     then a fresh unsolved puzzle at the last level played. */
   updateUndoButtons();
-  (function boot() {
-    const saved = readSavedProgress();
+  function savedHasWork(saved) {
+    const parts = String(saved.snap || "").split(",");
+    for (let i = 0; i < parts.length && i < 81; i++)
+      if (saved.puzzle[i] === "0" && parts[i] !== "|" && parts[i] !== "") return true;
+    return false;
+  }
+  function timerPref() {
+    try { return localStorage.getItem(TIMER_PREF_KEY) === "1"; } catch (e) { return false; }
+  }
+  async function resumeSaved(saved) {
+    updateMistakesDefault(saved.level);
+    await loadPuzzle(saved.level, saved.index, saved.snap, saved.timer || { on: timerPref(), ms: 0 });
+    if (boardHasWork())
+      setStatus("Welcome back \u2014 your last puzzle is just as you left it.", "good");
+  }
+  (async function boot() {
+    setTimerEnabled(timerPref());
+    /* The saved puzzle is found by its content, not its position, so a
+       reordered pool file doesn't lose it. */
+    let saved = readSavedProgress();
     if (saved) {
-      updateMistakesDefault(saved.level);
-      ensurePuzzlesLoaded(saved.level).then(async list => {
-        const p = list[saved.index];
-        if (p && p.puzzle === saved.puzzle) {
-          await loadPuzzle(saved.level, saved.index, saved.snap);
-          if (boardHasWork())
-            setStatus("Welcome back — your last puzzle is just as you left it.", "good");
-        } else loadPuzzle(saved.level);
-      }).catch(() => loadPuzzle(saved.level));
+      try {
+        const list = await ensurePuzzlesLoaded(saved.level);
+        const at = list.findIndex(p => p.puzzle === saved.puzzle);
+        saved = at >= 0 ? Object.assign({}, saved, { index: at }) : null;
+      } catch (e) { saved = null; }
+    }
+    const ref = readUrlPuzzle();
+    if (ref) {
+      let target = null;
+      try { target = await resolveUrlPuzzle(ref); } catch (e) {}
+      if (target) {
+        if (saved && saved.level === target.level && saved.index === target.index) { await resumeSaved(saved); return; }
+        const keepSaved = saved && savedHasWork(saved) && !window.confirm(
+          "Open the shared puzzle (" + levelLabel(target.level) + " #" + (target.index + 1) + ")?\n\n" +
+          "Your puzzle in progress (" + levelLabel(saved.level) + " #" + (saved.index + 1) + ") will be replaced.");
+        if (keepSaved) { await resumeSaved(saved); return; }
+        updateMistakesDefault(target.level);
+        await loadPuzzle(target.level, target.index);
+        track("play_shared_open", { level: target.level, puzzle: target.index + 1 });
+        return;
+      }
+      /* Unknown id: say so either way, then resume the saved game if there
+         is one, or start a fresh puzzle at the linked level. */
+      if (saved) await resumeSaved(saved);
+      else { updateMistakesDefault(ref.level); await loadPuzzle(ref.level); }
+      setStatus("That shared puzzle isn\u2019t available any more \u2014 " +
+                (saved ? "here\u2019s your puzzle in progress." :
+                         "here\u2019s a fresh " + levelLabel(ref.level) + " puzzle instead."), "bad");
       return;
     }
+    if (saved) { await resumeSaved(saved); return; }
     let level = "easy";
     try {
       const l = localStorage.getItem(PLAY_LEVEL_KEY);
